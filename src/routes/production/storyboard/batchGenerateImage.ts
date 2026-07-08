@@ -42,11 +42,36 @@ export default router.post(
     if (!storyboardData.length) return res.status(500).send(error("未查到分镜数据"));
     const storyIds = storyboardData.map((i) => i.id);
     console.log(`[batchGenerateImage] 请求参数: storyboardIds=${storyboardIds.length}, compulsory=${compulsory}, regenerate=${regenerate}, concurrentCount=${concurrentCount}`);
-    if (compulsory) {
-      await u.db("o_storyboard").whereIn("id", storyIds).where("scriptId", scriptId).update({ state: "生成中", shouldGenerateImage: 1 });
-    } else {
-      await u.db("o_storyboard").whereIn("id", storyIds).where("scriptId", scriptId).where("shouldGenerateImage", 0).update({ state: "未生成" });
-      await u.db("o_storyboard").whereIn("id", storyIds).where("scriptId", scriptId).where("shouldGenerateImage", 1).update({ state: "生成中" });
+
+    // 先计算实际要生成的分镜，避免把已生成的分镜状态刷成「生成中」
+    let generateList = storyboardData;
+    if (!regenerate) {
+      generateList = generateList.filter(
+        (item) => !(item.filePath && String(item.filePath).trim() !== ""),
+      );
+    }
+    if (!compulsory) {
+      generateList = generateList.filter((item) => item.shouldGenerateImage !== 0);
+    }
+    const generateIds = new Set(generateList.map((i) => i.id));
+    console.log(`[batchGenerateImage] 实际需要生成: ${generateList.length}/${storyboardData.length}`);
+
+    // 只有真正会生成的分镜才标记为「生成中」
+    if (generateIds.size > 0) {
+      await u.db("o_storyboard")
+        .whereIn("id", Array.from(generateIds))
+        .where("scriptId", scriptId)
+        .update({ state: "生成中" });
+    }
+    // 禁用生成且不会实际生成的分镜标记为「未生成」
+    const notGenerateIds = storyboardData
+      .filter((item) => !generateIds.has(item.id!) && item.shouldGenerateImage === 0)
+      .map((item) => item.id!);
+    if (notGenerateIds.length > 0) {
+      await u.db("o_storyboard")
+        .whereIn("id", notGenerateIds)
+        .where("scriptId", scriptId)
+        .update({ state: "未生成" });
     }
 
     const projectSettingData = await u.db("o_project").where("id", projectId).select("imageModel", "imageQuality", "artStyle", "videoRatio").first();
@@ -135,19 +160,6 @@ export default router.post(
       }
     };
     // 串行 + 自适应延迟生成，避免一次性把全部请求塞给供应商
-    // 默认跳过：已禁用生成 或 已经有图片的分镜
-    // compulsory=true 时包含 shouldGenerateImage=0 的分镜；regenerate=true 时才重绘已有图片的分镜
-    let generateList = storyboardData;
-    if (!regenerate) {
-      generateList = generateList.filter(
-        (item) => !(item.filePath && String(item.filePath).trim() !== ""),
-      );
-    }
-    if (!compulsory) {
-      generateList = generateList.filter((item) => item.shouldGenerateImage !== 0);
-    }
-    console.log(`[batchGenerateImage] 实际需要生成: ${generateList.length}/${storyboardData.length}`);
-
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     for (let i = 0; i < generateList.length; i += concurrentCount) {
