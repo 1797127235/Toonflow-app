@@ -25,12 +25,14 @@ export default router.post(
       scriptId,
       concurrentCount = 1,
       compulsory = false,
+      regenerate = false,
     }: {
       storyboardIds: number[];
       projectId: number;
       scriptId: number;
       concurrentCount: number;
       compulsory: boolean;
+      regenerate: boolean;
     } = req.body;
     if (!storyboardIds || storyboardIds.length === 0) return res.status(400).send(error("storyboardIds不能为空"));
     // 当没有 storyboardIds 时，通过 AI 生成新的分镜面板数据
@@ -39,6 +41,7 @@ export default router.post(
     const storyboardData = await u.db("o_storyboard").where("scriptId", scriptId).where("projectId", projectId).whereIn("id", finalStoryboardIds);
     if (!storyboardData.length) return res.status(500).send(error("未查到分镜数据"));
     const storyIds = storyboardData.map((i) => i.id);
+    console.log(`[batchGenerateImage] 请求参数: storyboardIds=${storyboardIds.length}, compulsory=${compulsory}, regenerate=${regenerate}, concurrentCount=${concurrentCount}`);
     if (compulsory) {
       await u.db("o_storyboard").whereIn("id", storyIds).where("scriptId", scriptId).update({ state: "生成中", shouldGenerateImage: 1 });
     } else {
@@ -132,15 +135,18 @@ export default router.post(
       }
     };
     // 串行 + 自适应延迟生成，避免一次性把全部请求塞给供应商
-    // 默认跳过：已禁用生成 或 已经有图片的分镜；compulsory=true 时强制全部重绘
-    let generateList = [];
-    if (compulsory) {
-      generateList = storyboardData;
-    } else {
-      generateList = storyboardData.filter(
-        (item) => item.shouldGenerateImage !== 0 && !(item.filePath && String(item.filePath).trim() !== ""),
+    // 默认跳过：已禁用生成 或 已经有图片的分镜
+    // compulsory=true 时包含 shouldGenerateImage=0 的分镜；regenerate=true 时才重绘已有图片的分镜
+    let generateList = storyboardData;
+    if (!regenerate) {
+      generateList = generateList.filter(
+        (item) => !(item.filePath && String(item.filePath).trim() !== ""),
       );
     }
+    if (!compulsory) {
+      generateList = generateList.filter((item) => item.shouldGenerateImage !== 0);
+    }
+    console.log(`[batchGenerateImage] 实际需要生成: ${generateList.length}/${storyboardData.length}`);
 
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
