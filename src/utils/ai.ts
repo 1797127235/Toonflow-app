@@ -156,23 +156,27 @@ async function withTaskRecord<T>(
     taskRecord(1);
     return result;
   } catch (e) {
-    taskRecord(-1, u.error(e).message);
-    throw new Error(u.error(e).message);
+    const normalized = u.error(e);
+    taskRecord(-1, normalized.message);
+    throw u.createError(normalized.message, e);
   }
 }
 
 async function urlToBase64(url: string, retries = 3, delay = 1000): Promise<string> {
+  let lastError: unknown;
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const res = await axios.get(url, { responseType: "arraybuffer" });
       const base64 = Buffer.from(res.data).toString("base64");
       return `${base64}`;
     } catch (e) {
-      if (attempt === retries) throw e;
+      lastError = e;
+      if (attempt === retries) break;
       await new Promise((resolve) => setTimeout(resolve, delay * attempt));
     }
   }
-  throw new Error("urlToBase64 failed");
+  const normalized = u.error(lastError);
+  throw u.createError(`下载生成结果失败: ${normalized.message}`, lastError);
 }
 class AiText {
   private AiType: AiType | `${string}:${string}`;
@@ -255,6 +259,7 @@ class AiImage {
       const fn = await getVendorTemplateFn("imageRequest", mn);
       await referenceList2imageBase642(mn.split(/:(.+)/)[0], input);
       this.result = await fn(input);
+      if (!this.result) throw new Error("图像模型未返回有效结果");
       if (this.result.startsWith("http")) this.result = await urlToBase64(this.result);
       return this;
     };
@@ -297,24 +302,21 @@ class AiVideo {
   }
   async run(input: VideoConfig, taskRecord?: TaskRecord) {
     const modelName = await resolveModelName(this.key);
-    try {
-      const exec = async (mn: `${string}:${string}`) => {
-        const fn = await getVendorTemplateFn("videoRequest", mn);
-        await referenceList2imageBase642(mn.split(/:(.+)/)[0], input);
+    const exec = async (mn: `${string}:${string}`) => {
+      const fn = await getVendorTemplateFn("videoRequest", mn);
+      await referenceList2imageBase642(mn.split(/:(.+)/)[0], input);
 
-        this.result = await fn(input);
+      this.result = await fn(input);
+      if (!this.result) throw new Error("视频模型未返回有效结果");
 
-        if (this.result.startsWith("http")) this.result = await urlToBase64(this.result);
-      };
-      if (taskRecord) {
-        await withTaskRecord(this.key, taskRecord.taskClass, taskRecord.describe, taskRecord.relatedObjects, taskRecord.projectId, exec);
-        return this;
-      }
-      await exec(modelName);
+      if (this.result.startsWith("http")) this.result = await urlToBase64(this.result);
+    };
+    if (taskRecord) {
+      await withTaskRecord(this.key, taskRecord.taskClass, taskRecord.describe, taskRecord.relatedObjects, taskRecord.projectId, exec);
       return this;
-    } catch (e) {
-      throw e;
     }
+    await exec(modelName);
+    return this;
   }
   async save(path: string) {
     await u.oss.writeFile(path, this.result);
@@ -330,14 +332,13 @@ class AiAudio {
   async run(input: VideoConfig, taskRecord?: TaskRecord) {
     const modelName = await resolveModelName(this.key);
     const exec = async (mn: `${string}:${string}`) => {
-      try {
-        const fn = await getVendorTemplateFn("ttsRequest", mn);
-        await referenceList2imageBase642(mn.split(/:(.+)/)[0], input);
-        this.result = await fn(input);
+      const fn = await getVendorTemplateFn("ttsRequest", mn);
+      await referenceList2imageBase642(mn.split(/:(.+)/)[0], input);
+      this.result = await fn(input);
+      if (!this.result) throw new Error("语音模型未返回有效结果");
 
-        if (this.result.startsWith("http")) this.result = await urlToBase64(this.result);
-        return this;
-      } catch (e) {}
+      if (this.result.startsWith("http")) this.result = await urlToBase64(this.result);
+      return this;
     };
     if (taskRecord) {
       return withTaskRecord(this.key, taskRecord.taskClass, taskRecord.describe, taskRecord.relatedObjects, taskRecord.projectId, exec);

@@ -154,8 +154,10 @@ export default router.post("/", validateFields(requestSchema), async (req, res) 
     }),
   );
 
-  // 后台执行，不等待结果
-  Promise.all(tasks).catch(() => {});
+  // 后台执行，不等待结果；单个任务内部已将失败写入 o_image，这里只记录聚合异常
+  Promise.all(tasks).catch((e: any) => {
+    console.error("[batchGenerateImageAssets] 批量任务聚合异常:", u.error(e));
+  });
 
   return res.status(200).send(success({ total: items.length }));
 });

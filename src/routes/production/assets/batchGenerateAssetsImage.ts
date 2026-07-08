@@ -71,18 +71,26 @@ export default router.post(
       const imageId = imageIdMap[item.id!];
       const typeConfig = promptRecord[item.type!] || promptRecord["role"];
 
-      const { text } = await u.Ai.Text("universalAi").invoke({
-        system: `${typeConfig.prompt}`,
-        messages: [
-          {
-            role: "user",
-            content: `
+      let text: string;
+      try {
+        const invokeResult = await u.Ai.Text("universalAi").invoke({
+          system: `${typeConfig.prompt}`,
+          messages: [
+            {
+              role: "user",
+              content: `
             父级资产描述: ${item.parentDescribe || "无详细描述"}
             当前资产描述: ${item.describe || "无详细描述"}`,
-          },
-        ],
-      });
-        await u.db("o_assets").where("id", item.id).update({ prompt: text });
+            },
+          ],
+        });
+        text = invokeResult.text;
+      } catch (e: any) {
+        const errMsg = `提示词生成失败: ${u.error(e).message}`;
+        await u.db("o_image").where({ id: imageId }).update({ state: "生成失败", errorReason: errMsg });
+        return { id: item.id!, state: "生成失败", src: "" };
+      }
+      await u.db("o_assets").where("id", item.id).update({ prompt: text });
 
       const imageBase64 = imageUrlRecord[item.assetsId!] ? await u.oss.getImageBase64(imageUrlRecord[item.assetsId!]) : null;
       try {

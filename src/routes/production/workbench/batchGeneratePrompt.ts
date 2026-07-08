@@ -28,11 +28,22 @@ export default router.post(
     concurrentCount: z.number().optional(), //并发数
   }),
   async (req, res) => {
-    const { trackData, projectId, mode, model, concurrentCount = 5 } = req.body;
+    const { trackData, projectId, mode, model: rawModel, concurrentCount = 5 } = req.body;
     try {
       // 预加载公共数据
-      const [id, modelData] = model.split(/:(.+)/);
       const projectData = await u.db("o_project").select("*").where({ id: projectId }).first();
+
+      // 校验并解析 model，格式必须是 vendorId:modelName
+      let modelName: string = rawModel;
+      let [id, modelData] = modelName.split(/:(.+)/);
+      if (!id || !modelData) {
+        // 前端未传有效模型时，兜底使用项目配置的视频模型
+        modelName = projectData?.videoModel ?? "";
+        [id, modelData] = modelName.split(/:(.+)/);
+      }
+      if (!id || !modelData) {
+        return res.status(400).send(error("model 参数格式错误，应为 vendorId:modelName，请在项目中选择视频模型"));
+      }
       const videoPrompt = await u.db("o_prompt").where("type", "videoPromptGeneration").first();
       let videoPromptGeneration = "" as string | undefined;
 

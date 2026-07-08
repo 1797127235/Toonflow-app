@@ -2,7 +2,7 @@ import express from "express";
 import u from "@/utils";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
-import { success } from "@/lib/responseFormat";
+import { error, success } from "@/lib/responseFormat";
 import { validateFields } from "@/middleware/middleware";
 import { ReferenceList } from "@/utils/ai";
 const router = express.Router();
@@ -44,12 +44,16 @@ export default router.post(
   async (req, res) => {
     const { scriptId, projectId, trackData, model, resolution, audio, mode } = req.body;
 
-    let modeData = [];
+    let modeData: any = [];
     if (Array.isArray(mode)) {
+      modeData = mode;
     } else if (typeof mode === "string" && mode.startsWith('["') && mode.endsWith('"]')) {
       try {
         modeData = JSON.parse(mode);
-      } catch (e) {}
+      } catch (e: any) {
+        console.warn("[batchGenerateVideo] mode 参数 JSON 解析失败:", mode, u.error(e).message);
+        return res.status(400).send(error(`mode 参数格式错误: ${mode}`));
+      }
     }
 
     // 获取生成视频比例

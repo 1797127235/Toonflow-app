@@ -22,7 +22,22 @@ export default router.post(
     mode: z.string(),
   }),
   async (req, res) => {
-    const { trackId, projectId, info, model, mode } = req.body;
+    const { trackId, projectId, info, model: rawModel, mode } = req.body;
+
+    const projectData = await u.db("o_project").select("*").where({ id: projectId }).first();
+
+    // 校验并解析 model，格式必须是 vendorId:modelName
+    let modelName: string = rawModel;
+    let [id, modelData] = modelName.split(/:(.+)/);
+    if (!id || !modelData) {
+      // 前端未传有效模型时，兜底使用项目配置的视频模型
+      modelName = projectData?.videoModel ?? "";
+      [id, modelData] = modelName.split(/:(.+)/);
+    }
+    if (!id || !modelData) {
+      return res.status(400).send(error("model 参数格式错误，应为 vendorId:modelName，请在项目中选择视频模型"));
+    }
+
     await u.db("o_videoTrack").where({ id: trackId }).update({
       state: "生成中",
     });
@@ -96,8 +111,6 @@ export default router.post(
       assetsAudioRecord[i.assetsRoleId!] = i.id!;
     });
 
-    const [id, modelData] = model.split(/:(.+)/);
-    const projectData = await u.db("o_project").select("*").where({ id: projectId }).first();
     const videoPrompt = await u.db("o_prompt").where("type", "videoPromptGeneration").first();
     let videoPromptGeneration = "" as string | undefined;
 

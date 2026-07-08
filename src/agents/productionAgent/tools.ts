@@ -191,19 +191,27 @@ export default (toolCpnfig: ToolConfig) => {
       ),
       execute: async ({ ids }) => {
         const thinking = msg.thinking("正在生成衍生资产...");
-        new Promise((resolve) => socket.emit("generateDeriveAsset", { ids }, (res: any) => resolve(res)))
-          .then((res) => {
-            thinking.appendText(`已生成衍生资产，ID: ${JSON.stringify(res, null, 2)}\n`);
-            thinking.updateTitle("衍生资产开始完成");
-            thinking.complete();
-          })
-          .catch((e) => {
-            thinking.appendText("衍生资产生成失败:\n" + u.error(e).message);
-            thinking.updateTitle("衍生资产生成失败");
-            thinking.complete();
-          });
-
-        return "开始生成衍生资产";
+        try {
+          const res = await socketQueue(
+            () =>
+              new Promise((resolve, reject) =>
+                socket.emit("generateDeriveAsset", { ids }, (res: any) => {
+                  if (res?.error) return reject(new Error(res.error));
+                  resolve(res);
+                }),
+              ),
+          );
+          thinking.appendText(`已生成衍生资产，ID: ${JSON.stringify(res, null, 2)}\n`);
+          thinking.updateTitle("衍生资产开始完成");
+          thinking.complete();
+          return "衍生资产生成已启动";
+        } catch (e) {
+          const errMsg = "衍生资产生成失败:\n" + u.error(e).message;
+          thinking.appendText(errMsg);
+          thinking.updateTitle("衍生资产生成失败");
+          thinking.complete();
+          throw new Error(errMsg, { cause: e });
+        }
       },
     }),
     generate_storyboard: tool({
@@ -217,27 +225,27 @@ export default (toolCpnfig: ToolConfig) => {
       ),
       execute: async ({ ids }) => {
         const thinking = msg.thinking("正在生成分镜...");
-        socketQueue(
-          () =>
-            new Promise((resolve, reject) =>
-              socket.emit("generateStoryboard", { ids }, (res: any) => {
-                if (res?.error) return reject(new Error(res.error));
-                resolve(res);
-              }),
-            ),
-        )
-          .then((res) => {
-            thinking.appendText("生成的分镜数据:\n" + JSON.stringify(res, null, 2));
-            thinking.updateTitle("分镜生成完成");
-            thinking.complete();
-          })
-          .catch((e) => {
-            thinking.appendText("分镜生成失败:\n" + u.error(e).message);
-            thinking.updateTitle("分镜生成失败");
-            thinking.complete();
-          });
-
-        return "开始生成分镜";
+        try {
+          const res = await socketQueue(
+            () =>
+              new Promise((resolve, reject) =>
+                socket.emit("generateStoryboard", { ids }, (res: any) => {
+                  if (res?.error) return reject(new Error(res.error));
+                  resolve(res);
+                }),
+              ),
+          );
+          thinking.appendText("生成的分镜数据:\n" + JSON.stringify(res, null, 2));
+          thinking.updateTitle("分镜生成完成");
+          thinking.complete();
+          return "分镜生成已启动";
+        } catch (e) {
+          const errMsg = "分镜生成失败:\n" + u.error(e).message;
+          thinking.appendText(errMsg);
+          thinking.updateTitle("分镜生成失败");
+          thinking.complete();
+          throw new Error(errMsg, { cause: e });
+        }
       },
     }),
     add_flowData_storyboard: tool({
@@ -271,26 +279,27 @@ export default (toolCpnfig: ToolConfig) => {
           associateAssetsIds: raw.associateAssetsIds ?? [],
           shouldGenerateImage: raw.shouldGenerateImage,
         };
-        socketQueue(
-          () =>
-            new Promise((resolve, reject) =>
-              socket.emit("addStoryboard", { ...data }, (res: any) => {
-                if (res?.error) return reject(new Error(res.error));
-                resolve(res);
-              }),
-            ),
-        )
-          .then((res) => {
-            thinking.appendText("新增的分镜数据:\n" + JSON.stringify(data, null, 2));
-            thinking.updateTitle("新增分镜成功");
-            thinking.complete();
-          })
-          .catch((e) => {
-            thinking.appendText("新增的分镜数据:\n" + JSON.stringify(data, null, 2));
-            thinking.updateTitle("新增分镜失败");
-            thinking.complete();
-          });
-        return true;
+        try {
+          await socketQueue(
+            () =>
+              new Promise((resolve, reject) =>
+                socket.emit("addStoryboard", { ...data }, (res: any) => {
+                  if (res?.error) return reject(new Error(res.error));
+                  resolve(res);
+                }),
+              ),
+          );
+          thinking.appendText("新增的分镜数据:\n" + JSON.stringify(data, null, 2));
+          thinking.updateTitle("新增分镜成功");
+          thinking.complete();
+          return true;
+        } catch (e) {
+          const errMsg = "新增分镜失败:\n" + u.error(e).message;
+          thinking.appendText(errMsg);
+          thinking.updateTitle("新增分镜失败");
+          thinking.complete();
+          throw new Error(errMsg, { cause: e });
+        }
       },
     }),
   };
