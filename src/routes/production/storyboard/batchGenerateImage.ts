@@ -65,9 +65,12 @@ export default router.post(
         .update({ state: "生成中" });
     }
     // 禁用生成且不会实际生成的分镜标记为「未生成」
-    const notGenerateIds = storyboardData
-      .filter((item) => !generateIds.has(item.id!) && item.shouldGenerateImage === 0)
-      .map((item) => item.id!);
+    // 注意：compulsory=true 时 shouldGenerateImage=0 的分镜是被有意纳入的，不应被标记为未生成
+    const notGenerateIds = !compulsory
+      ? storyboardData
+          .filter((item) => !generateIds.has(item.id!) && item.shouldGenerateImage === 0)
+          .map((item) => item.id!)
+      : [];
     if (notGenerateIds.length > 0) {
       await u.db("o_storyboard")
         .whereIn("id", notGenerateIds)
