@@ -44,10 +44,11 @@ export default router.post(
     console.log(`[batchGenerateImage] 请求参数: storyboardIds=${storyboardIds.length}, compulsory=${compulsory}, regenerate=${regenerate}, concurrentCount=${concurrentCount}`);
 
     // 先计算实际要生成的分镜，避免把已生成的分镜状态刷成「生成中」
+    // 跳过：状态为「已完成」且已有图片；生成失败/未生成的都允许重新生成
     let generateList = storyboardData;
     if (!regenerate) {
       generateList = generateList.filter(
-        (item) => !(item.filePath && String(item.filePath).trim() !== ""),
+        (item) => !(item.state === "已完成" && item.filePath && String(item.filePath).trim() !== ""),
       );
     }
     if (!compulsory) {
