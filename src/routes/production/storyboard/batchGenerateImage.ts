@@ -23,7 +23,7 @@ export default router.post(
       storyboardIds,
       projectId,
       scriptId,
-      concurrentCount = 5,
+      concurrentCount = 1,
       compulsory = false,
     }: {
       storyboardIds: number[];
@@ -117,25 +117,50 @@ export default router.post(
           state: "已完成",
         });
       } catch (e) {
-        u.db("o_storyboard")
-          .where("id", item.id)
-          .update({
-            filePath: "",
-            reason: u.error(e).message,
-            state: "生成失败",
-          });
+        const normalized = u.error(e);
+        console.error(`[batchGenerateImage] 分镜 ${item.id} 生成失败:`, normalized, e);
+        try {
+          await u.db("o_storyboard")
+            .where("id", item.id)
+            .update({
+              reason: normalized.message,
+              state: "生成失败",
+            });
+        } catch (dbErr) {
+          console.error(`[batchGenerateImage] 分镜 ${item.id} 状态写入数据库失败:`, dbErr);
+        }
       }
     };
-    // 按 concurrentCount 控制并发数，分批执行；跳过 shouldGenerateImage === 0 的分镜
+    // 串行 + 自适应延迟生成，避免一次性把全部请求塞给供应商
+    // 默认跳过：已禁用生成 或 已经有图片的分镜；compulsory=true 时强制全部重绘
     let generateList = [];
     if (compulsory) {
       generateList = storyboardData;
     } else {
-      generateList = storyboardData.filter((item) => item.shouldGenerateImage !== 0);
+      generateList = storyboardData.filter(
+        (item) => item.shouldGenerateImage !== 0 && !(item.filePath && String(item.filePath).trim() !== ""),
+      );
     }
+
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
     for (let i = 0; i < generateList.length; i += concurrentCount) {
       const batch = generateList.slice(i, i + concurrentCount);
-      await Promise.all(batch.map(generateTask));
+      const results = await Promise.allSettled(batch.map(generateTask));
+
+      // 根据本批次结果决定下一批的延迟
+      const hasQueueFull = results.some((r) => {
+        if (r.status === "fulfilled") return false;
+        const msg = String(r.reason?.message ?? r.reason ?? "").toLowerCase();
+        return msg.includes("queue is full") || msg.includes("rate limit") || msg.includes("retry later");
+      });
+
+      const isLastBatch = i + concurrentCount >= generateList.length;
+      if (!isLastBatch) {
+        const delay = hasQueueFull ? 5000 : 1500;
+        console.log(`[batchGenerateImage] 批次完成，${hasQueueFull ? "检测到队列满" : "正常"}，等待 ${delay}ms 后继续`);
+        await sleep(delay);
+      }
     }
   },
 );

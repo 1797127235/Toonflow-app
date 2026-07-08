@@ -55,3 +55,23 @@ database.d.ts
 data/oss/*
 data/test.sqlite
 version.txt
+.gstack/
+
+# Electron / runtime data
+.userData/
+Cache/
+Code Cache/
+DIPS
+Dictionaries/
+Local State
+Local Storage/
+Network/
+Preferences
+Session Storage/
+Shared Dictionary/
+SharedStorage
+SharedStorage-wal
+en-US-10-1.bdic
+
+# build output
+data/serve/app.js

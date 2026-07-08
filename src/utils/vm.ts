@@ -40,6 +40,10 @@ export default function runCode(code: string, vendor?: Record<string, any>) {
     logger,
     jsonwebtoken,
     crypto,
+    setTimeout,
+    clearTimeout,
+    setInterval,
+    clearInterval,
   };
   if (vendor !== undefined) {
     sandbox.vendor = vendor;
@@ -80,11 +84,22 @@ export async function zipImageResolution(completeBase64: string, width: number, 
 }
 
 //url转Base64
-export async function urlToBase64(url: string): Promise<string> {
-  const res = await axios.get(url, { responseType: "arraybuffer" });
-  const mime = res.headers["content-type"] || "image/jpeg";
-  const b64 = Buffer.from(res.data).toString("base64");
-  return `data:${mime};base64,${b64}`;
+export async function urlToBase64(url: string, retries = 2, delay = 800): Promise<string> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await axios.get(url, { responseType: "arraybuffer" });
+      const mime = res.headers["content-type"] || "image/jpeg";
+      const b64 = Buffer.from(res.data).toString("base64");
+      return `data:${mime};base64,${b64}`;
+    } catch (e) {
+      lastError = e;
+      if (attempt === retries) break;
+      await new Promise((resolve) => setTimeout(resolve, delay * attempt));
+    }
+  }
+  const normalized = u.error(lastError);
+  throw u.createError(`下载生成结果失败: ${normalized.message}`, lastError);
 }
 
 export async function pollTask(
@@ -97,12 +112,19 @@ export async function pollTask(
     try {
       const result = await fn();
       if (result.completed) return result;
-      if (result?.error) return result;
+      if (result?.error) {
+        logger(`[pollTask] 任务失败: ${result.error}`);
+        return result;
+      }
+      logger(`[pollTask] 任务未完成，继续轮询...`);
     } catch (e: any) {
-      return { completed: false, error: u.error(e).message || "poll error" };
+      const errMsg = u.error(e).message || "poll error";
+      logger(`[pollTask] 轮询异常: ${errMsg}`);
+      return { completed: false, error: errMsg };
     }
     await new Promise((res) => setTimeout(res, interval));
   }
+  logger(`[pollTask] 轮询超时 (${timeout}ms)`);
   return { completed: false, error: "timeout" };
 }
 

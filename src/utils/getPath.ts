@@ -2,14 +2,8 @@ import path from "path";
 import isPathInside from "is-path-inside";
 
 export default (fileName?: string[] | string) => {
-  let basePath: string;
-  if (typeof process.versions?.electron !== "undefined") {
-    const { app } = require("electron");
-    const userDataDir: string = app.getPath("userData");
-    basePath = path.join(userDataDir, "data");
-  } else {
-    basePath = path.join(process.cwd(), "data");
-  }
+  // 统一使用项目目录下的 data 文件夹作为业务数据目录
+  const basePath = path.join(process.cwd(), "data");
   if (fileName) {
     let dbPath: string;
     if (Array.isArray(fileName)) {

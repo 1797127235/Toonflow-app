@@ -3,6 +3,11 @@ import path from "path";
 import fs from "fs";
 import Module from "module";
 
+// 将 Electron 数据目录重定向到当前项目目录（而非默认 userData）
+// userData 用于 Electron 缓存等运行时文件，项目业务数据统一放在 ./data
+const projectUserDataDir = path.join(process.cwd(), ".userData");
+app.setPath("userData", projectUserDataDir);
+
 // 加速 Electron 启动：跳过 GPU 信息收集，减少初始化耗时
 app.commandLine.appendSwitch("disable-gpu-shader-disk-cache");
 app.commandLine.appendSwitch("disable-features", "CalculateNativeWinOcclusion");
