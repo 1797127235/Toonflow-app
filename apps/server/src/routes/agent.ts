@@ -17,7 +17,8 @@ const inputSchema = z.object({
   sessionFile: z.string().regex(/^[\w-]+\.jsonl$/).optional(),
   resendFrom: z.string().min(1).max(128).optional(),
   canvas: z.strictObject({
-    id: z.string().min(1).max(256),
+    // ACT: 无画布时前端仍提供上下文以便 Agent 新建画布，id 允许为空。
+    id: z.string().max(256),
     tools: z.array(z.strictObject({
       nodeId: z.string().min(1).max(256),
       name: z.string().max(101).regex(/^node:[a-z][a-zA-Z0-9]*$/),
