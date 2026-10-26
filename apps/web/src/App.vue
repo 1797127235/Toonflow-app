@@ -28,7 +28,6 @@
               <dd><strong>{{ installFailure.targetVersion ? `v${installFailure.targetVersion}` : "未知版本" }}</strong><code>{{ installFailure.targetHash || "构建标识未知" }}</code></dd>
             </div>
           </dl>
-          <p class="failureHint">请前往 GitHub 最新发布页，选择适合当前系统的完整安装包，关闭客户端后重新安装。</p>
         </div>
         <template #footer>
           <el-button @click="installFailureVisible = false">稍后</el-button>
@@ -213,8 +212,6 @@ html {
       }
     }
   }
-
-  .failureHint { margin: 0; line-height: 1.7; }
 }
 
 // ACT: RTL 只改变界面阅读方向，画布坐标、代码和技术值保留从左到右。

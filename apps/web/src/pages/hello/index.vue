@@ -67,10 +67,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { IconArrowLeft, IconQrcode, IconDeviceDesktop } from "@tabler/icons-vue";
 import tfRouter from "@toonflow/providers/language/tfRouter";
-import tfRouterSource from "@toonflow/providers/media/tfRouter?raw";
-import { invalidateNodeModels } from "@toonflow/nodes-scaffold/nodeAi";
 import { customProviders, saveSettings } from "@/stores/settings";
-import type { MediaProvider } from "@/components/settings/panels/mediaModel/types";
 import { useHelloStore } from "@/stores/hello";
 import anonymousData from "@/lib/anonymousData";
 import logoSvg from "@toonflow/assets/logo.svg?raw";
@@ -148,22 +145,11 @@ async function configureProviders() {
   const request = new AbortController();
   loginRequest = request;
   try {
-    const mediaResponse = await axios.get<{ code: number; data: MediaProvider[] }>("/api/providers/media/list", { signal: request.signal });
-    if (mediaResponse.data.code !== 200 || !Array.isArray(mediaResponse.data.data)) throw new Error("读取媒体供应商失败，请重试配置");
-    request.signal.throwIfAborted();
-    if (!mediaResponse.data.data.some((provider) => provider.id === tfRouter.id)) {
-      await axios.post("/api/providers/media/add", { source: tfRouterSource }, { signal: request.signal });
-    }
-    request.signal.throwIfAborted();
-    // ACT: 媒体文件已安装但保存失败时保留文件，重试通过列表复用，不覆盖用户编辑的模型。
+    // 仅写入文本模型供应商；媒体供应商只保留内置的 c2a，由用户在「媒体模型」中自行填 Key。
     await saveSettings(settings => {
       request.signal.throwIfAborted();
       const providers = settings.customProviders ?? [];
       if (!Array.isArray(providers)) throw new Error("语言模型配置格式无效");
-      const configs = settings.mediaProviderConfigs as Record<string, Record<string, unknown>> | undefined;
-      if (configs !== undefined && (!configs || typeof configs !== "object" || Array.isArray(configs))) throw new Error("媒体供应商配置格式无效");
-      const current = configs?.[tfRouter.id];
-      if (current !== undefined && (!current || typeof current !== "object" || Array.isArray(current))) throw new Error("当前供应商配置格式无效");
       const index = providers.findIndex(provider => typeof provider?.id === "string" && provider.id.toLowerCase() === tfRouter.id.toLowerCase());
       const previous = providers[index];
       const provider = {
@@ -178,10 +164,8 @@ async function configureProviders() {
       };
       return {
         customProviders: index < 0 ? [...providers, provider] : providers.map((item, position) => position === index ? provider : item),
-        mediaProviderConfigs: { ...configs, [tfRouter.id]: { ...current, apiKey } },
       };
     });
-    invalidateNodeModels("media");
     if (request.signal.aborted) return;
     await hello.complete();
     anonymousData.track("onboarding.complete");
