@@ -14,7 +14,6 @@ import { registerDownloads } from "@/lib/saveFile";
 import { isMobile, isDesktop, isRemoteConnection } from "@/lib/platform";
 import "@/lib/mobile";
 import { getMissingBrowserFeatures } from "@/lib/browserCapabilities";
-import { registerAnonymousData } from "@/lib/anonymousData";
 import { loadSettings, settingsStorage } from "@/stores/settings";
 import { checkDesktopUpdate } from "@/stores/desktopUpdate";
 import { registerLanguage } from "@/lib/i18n";
@@ -46,7 +45,6 @@ async function notifyDesktopReady(failed = false) {
   app.use(createPinia().use(createPersistedState({ storage: settingsStorage })));
   app.use(router);
   await router.isReady();
-  app.onUnmount(registerAnonymousData());
   app.mount("#app");
   isMounted = true;
   app.onUnmount(registerDownloads());
