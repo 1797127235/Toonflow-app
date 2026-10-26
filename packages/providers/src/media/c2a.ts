@@ -1,4 +1,4 @@
-const version = "2.2.0";
+const version = "2.3.0";
 
 const rules = [
   {
@@ -30,6 +30,7 @@ const rules = [
  * 六条上游协议按模型 ID 分流：
  *   1. Grok 图片      POST /v1/images/generations、/v1/images/edits(multipart)
  *   1b.GPT Image      POST /v1/images/generations、/v1/images/edits(multipart)，OpenAI 原生参数
+ *   1c.MidJourney     POST /v1/images/generations（仅 JSON，n=1，固定返回 4 张）
  *   2. Grok 视频      POST /v1/videos/generations        → GET /v1/videos/generations/{id}
  *   3. MiniMax-H3     POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   4. MiniMax-H3-Max POST /v1/video/generations         → GET /v1/video/generations/{id}
@@ -576,6 +577,38 @@ async function runGptImage(context: ProviderContext, request: ImageRequest): Pro
   return editImage(context, baseUrl, fields, shrunk, mask, signal);
 }
 
+// ─────────────────────────────── 1c. MidJourney ───────────────────────────────
+// ACT: MJ 只支持 JSON 同步调用，n 必须为 1，单次固定返回 4 张并按 4 张计费。
+// size 会被上游忽略（实测 2K/4K 仍出 1024×1024），比例只能通过 prompt 的 --ar 后缀表达。
+
+const MJ_RATIOS = new Set(["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"]);
+
+function mjPrompt(request: ImageRequest): string {
+  const ratio = (request.ratio ?? "").trim();
+  // 已经手写 --ar 的不重复追加。
+  if (!MJ_RATIOS.has(ratio) || /--ar\s/i.test(request.prompt)) return request.prompt;
+  return `${request.prompt} --ar ${ratio}`;
+}
+
+async function runMjImage(context: ProviderContext, request: ImageRequest): Promise<MediaAsset[]> {
+  context.signal?.throwIfAborted();
+  if (!apiKeyOf(context)) throw new Error("请填写 C2A API Key");
+  // 实测单次 40~90 秒，留足余量。
+  const signal = AbortSignal.any([AbortSignal.timeout(10 * 60_000), ...(context.signal ? [context.signal] : [])]);
+  const baseUrl = gateway(context);
+  const body: Record<string, unknown> = { model: request.model, prompt: mjPrompt(request), n: 1 };
+  // 图生图也走 /images/generations，参考图按 images[].image_url 提交（multipart 会被拒）。
+  const images = request.images ?? [];
+  if (images.length) {
+    const shrink = (input: MediaInput) => fitImage(context, input, { capBytes: 512 * 1024 });
+    const shrunk = await Promise.all(images.map(shrink));
+    body.images = shrunk.map(input => ({ image_url: dataUri(input) }));
+  }
+  const assets = parseImages(context, record(await post(context, `${baseUrl}/images/generations`, body, signal)));
+  // 上游一次固定出 4 张并按 4 张计费，这里按需求只交付第一张。
+  return assets.slice(0, 1);
+}
+
 // ─────────────────────────────── 2. Grok 视频 ───────────────────────────────
 
 const GROK_BASE64_BUDGET = 440 * 1024;
@@ -929,6 +962,10 @@ type C2aRate = {
   fallback?: number;
   /** 超出 5 张参考图的附加费，USD/张。 */
   extraImageUsd?: number;
+  /** 上游单次固定产出并计费的张数，缺省按请求张数算。 */
+  fixedCount?: number;
+  /** 追加到报价提示里的说明。 */
+  note?: string;
   unit: "秒" | "张";
 };
 
@@ -940,6 +977,10 @@ const C2A_RATES: Record<string, C2aRate> = {
   "gpt-image-2.5": { rates: { "1k": 0.12, "2k": 0.12, "4k": 0.12 }, fallback: 0.12, unit: "张" },
   "gpt-image-2.5-flare": { rates: { "1k": 0.12, "2k": 0.12 }, fallback: 0.12, unit: "张" },
   "gpt-image-2.5-sunburst": { rates: { "1k": 0.12, "2k": 0.12, "4k": 0.12 }, fallback: 0.12, unit: "张" },
+  // MJ 单次固定出 4 张、每张单独计费，报价按 4 张算（实际只交付第一张）。
+  "mj-v7": { rates: { "1k": 0.408, "2k": 0.4896, "4k": 0.5712 }, fallback: 0.408, fixedCount: 4, note: "MidJourney 单次固定出 4 张并按 4 张计费，此处只返回第一张", unit: "张" },
+  "mj-v8.1": { rates: { "1k": 0.408, "2k": 0.4896, "4k": 0.5712 }, fallback: 0.408, fixedCount: 4, note: "MidJourney 单次固定出 4 张并按 4 张计费，此处只返回第一张", unit: "张" },
+  "mj-v8.2": { rates: { "1k": 0.408, "2k": 0.4896, "4k": 0.5712 }, fallback: 0.408, fixedCount: 4, note: "MidJourney 单次固定出 4 张并按 4 张计费，此处只返回第一张", unit: "张" },
   "grok-imagine-video-1.5": { rates: { "480p": 0.15, "720p": 0.198, "1080p": 0.3 }, unit: "秒" },
   "grok-imagine-video-1.5-preview": { rates: { "480p": 0.15, "720p": 0.198, "1080p": 0.3 }, unit: "秒" },
   "minimax-h3": { rates: { "768p": 0.18, "2k": 0.18 }, fallback: 0.204, extraImageUsd: 0.15, unit: "秒" },
@@ -960,7 +1001,9 @@ const C2A_RATES: Record<string, C2aRate> = {
 function quoteMedia(model: string, tier: unknown, quantity: number, imageCount: number): ProviderPrice | null {
   const table = C2A_RATES[model.toLowerCase()];
   if (!table) return null;
-  if (!Number.isFinite(quantity) || quantity <= 0) return null;
+  // 上游固定产出张数优先于请求张数（MJ 一次出 4 张）。
+  const count = table.fixedCount ?? quantity;
+  if (!Number.isFinite(count) || count <= 0) return null;
   const key = typeof tier === "string" ? tier.trim().toLowerCase() : "";
   const matched = key !== "" && table.rates[key] !== undefined;
   const rate = matched ? table.rates[key] : table.fallback;
@@ -968,10 +1011,10 @@ function quoteMedia(model: string, tier: unknown, quantity: number, imageCount: 
   if (rate === undefined) return null;
   const parts = [
     matched
-      ? `${key} 档 ${rate} CNY/${table.unit} × ${quantity} ${table.unit}`
+      ? `${key} 档 ${rate} CNY/${table.unit} × ${count} ${table.unit}`
       : key
-        ? `未匹配到 ${key} 档位，按兜底价 ${rate} CNY/${table.unit} × ${quantity} ${table.unit}`
-        : `未指定档位，按兜底价 ${rate} CNY/${table.unit} × ${quantity} ${table.unit}`,
+        ? `未匹配到 ${key} 档位，按兜底价 ${rate} CNY/${table.unit} × ${count} ${table.unit}`
+        : `未指定档位，按兜底价 ${rate} CNY/${table.unit} × ${count} ${table.unit}`,
   ];
   if (table.extraImageUsd !== undefined)
     parts.push(
@@ -979,8 +1022,9 @@ function quoteMedia(model: string, tier: unknown, quantity: number, imageCount: 
         ? `另有参考图附加费：超出 5 张的 ${imageCount - 5} 张 × $${table.extraImageUsd.toFixed(5)} USD`
         : "前 5 张参考图免费",
     );
+  if (table.note) parts.push(table.note);
   parts.push("以实际扣费为准");
-  return { price: `¥${(rate * quantity).toFixed(2)}`, tips: parts.join("；") };
+  return { price: `¥${(rate * count).toFixed(2)}`, tips: parts.join("；") };
 }
 
 // ─────────────────────────────── 导出 ───────────────────────────────
@@ -996,6 +1040,7 @@ export default {
 - 网关地址默认 \`https://www.codex2api.com/v1\`，填不填末尾的 \`/v1\` 都能识别。
 - **Grok 图片**：\`/images/generations\`；带参考图走 \`/images/edits\`（multipart，单图 \`image\`、多图 \`image[]\`）。
 - **GPT Image**：同样 \`/images/generations\` 与 \`/images/edits\`，但走 OpenAI 原生参数（显式 \`size\` 像素与 \`quality\`）；1K/2K/4K 会换算成 WxH，\`gpt-image-2.5-flare\` 实测 4K 被上游拒绝，只开放到 2K。
+- **MidJourney**：只支持 JSON 同步调用（multipart 会被拒），\`n\` 必须为 1，参考图按 \`images[].image_url\` 提交；\`size\` 会被上游忽略，比例只能写进 prompt 的 \`--ar\`，所以只开放 1K 档。单次固定返回 4 张并按 4 张计费，此处只交付第一张。
 - **Grok 视频**：\`/videos/generations\` 建任务并轮询；参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
 - **MiniMax-H3**：\`/videos\` 建任务并轮询，只支持 16:9 / 9:16 与单张参考图。
 - **MiniMax-H3-Max**：\`/video/generations\`，参考素材按 \`content[]\` + role 提交，支持图 / 视频 / 音频混合。
@@ -1052,6 +1097,30 @@ export default {
       type: "image",
       mode: ["text", "singleImage", "multiReference"],
       imageSizes: ["1K", "2K", "4K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "MJ-v7",
+      label: "MJ v7",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "MJ-v8.1",
+      label: "MJ v8.1",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "MJ-v8.2",
+      label: "MJ v8.2",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K"],
       imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
     },
     {
@@ -1115,8 +1184,11 @@ export default {
     return null;
   },
   async generateImage(request: ImageRequest): Promise<MediaAsset[]> {
+    const model = String(request.model);
     // GPT Image 走 OpenAI 原生参数（显式 size / quality），与 Grok 的 resolution 写法不同。
-    if (/^gpt-image/i.test(String(request.model))) return runGptImage(this, request);
+    if (/^gpt-image/i.test(model)) return runGptImage(this, request);
+    // MJ 只认 JSON 同步调用，比例要写进 prompt 的 --ar。
+    if (/^mj-/i.test(model)) return runMjImage(this, request);
     return runImage(this, request);
   },
   async generateVideo(request: VideoRequest): Promise<MediaAsset[]> {
