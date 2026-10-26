@@ -1,4 +1,4 @@
-const version = "2.1.0";
+const version = "2.2.0";
 
 const rules = [
   {
@@ -27,8 +27,9 @@ const rules = [
 /**
  * C2A 中转（Codex2API）全协议适配。
  *
- * 五条上游协议按模型 ID 分流：
+ * 六条上游协议按模型 ID 分流：
  *   1. Grok 图片      POST /v1/images/generations、/v1/images/edits(multipart)
+ *   1b.GPT Image      POST /v1/images/generations、/v1/images/edits(multipart)，OpenAI 原生参数
  *   2. Grok 视频      POST /v1/videos/generations        → GET /v1/videos/generations/{id}
  *   3. MiniMax-H3     POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   4. MiniMax-H3-Max POST /v1/video/generations         → GET /v1/video/generations/{id}
@@ -448,7 +449,9 @@ function parseImages(context: ProviderContext, payload: Record<string, unknown>)
     const item = record(raw);
     if (item.respect_moderation === false) throw new Error("图片被上游内容策略拦截");
     if (typeof item.b64_json === "string" && item.b64_json) {
-      assets.push({ type: "base64", data: item.b64_json, mimeType: "image/jpeg", mediaType: "image" });
+      // 上游可能返回 PNG 或 JPEG，按 base64 头判断，避免下游存错扩展名。
+      const mimeType = item.b64_json.startsWith("iVBORw0KGgo") ? "image/png" : "image/jpeg";
+      assets.push({ type: "base64", data: item.b64_json, mimeType, mediaType: "image" });
     } else if (typeof item.url === "string" && item.url) {
       assets.push({ type: "url", url: item.url, mediaType: "image" });
     }
@@ -458,8 +461,7 @@ function parseImages(context: ProviderContext, payload: Record<string, unknown>)
 }
 
 /** 图生图走 multipart；部分网关只认旧的 JSON 图片对象写法，4xx 时回退一次。 */
-async function editImage(context: ProviderContext, baseUrl: string, request: ImageRequest, images: MediaInput[], mask: MediaInput | undefined, signal: AbortSignal) {
-  const fields = imageFields(request);
+async function editImage(context: ProviderContext, baseUrl: string, fields: Record<string, unknown>, images: MediaInput[], mask: MediaInput | undefined, signal: AbortSignal) {
   const boundary = `----toonflow${Date.now().toString(16)}${Math.random().toString(16).slice(2)}`;
   const parts: (string | Uint8Array<ArrayBuffer>)[] = [];
   for (const [name, value] of Object.entries(fields)) {
@@ -516,7 +518,62 @@ async function runImage(context: ProviderContext, request: ImageRequest): Promis
     if (size && !body.resolution && /^\d+x\d+$/.test(size)) body.size = size;
     return parseImages(context, await post(context, `${baseUrl}/images/generations`, body, signal));
   }
-  return editImage(context, baseUrl, request, images, mask, signal);
+  return editImage(context, baseUrl, imageFields(request), images, mask, signal);
+}
+
+// ─────────────────────────────── 1b. GPT Image ───────────────────────────────
+// ACT: 上游对 1K/2K/4K 档位字符串的支持不一致（sunburst 会忽略、flare 只认字符串），
+// 统一换算成显式 WxH 最稳。4K 上限按模型实测：flare 直接 400，gpt-image-2 会被钳到 2880。
+
+const GPT_IMAGE_SIDE: Record<string, number> = { "1k": 1024, "2k": 2048, "4k": 4096 };
+
+const GPT_RATIO: Record<string, [number, number]> = {
+  "1:1": [1, 1],
+  "16:9": [16, 9],
+  "9:16": [9, 16],
+  "4:3": [4, 3],
+  "3:4": [3, 4],
+  "3:2": [3, 2],
+  "2:3": [2, 3],
+};
+
+/** 档位 + 比例换算成显式像素；长边取档位边长，短边按比例对齐 16 的倍数。 */
+function gptImageSize(request: ImageRequest): string {
+  const raw = (request.size ?? "").trim();
+  if (/^\d+x\d+$/i.test(raw)) return raw.toLowerCase();
+  const side = GPT_IMAGE_SIDE[raw.toLowerCase()] ?? 1024;
+  const [w, h] = GPT_RATIO[request.ratio ?? "1:1"] ?? [1, 1];
+  const short = Math.max(16, Math.round((side * Math.min(w, h)) / Math.max(w, h) / 16) * 16);
+  return w >= h ? `${side}x${short}` : `${short}x${side}`;
+}
+
+function gptImageFields(request: ImageRequest): Record<string, unknown> {
+  const count = Number(request.n ?? 1);
+  const fields: Record<string, unknown> = {
+    model: request.model,
+    prompt: request.prompt,
+    size: gptImageSize(request),
+    n: Number.isFinite(count) && count > 0 ? count : 1,
+  };
+  if (request.quality) fields.quality = request.quality;
+  if (request.outputFormat) fields.output_format = request.outputFormat;
+  return fields;
+}
+
+async function runGptImage(context: ProviderContext, request: ImageRequest): Promise<MediaAsset[]> {
+  context.signal?.throwIfAborted();
+  if (!apiKeyOf(context)) throw new Error("请填写 C2A API Key");
+  // 单张图片最多等待 10 分钟；实测 4K 单张要 40s 以上。
+  const signal = AbortSignal.any([AbortSignal.timeout(10 * 60_000), ...(context.signal ? [context.signal] : [])]);
+  const baseUrl = gateway(context);
+  const fields = gptImageFields(request);
+  const images = request.images ?? [];
+  if (!images.length) return parseImages(context, await post(context, `${baseUrl}/images/generations`, fields, signal));
+  // 图生图与 Grok 共用 multipart 通道；参考图同样压到 512 KB 内。
+  const shrink = (input: MediaInput) => fitImage(context, input, { capBytes: 512 * 1024 });
+  const shrunk = await Promise.all(images.map(shrink));
+  const mask = request.mask ? await shrink(request.mask) : undefined;
+  return editImage(context, baseUrl, fields, shrunk, mask, signal);
 }
 
 // ─────────────────────────────── 2. Grok 视频 ───────────────────────────────
@@ -863,34 +920,67 @@ async function generateWan3(context: ProviderContext, request: VideoRequest): Pr
 }
 
 // ─────────────────────────────── 估价 ───────────────────────────────
-// 单价取自 C2A 定价页（CNY/秒）。参考图附加费为 USD/张，仅统计参考图片。
+// 单价取自 C2A 定价页。视频按秒、图片按张；参考图附加费为 USD/张，仅 H3 系列有。
 
-const C2A_VIDEO_RATES: Record<string, { rates: Record<string, number>; fallback: number; extraImageUsd: number; label: string }> = {
-  "minimax-h3": { label: "MiniMax-H3", rates: { "2k": 0.18, "768p": 0.18 }, fallback: 0.204, extraImageUsd: 0.15 },
+type C2aRate = {
+  /** 档位单价；视频用 480p/720p…，图片用 1k/2k/4k 小写作键。 */
+  rates: Record<string, number>;
+  /** 未匹配档位时的兜底单价；缺省表示上游未公布兜底价，此时不报价。 */
+  fallback?: number;
+  /** 超出 5 张参考图的附加费，USD/张。 */
+  extraImageUsd?: number;
+  unit: "秒" | "张";
+};
+
+const C2A_RATES: Record<string, C2aRate> = {
+  "grok-imagine-image-2.0": { rates: { "1k": 0.081, "2k": 0.099, "4k": 0.15 }, unit: "张" },
+  "grok-imagine-image-quality": { rates: { "1k": 0.081, "2k": 0.099, "4k": 0.15 }, unit: "张" },
+  // GPT Image 定价页 1K/2K/4K 同价 0.12 CNY/张，故兜底也用同一价，像素写法也能报价。
+  "gpt-image-2": { rates: { "1k": 0.12, "2k": 0.12, "4k": 0.12 }, fallback: 0.12, unit: "张" },
+  "gpt-image-2.5": { rates: { "1k": 0.12, "2k": 0.12, "4k": 0.12 }, fallback: 0.12, unit: "张" },
+  "gpt-image-2.5-flare": { rates: { "1k": 0.12, "2k": 0.12 }, fallback: 0.12, unit: "张" },
+  "gpt-image-2.5-sunburst": { rates: { "1k": 0.12, "2k": 0.12, "4k": 0.12 }, fallback: 0.12, unit: "张" },
+  "grok-imagine-video-1.5": { rates: { "480p": 0.15, "720p": 0.198, "1080p": 0.3 }, unit: "秒" },
+  "grok-imagine-video-1.5-preview": { rates: { "480p": 0.15, "720p": 0.198, "1080p": 0.3 }, unit: "秒" },
+  "minimax-h3": { rates: { "768p": 0.18, "2k": 0.18 }, fallback: 0.204, extraImageUsd: 0.15, unit: "秒" },
   "minimax-h3-max": {
-    label: "MiniMax-H3-Max",
     rates: { "480p": 0.3366, "768p": 0.51, "1080p": 0.663, "2k": 0.816, "4k": 0.9792 },
     fallback: 0.816,
     extraImageUsd: 0.17,
+    unit: "秒",
   },
+  "wan3.0-video": { rates: { "480p": 0.2088, "720p": 0.4176, "1080p": 0.8352 }, fallback: 4.8, unit: "秒" },
+  "wan3.0-video-prime": { rates: { "480p": 0.3672, "720p": 0.7344, "1080p": 1.47 }, fallback: 1.47, unit: "秒" },
 };
 
-/** 报价按秒单价 × 时长；超过 5 张参考图的附加费以 USD 单列，不与元混算。 */
-function quoteVideo(model: string, resolution: unknown, duration: unknown, imageCount: number): ProviderPrice | null {
-  const key = model.toLowerCase();
-  const table = C2A_VIDEO_RATES[key];
+/**
+ * 报价 = 档位单价 × 数量。视频数量为秒数，图片为张数。
+ * 超出 5 张参考图的附加费以 USD 单列，不与元混算。
+ */
+function quoteMedia(model: string, tier: unknown, quantity: number, imageCount: number): ProviderPrice | null {
+  const table = C2A_RATES[model.toLowerCase()];
   if (!table) return null;
-  const seconds = Number(duration);
-  if (!Number.isFinite(seconds) || seconds <= 0) return null;
-  const tier = typeof resolution === "string" ? resolution.toLowerCase() : "";
-  const rate = table.rates[tier] ?? table.fallback;
-  const amount = rate * seconds;
-  const tips = [
-    tier && table.rates[tier] ? `${tier} 档 ${rate} CNY/秒 × ${seconds} 秒` : `未匹配到 ${tier || "指定"} 分辨率，按兜底价 ${rate} CNY/秒 × ${seconds} 秒`,
-    imageCount > 5 ? `另有参考图附加费：超出 5 张的 ${imageCount - 5} 张 × $${table.extraImageUsd.toFixed(5)} USD` : "前 5 张参考图免费",
-    "以实际扣费为准",
-  ].join("；");
-  return { price: `¥${amount.toFixed(2)}`, tips };
+  if (!Number.isFinite(quantity) || quantity <= 0) return null;
+  const key = typeof tier === "string" ? tier.trim().toLowerCase() : "";
+  const matched = key !== "" && table.rates[key] !== undefined;
+  const rate = matched ? table.rates[key] : table.fallback;
+  // 上游未公布兜底价时，未知档位不报价，避免给出错误金额。
+  if (rate === undefined) return null;
+  const parts = [
+    matched
+      ? `${key} 档 ${rate} CNY/${table.unit} × ${quantity} ${table.unit}`
+      : key
+        ? `未匹配到 ${key} 档位，按兜底价 ${rate} CNY/${table.unit} × ${quantity} ${table.unit}`
+        : `未指定档位，按兜底价 ${rate} CNY/${table.unit} × ${quantity} ${table.unit}`,
+  ];
+  if (table.extraImageUsd !== undefined)
+    parts.push(
+      imageCount > 5
+        ? `另有参考图附加费：超出 5 张的 ${imageCount - 5} 张 × $${table.extraImageUsd.toFixed(5)} USD`
+        : "前 5 张参考图免费",
+    );
+  parts.push("以实际扣费为准");
+  return { price: `¥${(rate * quantity).toFixed(2)}`, tips: parts.join("；") };
 }
 
 // ─────────────────────────────── 导出 ───────────────────────────────
@@ -905,6 +995,7 @@ export default {
 
 - 网关地址默认 \`https://www.codex2api.com/v1\`，填不填末尾的 \`/v1\` 都能识别。
 - **Grok 图片**：\`/images/generations\`；带参考图走 \`/images/edits\`（multipart，单图 \`image\`、多图 \`image[]\`）。
+- **GPT Image**：同样 \`/images/generations\` 与 \`/images/edits\`，但走 OpenAI 原生参数（显式 \`size\` 像素与 \`quality\`）；1K/2K/4K 会换算成 WxH，\`gpt-image-2.5-flare\` 实测 4K 被上游拒绝，只开放到 2K。
 - **Grok 视频**：\`/videos/generations\` 建任务并轮询；参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
 - **MiniMax-H3**：\`/videos\` 建任务并轮询，只支持 16:9 / 9:16 与单张参考图。
 - **MiniMax-H3-Max**：\`/video/generations\`，参考素材按 \`content[]\` + role 提交，支持图 / 视频 / 音频混合。
@@ -920,7 +1011,7 @@ export default {
       label: "Grok Imagine Image 2.0",
       type: "image",
       mode: ["text", "singleImage", "multiReference"],
-      imageSizes: ["1K", "2K"],
+      imageSizes: ["1K", "2K", "4K"],
       imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
     },
     {
@@ -928,7 +1019,39 @@ export default {
       label: "Grok Imagine Image Quality",
       type: "image",
       mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K", "2K", "4K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "gpt-image-2",
+      label: "GPT Image 2",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K", "2K", "4K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "gpt-image-2.5",
+      label: "GPT Image 2.5",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K", "2K", "4K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "gpt-image-2.5-flare",
+      label: "GPT Image 2.5 Flare",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
       imageSizes: ["1K", "2K"],
+      imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
+    },
+    {
+      id: "gpt-image-2.5-sunburst",
+      label: "GPT Image 2.5 Sunburst",
+      type: "image",
+      mode: ["text", "singleImage", "multiReference"],
+      imageSizes: ["1K", "2K", "4K"],
       imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
     },
     {
@@ -982,12 +1105,18 @@ export default {
     },
   ],
   async getPrice(request: ProviderPriceRequest): Promise<ProviderPrice | null> {
-    if (request.type !== "video") return null;
-    // H3-Max 的参考图最多 9 张，H3 只 1 张；超出部分才计附加费。
     const images = request.images?.length ?? 0;
-    return quoteVideo(String(request.model), request.resolution, request.duration, images);
+    if (request.type === "image") {
+      // 图片按张计价；n 为本次生成张数，缺省 1 张。
+      const count = Number(request.n ?? 1);
+      return quoteMedia(String(request.model), request.size, Number.isFinite(count) && count > 0 ? count : 1, images);
+    }
+    if (request.type === "video") return quoteMedia(String(request.model), request.resolution, Number(request.duration), images);
+    return null;
   },
   async generateImage(request: ImageRequest): Promise<MediaAsset[]> {
+    // GPT Image 走 OpenAI 原生参数（显式 size / quality），与 Grok 的 resolution 写法不同。
+    if (/^gpt-image/i.test(String(request.model))) return runGptImage(this, request);
     return runImage(this, request);
   },
   async generateVideo(request: VideoRequest): Promise<MediaAsset[]> {
