@@ -723,6 +723,13 @@
         "vue": "^3.5.42",
       },
     },
+    "packages/tools/directorLens": {
+      "name": "@toonflow/tool-director-lens",
+      "version": "1.2.0",
+      "devDependencies": {
+        "@toonflow/file": "workspace:*",
+      },
+    },
     "packages/tools/ffmpeg": {
       "name": "@toonflow/tool-ffmpeg",
       "version": "2.0.0",
@@ -1426,6 +1433,8 @@
     "@toonflow/tool-browser": ["@toonflow/tool-browser@workspace:packages/tools/browser"],
 
     "@toonflow/tool-canvas": ["@toonflow/tool-canvas@workspace:packages/tools/canvas"],
+
+    "@toonflow/tool-director-lens": ["@toonflow/tool-director-lens@workspace:packages/tools/directorLens"],
 
     "@toonflow/tool-ffmpeg": ["@toonflow/tool-ffmpeg@workspace:packages/tools/ffmpeg"],
 
