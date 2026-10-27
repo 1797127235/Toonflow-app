@@ -2,18 +2,11 @@
   <div class="pluginMarket">
     <div class="marketToolbar">
       <nav class="marketNav" aria-label="插件列表">
-        <button class="navButton" type="button" :aria-pressed="isMarketTab" @click="activeTab = 'discover'">发现插件</button>
         <button class="navButton" type="button" :aria-pressed="activeTab === 'installed'" @click="activeTab = 'installed'">已安装</button>
         <button class="navButton" type="button" :aria-pressed="activeTab === 'mcp'" @click="activeTab = 'mcp'">MCP</button>
         <button class="navButton" type="button" :aria-pressed="activeTab === 'ffmpeg'" @click="activeTab = 'ffmpeg'">FFmpeg</button>
       </nav>
       <div class="marketActions">
-        <el-button tag="a" href="https://api.toonflow.net/console/plugIn" target="_blank" rel="noopener noreferrer" size="small" text :icon="IconExternalLink">
-          网页版市场
-        </el-button>
-        <el-button tag="a" href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd" target="_blank" rel="noopener noreferrer" size="small" text :icon="IconBook">
-          开发者文档
-        </el-button>
         <template v-if="activeTab === 'installed'">
           <el-button v-if="selectedType === 'ext' || selectedType === 'all'" size="small" :icon="IconSettings" @click="associationsVisible = true">默认打开方式</el-button>
           <el-button size="small" type="primary" :icon="IconUpload" :loading="installing" aria-label="安装本地插件" @click="pluginFileInput?.click()">
@@ -43,10 +36,6 @@
           {{ category.label }}
           <span v-if="activeTab === 'installed' && installedCounts[type] !== undefined" class="filterCount">{{ installedCounts[type] }}</span>
         </button>
-        <div class="personalFilters" role="group" aria-label="我的插件">
-          <button class="filterButton" type="button" :aria-pressed="selectedType === 'collection'" @click="selectedType = 'collection'">收藏</button>
-          <button class="filterButton" type="button" :aria-pressed="selectedType === 'my'" @click="selectedType = 'my'">我的</button>
-        </div>
       </div>
       <form v-if="isMarketTab || activeTab === 'installed'" class="marketSearch" role="search" @submit.prevent="applySearch">
         <el-input v-model="searchQuery" size="small" placeholder="搜索插件" aria-label="搜索插件" clearable @clear="applySearch" />
@@ -269,7 +258,7 @@ import { translate } from "@toonflow/i18n/vue";
 import axios from "axios";
 import parse from "semver/functions/parse";
 import { computed, defineAsyncComponent, markRaw, onMounted, onBeforeUnmount, ref, watch } from "vue";
-import { IconBox, IconBook, IconTool, IconFileText, IconExternalLink, IconSparkles2, IconUpload, IconShare, IconStar, IconStarFilled, IconLink, IconSettings, IconCopy } from "@tabler/icons-vue";
+import { IconBox, IconBook, IconTool, IconFileText, IconSparkles2, IconUpload, IconShare, IconStar, IconStarFilled, IconLink, IconSettings, IconCopy } from "@tabler/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import tf, { getTfApiKey, isTfRouterProvider } from "@/lib/tf";
 import { saveSettings } from "@/stores/settings";
@@ -300,7 +289,7 @@ const pluginTypes = {
   agent: { label: "Agent", path: agentMarketEnabled ? "agents" : null, icon: IconSparkles2, tagType: "danger" },
 } as const;
 const tabs = { get discover() { return translate("发现插件"); }, get installed() { return translate("已安装"); }, mcp: "MCP", ffmpeg: "FFmpeg" } as const;
-const activeTab = ref<keyof typeof tabs>("discover");
+const activeTab = ref<keyof typeof tabs>("installed");
 const isMarketTab = computed(() => activeTab.value === "discover");
 const marketPage = ref(1);
 const marketPageSize = 20;

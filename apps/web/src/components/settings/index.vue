@@ -61,7 +61,7 @@ const settingsPanels = [
   { id: "mediaModel", label: "媒体模型", icon: IconPhotoVideo, component: defineAsyncComponent(() => import("./panels/mediaModel/index.vue")) },
   {
     id: "pluginMarket",
-    label: "插件市场",
+    label: "插件",
     icon: IconBuildingStore,
     groupLabel: "市场",
     component: defineAsyncComponent(() => import("./panels/pluginMarket/index.vue")),

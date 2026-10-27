@@ -51,7 +51,7 @@
           </el-select>
         </div>
         <div class="toolDescription">
-          <p>{{ selectedInstaller.description }}支持本地文件或文件直链，安装后可在插件市场查看。</p>
+          <p>{{ selectedInstaller.description }}支持本地文件或文件直链，安装后可在插件中查看。</p>
         </div>
         <el-checkbox v-model="forceInstall" :disabled="!!installing">强制安装（允许覆盖同版本或降级）</el-checkbox>
         <input ref="fileInput" class="fileInput" type="file" :accept="selectedInstaller.accept" @change="installFile" />
