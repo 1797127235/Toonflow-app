@@ -70,10 +70,17 @@ export function cleanNodeMenuSettings(settings: Record<string, unknown>) {
 const settings = config.get("settings", {});
 if (removeLegacySettings(settings)) config.set("settings", settings);
 
-// ACT: 仅初始化尚未配置的文本供应商；已有列表（包括用户清空的列表）保持原样。
-if (!config.has("settings.customProviders")) {
-  config.set("settings.customProviders", autoInstallProviders.map(({ id, label, version, apiUrl, protocol, models }) =>
-    ({ id, label, version, apiUrl, protocol, models, apiKey: "" })));
+const defaultProvider = ({ id, label, version, apiUrl, protocol, models }: typeof c2a) =>
+  ({ id, label, version, apiUrl, protocol, models, apiKey: "" });
+const providers = settings.customProviders;
+if (!Array.isArray(providers)) {
+  config.set("settings.customProviders", autoInstallProviders.map(defaultProvider));
+} else {
+  const withoutTfRouter = providers.filter(item => typeof item?.id !== "string" || item.id.toLowerCase() !== "tfrouter");
+  const hasC2a = withoutTfRouter.some(item => item?.id === c2a.id);
+  if (withoutTfRouter.length !== providers.length || !hasC2a) {
+    config.set("settings.customProviders", hasC2a ? withoutTfRouter : [...withoutTfRouter, defaultProvider(c2a)]);
+  }
 }
 
 export default config;
