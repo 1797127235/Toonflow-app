@@ -1,7 +1,6 @@
 import conf from "conf";
 import { mkdirSync, readdirSync, realpathSync } from "@toonflow/file";
 import { resolve } from "node:path";
-import tfRouter from "@toonflow/providers/language/tfRouter";
 import type { RemoteTeam } from "@/utils/teams";
 import type { A2aSettings } from "@/agent/a2a/settings";
 import type { desktopUpdateAttempt } from "@/types/desktop";
@@ -9,7 +8,18 @@ import type { MobileLinkConfig } from "@/utils/mobileLink";
 import { normalizeNodeMenu, serializeNodeMenu } from "@/lib/nodeMenu";
 import type { SavedMcpServer } from "@toonflow/mcp/client";
 
-const autoInstallProviders = [tfRouter];
+const c2a = {
+  id: "c2a",
+  label: "C2A",
+  version: "1.0.0",
+  apiUrl: "https://www.codex2api.com/v1",
+  protocol: "openai-completions",
+  models: [
+    { id: "grok-4.7", label: "grok-4.7" },
+    { id: "deepseek-v4.1-flash", label: "deepseek-v4.1-flash" },
+  ],
+};
+const autoInstallProviders = [c2a];
 const dataDirectory = process.env.TOONFLOW_DATA_DIR ?? resolve(import.meta.dirname, "../../../../../data");
 mkdirSync(dataDirectory, { recursive: true });
 const configDirectory = realpathSync(dataDirectory);
@@ -62,8 +72,8 @@ if (removeLegacySettings(settings)) config.set("settings", settings);
 
 // ACT: 仅初始化尚未配置的文本供应商；已有列表（包括用户清空的列表）保持原样。
 if (!config.has("settings.customProviders")) {
-  config.set("settings.customProviders", autoInstallProviders.map(({ id, label, icon, version, apiUrl, protocol, models }) =>
-    ({ id, label, icon, version, apiUrl, protocol, models, apiKey: "" })));
+  config.set("settings.customProviders", autoInstallProviders.map(({ id, label, version, apiUrl, protocol, models }) =>
+    ({ id, label, version, apiUrl, protocol, models, apiKey: "" })));
 }
 
 export default config;
