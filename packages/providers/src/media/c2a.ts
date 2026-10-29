@@ -1,4 +1,4 @@
-const version = "2.3.0";
+const version = "2.4.0";
 
 const rules = [
   {
@@ -27,14 +27,15 @@ const rules = [
 /**
  * C2A 中转（Codex2API）全协议适配。
  *
- * 六条上游协议按模型 ID 分流：
+ * 上游协议按模型 ID 分流：
  *   1. Grok 图片      POST /v1/images/generations、/v1/images/edits(multipart)
  *   1b.GPT Image      POST /v1/images/generations、/v1/images/edits(multipart)，OpenAI 原生参数
- *   1c.MidJourney     POST /v1/images/generations（仅 JSON，n=1，固定返回 4 张）
+ *   1c. MidJourney    POST /v1/images/generations（仅 JSON，n=1，固定返回 4 张）
  *   2. Grok 视频      POST /v1/videos/generations        → GET /v1/videos/generations/{id}
  *   3. MiniMax-H3     POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   4. MiniMax-H3-Max POST /v1/video/generations         → GET /v1/video/generations/{id}
  *   5. 万相 3.0       POST /api/v1/services/aigc/...     → GET /api/v1/tasks/{id}
+ *   6. Seedance 2.x   POST /api/v3/contents/generations/tasks → GET 同路径/{id}
  *
  * Grok 视频的参考素材有两条路径：
  *   · 素材网关（对象存储）：内容寻址三段式上传，换 24 小时公网签名 URL，参考视频必须走这条。
@@ -867,6 +868,117 @@ async function generateH3Max(context: ProviderContext, request: VideoRequest): P
   return finalizeVideo(context, url, apiKey, signal);
 }
 
+// ────────────────────────────── 6. Seedance 2.x ─────────────────────────────
+// 火山方舟原生协议：https://ark.volcengine.com/region:cn-beijing/docs/create-video-generation-task-api
+
+async function generateSeedance(context: ProviderContext, request: VideoRequest): Promise<MediaAsset[]> {
+  context.signal?.throwIfAborted();
+  const apiKey = apiKeyOf(context);
+  if (!apiKey) throw new Error("请填写 C2A API Key");
+  const baseUrl = gatewayRoot(context);
+  const signal = AbortSignal.any([AbortSignal.timeout(30 * 60_000), ...(context.signal ? [context.signal] : [])]);
+  const model = request.model.toLowerCase();
+  const is25 = model === "doubao-seedance-2-5-260628";
+  const isStandard = model === "doubao-seedance-2-0-260128";
+  const isMiniOrFast = model === "doubao-seedance-2-0-fast-260128" || model === "doubao-seedance-2-0-mini-260615";
+  const prompt = request.prompt?.trim() ?? "";
+  if (!prompt) throw new Error("提示词不能为空");
+
+  const duration = Number(request.duration ?? 5);
+  if (!Number.isInteger(duration) || (duration !== -1 && (duration < 4 || duration > (is25 ? 30 : 15))))
+    throw new Error(`Seedance ${is25 ? "2.5" : "2.0"} 时长须为 4–${is25 ? 30 : 15} 秒的整数，或 -1 由模型决定`);
+
+  const resolution = String(request.resolution ?? "720p").toLowerCase();
+  const resolutions = isStandard ? ["480p", "720p", "1080p", "4k"] : isMiniOrFast ? ["480p", "720p"] : ["480p", "720p", "1080p"];
+  if (!resolutions.includes(resolution)) throw new Error(`该 Seedance 模型不支持 ${resolution} 分辨率`);
+
+  const videos = request.videos ?? [];
+  const audios = request.audios ?? [];
+  const images = request.images ?? [];
+  const hasFrames = Boolean(request.firstFrame || request.lastFrame);
+  const frameMode = !Array.isArray(request.mode) && request.mode !== "text"
+    && (hasFrames || request.mode !== undefined || (images.length > 0 && images.length <= 2 && !videos.length && !audios.length));
+  if (request.mode === "text" && (hasFrames || images.length || videos.length || audios.length))
+    throw new Error("Seedance 文生视频模式不能携带参考素材");
+  if (hasFrames && (!frameMode || images.length)) throw new Error("Seedance 首尾帧不能与全模态参考混用");
+  if (request.lastFrame && !request.firstFrame) throw new Error("Seedance 不支持仅尾帧输入，请提供首帧");
+  if (frameMode && (videos.length || audios.length || images.length > 2))
+    throw new Error("Seedance 首尾帧模式只支持 1–2 张图片，不能混用参考视频或音频");
+  const frames = hasFrames
+    ? [request.firstFrame, request.lastFrame].filter((item): item is MediaInput => Boolean(item))
+    : images;
+  if (frameMode && (!frames.length || (request.mode === "startEndRequired" && frames.length !== 2)
+    || (request.mode === "singleImage" && frames.length !== 1))) throw new Error("Seedance 输入图片数量与所选首尾帧模式不符");
+  let ratio = request.ratio || "adaptive";
+  if (!["adaptive", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"].includes(ratio)) throw new Error(`Seedance 不支持输出比例 ${ratio}`);
+  // 2.5 首帧/首尾帧比例由首帧决定；节点的通用比例不能原样传给上游。
+  if (is25 && frameMode) ratio = "adaptive";
+  const content: Record<string, unknown>[] = [{ type: "text", text: prompt }];
+  if (frameMode) {
+    for (const [index, frame] of frames.entries()) {
+      const prepared = await fitImage(context, frame, { minSide: 300, maxSide: 6000, capBytes: 20 * MB });
+      content.push({
+        type: "image_url",
+        image_url: { url: dataUri(prepared) },
+        role: index === 0 ? "first_frame" : "last_frame",
+      });
+    }
+  } else {
+    if (images.length > (is25 ? 30 : 9) || videos.length > (is25 ? 10 : 3) || audios.length > (is25 ? 10 : 3))
+      throw new Error(`Seedance ${is25 ? "2.5" : "2.0"} 参考素材数量超出模型限制`);
+    if (!is25 && audios.length && !images.length && !videos.length)
+      throw new Error("Seedance 2.0 参考音频必须搭配至少一张参考图或一段参考视频");
+    for (const image of images) {
+      const prepared = await fitImage(context, image, { minSide: 300, maxSide: 6000, capBytes: 20 * MB });
+      content.push({ type: "image_url", image_url: { url: dataUri(prepared) }, role: "reference_image" });
+    }
+    for (const video of videos) {
+      const url = await uploadAsset(context, video, signal);
+      if (!url) throw new Error("Seedance 参考视频必须是公网 URL，或配置素材网关上传本地视频");
+      content.push({ type: "video_url", video_url: { url }, role: "reference_video" });
+    }
+    for (const audio of audios) content.push({ type: "audio_url", audio_url: { url: inlineMedia(audio, "参考音频", 15 * MB) }, role: "reference_audio" });
+  }
+
+  const body: Record<string, unknown> = {
+    model: request.model,
+    content,
+    resolution,
+    duration,
+    ratio,
+  };
+  if (typeof request.generateAudio === "boolean") body.generate_audio = request.generateAudio;
+  if (typeof request.watermark === "boolean") body.watermark = request.watermark;
+  const payload = JSON.stringify(body);
+  if (new TextEncoder().encode(payload).byteLength > 64 * MB) throw new Error("Seedance 请求体不能超过 64 MB");
+
+  const endpoint = `${baseUrl}/api/v3/contents/generations/tasks`;
+  // 创建请求不重试：连接中断时上游仍可能已创建并计费。
+  const response = await httpRequest(context, endpoint, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: payload,
+    redirect: "error",
+  }, signal, 1);
+  if (!response.ok) throw new Error(`Seedance 创建任务失败（HTTP ${response.status}）${await errorBody(response)}`);
+  const created = taskOf(record(await response.json()));
+  const taskId = created.id ?? created.task_id;
+  if (typeof taskId !== "string" || !taskId) throw new Error(readError(created) || "C2A Seedance 创建响应缺少任务 ID；请核对任务记录，不要重复提交");
+
+  const url = await pollUntil(signal, 5000, 30 * 60_000, async () => {
+    const task = taskOf(await get(context, `${endpoint}/${encodeURIComponent(taskId)}`, signal));
+    const status = String(task.status ?? "").toLowerCase();
+    if (taskFailed(task))
+      throw new Error(`Seedance 任务 ${taskId} ${status}：${readError(task) || task.message || task.code || "生成失败"}；请核对原任务，不要重复提交`);
+    if (status !== "succeeded") return null;
+    const output = task.content && typeof task.content === "object" && !Array.isArray(task.content) ? record(task.content) : {};
+    const videoUrl = output.video_url ?? task.video_url;
+    if (typeof videoUrl !== "string" || !videoUrl) throw new Error(`Seedance 任务 ${taskId} 已完成但没有视频地址`);
+    return videoUrl;
+  });
+  return finalizeVideo(context, url, apiKey, signal);
+}
+
 // ────────────────────────────── 5. 万相 3.0 ──────────────────────────────
 
 const WAN_RATIOS = ["adaptive", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"];
@@ -1035,7 +1147,7 @@ export default {
   icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI4IiBmaWxsPSIjMjU2M0VCIi8+PHBhdGggZD0iTTEwIDIyVjEwaDUuNWEzLjUgMy41IDAgMCAxIDAgN0gxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMjIiIGN5PSIyMiIgcj0iMi42IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
   version,
   readme: `## C2A 中转（Codex2API）
-把 C2A 网关的 Grok、MiniMax、万相模型接入 Toonflow 的图片与视频节点；文本模型请在「文本模型 → 添加自定义供应商」里另行配置。
+把 C2A 网关的 Grok、MiniMax、万相、Seedance 模型接入 Toonflow 的图片与视频节点；文本模型请在「文本模型 → 添加自定义供应商」里另行配置。
 
 - 网关地址默认 \`https://www.codex2api.com/v1\`，填不填末尾的 \`/v1\` 都能识别。
 - **Grok 图片**：\`/images/generations\`；带参考图走 \`/images/edits\`（multipart，单图 \`image\`、多图 \`image[]\`）。
@@ -1045,6 +1157,7 @@ export default {
 - **MiniMax-H3**：\`/videos\` 建任务并轮询，只支持 16:9 / 9:16 与单张参考图。
 - **MiniMax-H3-Max**：\`/video/generations\`，参考素材按 \`content[]\` + role 提交，支持图 / 视频 / 音频混合。
 - **万相 3.0**：DashScope 原生 \`/api/v1/services/aigc/video-generation/video-synthesis\`，首尾帧与参考素材互斥。
+- **Seedance 2.0 / Fast / Mini / 2.5**：火山方舟原生 \`/api/v3/contents/generations/tasks\`，使用 \`content[]\` + role 并轮询任务。支持文生视频、参考图生视频、视频生视频、音频生视频，以及图片/视频/音频混合参考；首帧/首尾帧与全模态参考互斥，2.5 首帧比例自动跟随图片。2.5 支持纯音频输入，2.0 系列的音频必须搭配图片或视频。本地参考视频复用素材网关转为公网 URL（当前网关单文件上限 20 MB），音频按公网 URL 或 Base64 发送。按实际 Token 用量结算，暂不提供按秒报价。
 
 **素材网关**填 C2A 官方素材网关（默认 \`https://assets.antest.cc.cd\`），用同一枚 C2A API Key 鉴权：本地素材经三段式上传换成 24 小时公网签名 URL，绕开上游对 base64 请求体的限制。留空则只用内联 Base64。
 
@@ -1124,6 +1237,38 @@ export default {
       imageRatios: ["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3"],
     },
     {
+      id: "doubao-seedance-2-0-260128",
+      label: "Seedance 2.0",
+      type: "video",
+      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
+      audio: "optional",
+      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p", "1080p", "4k"] }],
+    },
+    {
+      id: "doubao-seedance-2-0-fast-260128",
+      label: "Seedance 2.0 Fast",
+      type: "video",
+      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
+      audio: "optional",
+      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
+    },
+    {
+      id: "doubao-seedance-2-0-mini-260615",
+      label: "Seedance 2.0 Mini",
+      type: "video",
+      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
+      audio: "optional",
+      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
+    },
+    {
+      id: "doubao-seedance-2-5-260628",
+      label: "Seedance 2.5",
+      type: "video",
+      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:30", "videoReference:10", "audioReference:10"]],
+      audio: "optional",
+      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p", "1080p"] }],
+    },
+    {
       id: "grok-imagine-video-1.5",
       label: "Grok Imagine Video 1.5",
       type: "video",
@@ -1197,6 +1342,7 @@ export default {
     if (/^minimax-h3-max$/i.test(model)) return generateH3Max(this, request);
     if (/^minimax-h3$/i.test(model)) return generateH3(this, request);
     if (/^wan3/i.test(model)) return generateWan3(this, request);
+    if (/^doubao-seedance-2-[05]-/i.test(model)) return generateSeedance(this, request);
     if (/^grok-imagine-video/i.test(model)) return generateGrokVideo(this, request);
     throw new Error(`C2A 未适配该模型：${model}`);
   },
