@@ -1,0 +1,162 @@
+[
+  {
+    "id": "catDance",
+    "title": "猫猫学跳舞",
+    "description": "上传一张动物照片和一段人类舞蹈参考视频，先用图生图把动物放上舞台，再让视频模型参考舞蹈动作，生成动物模仿跳舞的短视频。",
+    "tags": [
+      "图生图",
+      "图生视频",
+      "动物"
+    ],
+    "template": "catDance/template.json",
+    "cover": "catDance/cover.webp",
+    "previewVideo": "catDance/media4.mp4",
+    "inputCount": 2,
+    "stepCount": 2,
+    "status": "extracted"
+  },
+  {
+    "id": "clothingLookbook",
+    "title": "电商服装图片工作流",
+    "description": "替换模特和两套服装，复用都市街头场景及两种姿势，分别生成四组竖版换装图。保留效果示例，可独立编辑每条生成分支。",
+    "tags": [
+      "电商服装",
+      "模特换装",
+      "图生图"
+    ],
+    "template": "clothingLookbook/template.json",
+    "cover": "clothingLookbook/cover.webp",
+    "previewVideo": null,
+    "inputCount": 3,
+    "stepCount": 4,
+    "status": "extracted"
+  },
+  {
+    "id": "outfitChangeVideo",
+    "title": "换装视频工作流",
+    "description": "替换一张模特图和一件服装图，生成人物形象和一张换装图，再结合动作参考制作8秒竖版换装视频。",
+    "tags": [
+      "电商服装",
+      "换装视频",
+      "多图参考"
+    ],
+    "template": "outfitChangeVideo/template.json",
+    "cover": "outfitChangeVideo/cover.webp",
+    "previewVideo": "outfitChangeVideo/media14.mp4",
+    "inputCount": 3,
+    "stepCount": 3,
+    "status": "extracted"
+  },
+  {
+    "id": "talkingProductAd",
+    "title": "口播广告 Grok 工作流",
+    "description": "替换人物、门店与商品参考图，编辑口播文案和表演要求，生成带声音的竖版商品广告，附两段成果示例。",
+    "tags": [
+      "口播广告",
+      "商品展示",
+      "图生视频"
+    ],
+    "template": "talkingProductAd/template.json",
+    "cover": "talkingProductAd/cover.webp",
+    "previewVideo": "talkingProductAd/media5.mp4",
+    "inputCount": 3,
+    "stepCount": 1,
+    "status": "extracted"
+  },
+  {
+    "id": "jeansLookbook",
+    "title": "牛仔裤换装图片工作流",
+    "description": "上传一张商品裤装图和 8 张模特参考图，批量把商品裤子换到每位模特身上。只替换裤子，保留人物身份、姿势、背景、光线和鞋子，一次得到 8 张成片。",
+    "tags": [
+      "电商服装",
+      "裤子换装",
+      "批量出图"
+    ],
+    "template": "jeansLookbook/template.json",
+    "cover": "jeansLookbook/cover.webp",
+    "previewVideo": null,
+    "inputCount": 9,
+    "stepCount": 8,
+    "status": "extracted"
+  },
+  {
+    "id": "electronicsAd",
+    "title": "3C产品宣传广告",
+    "description": "一张 3C 产品图延伸出电商海报、直播间场景图和 15 秒竖版宣传视频：先生成风格海报与场景图，再让文本模型写分镜脚本、图生成分镜图，最后按脚本与分镜图生成视频。",
+    "tags": [
+      "3C数码",
+      "产品广告",
+      "图生视频"
+    ],
+    "template": "electronicsAd/template.json",
+    "cover": "electronicsAd/cover.webp",
+    "previewVideo": "electronicsAd/media6.mp4",
+    "inputCount": 1,
+    "stepCount": 6,
+    "status": "extracted"
+  },
+  {
+    "id": "apparelShowcaseVideo",
+    "title": "服装悬浮展示视频",
+    "description": "一张商品服装图先生成正视图和背视图，再让服装悬浮绕轴旋转展示正面、侧面和背面，生成 15 秒 16:9 商品展示视频。",
+    "tags": [
+      "电商服装",
+      "悬浮旋转",
+      "图生视频"
+    ],
+    "template": "apparelShowcaseVideo/template.json",
+    "cover": "apparelShowcaseVideo/cover.webp",
+    "previewVideo": "apparelShowcaseVideo/media3.mp4",
+    "inputCount": 1,
+    "stepCount": 2,
+    "status": "extracted"
+  },
+  {
+    "id": "skincareAd",
+    "title": "护肤广告宣传视频",
+    "description": "一张护肤品产品图配合模特形象提示词生成模特图，再汇总产品、模特和策划提示词生成分镜图，最后按分镜生成 15 秒 16:9 高端护肤广告成片。",
+    "tags": [
+      "护肤美妆",
+      "产品广告",
+      "图生视频"
+    ],
+    "template": "skincareAd/template.json",
+    "cover": "skincareAd/cover.webp",
+    "previewVideo": "skincareAd/media4.mp4",
+    "inputCount": 1,
+    "stepCount": 3,
+    "status": "extracted"
+  },
+  {
+    "id": "shoesAdVideo",
+    "title": "鞋类广告宣传视频",
+    "description": "一张鞋子产品图先生成正面和背面多视角图，再生成 3×3 分镜设计图，最后按分镜与策划提示词生成 15 秒 16:9 高端产品广告视频。",
+    "tags": [
+      "鞋类",
+      "产品广告",
+      "图生视频"
+    ],
+    "template": "shoesAdVideo/template.json",
+    "cover": "shoesAdVideo/cover.webp",
+    "previewVideo": "shoesAdVideo/media4.mp4",
+    "inputCount": 1,
+    "stepCount": 3,
+    "status": "extracted"
+  },
+  {
+    "id": "danceCoverVideo",
+    "title": "人物舞蹈复刻视频",
+    "description": "一张人物图加一段舞蹈参考视频，让视频中的人物以相同身份外观完整复刻参考视频的整套舞蹈动作，提供教学参考和动作捕捉两条独立分支。",
+    "tags": [
+      "舞蹈复刻",
+      "动作参考",
+      "图生视频"
+    ],
+    "template": "danceCoverVideo/template.json",
+    "cover": "danceCoverVideo/cover.webp",
+    "previewVideo": "danceCoverVideo/media3.mp4",
+    "inputCount": 4,
+    "stepCount": 2,
+    "status": "extracted"
+  }
+]

@@ -1,0 +1,124 @@
+{
+  "id": "catDance",
+  "title": "猫猫学跳舞",
+  "description": "上传一张动物照片和一段人类舞蹈参考视频，先用图生图把动物放上舞台，再让视频模型参考舞蹈动作，生成动物模仿跳舞的短视频。",
+  "tags": [
+    "图生图",
+    "图生视频",
+    "动物"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media4.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "cat-dance",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "深度捕捉.mp4",
+      "type": "video",
+      "example": "media1.mp4",
+      "sourceNodeId": "video-1791474530583-435vm"
+    },
+    {
+      "id": "input2",
+      "title": "image.png",
+      "type": "image",
+      "example": "media2.png",
+      "sourceNodeId": "image-1791474570291-ng0vf"
+    }
+  ],
+  "texts": [],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "猫猫端坐站在空旷的舞台中央，舞台是蓝色背景，教学视频一样",
+      "type": "image",
+      "promptTemplate": "猫猫端坐站在空旷的舞台中央，舞台是蓝色背景，教学视频一样",
+      "references": [
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "1:1",
+        "quality": "auto",
+        "count": 1
+      },
+      "originalModel": "Bv9Jfb2BNHxn5rXq83v57::gpt-image-2.5",
+      "example": "media3.png",
+      "sourceNodeId": "image-1791474600598-1jdue",
+      "sourceOutputNodeId": "image-1791474600598-1jdue"
+    },
+    {
+      "id": "step2",
+      "title": "视频.mp4",
+      "type": "video",
+      "promptTemplate": "使用 图片1  中的动物作为唯一主角，完整模仿 参考视频 1 中舞蹈教学者的动作。\n\n严格参考 参考视频 1 的**舞蹈动作、动作顺序、节奏、停顿、身体朝向和动作幅度**。动物需要像真人舞蹈老师一样，在舞台中央跟随原视频逐步完成整套舞蹈教学动作。\n\n保留动物自身原本的外形特征、毛发颜色、脸部特征和身体辨识度，不要变成人，也不要改变动物种类。可以根据动物身体结构，对人的手臂、腿部动作进行合理拟人化适配，但要尽可能让观众一眼看出它正在准确复刻原视频中的舞蹈动作。\n使用 图片1 中的动物作为唯一主角，完整模仿 参考视频 1 中舞蹈教学者的动作。\n\n严格参考 参考视频 1 的**舞蹈动作、动作顺序、节奏、停顿、身体朝向和动作幅度**。动物需要像真人舞蹈老师一样，在舞台中央跟随原视频逐步完成整套舞蹈教学动作。\n\n保留动物自身原本的外形特征、毛发颜色、脸部特征和身体辨识度，不要变成人，也不要改变动物种类。可以根据动物身体结构，对人的手臂、腿部动作进行合理拟人化适配，但要尽可能让观众一眼看出它正在准确复刻原视频中的舞蹈动作。",
+      "references": [
+        {
+          "source": "step1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input1",
+          "type": "video",
+          "label": "video1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step1"
+      ],
+      "settings": {
+        "size": "1:1",
+        "seconds": "15",
+        "vquality": "720",
+        "generateAudio": "true",
+        "watermark": "false"
+      },
+      "originalModel": "Bv9Jfb2BNHxn5rXq83v57::grok-imagine-video-1.5",
+      "example": "media4.mp4",
+      "sourceNodeId": "video-1791475549144-0mtph",
+      "sourceOutputNodeId": "video-1791475549144-0mtph"
+    }
+  ],
+  "outputs": [
+    "step2"
+  ],
+  "adaptationNotes": [
+    "原动物输入提示词固定为猫；扩展到其他动物前需要把动物名称参数化。"
+  ],
+  "assets": [
+    {
+      "path": "media1.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/cat-dance/media/video_v38RUn8jppTQAkJ1sDzla.mp4"
+    },
+    {
+      "path": "media2.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/cat-dance/media/image_jPCg67VSf2EQU9VoU8gAn.png"
+    },
+    {
+      "path": "media3.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/cat-dance/media/image_XhaGmmEPpyawKw_KpT9sL.png"
+    },
+    {
+      "path": "media4.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/cat-dance/media/video_bXceqPLL_4oG9Fyw2CyWc.mp4"
+    }
+  ]
+}

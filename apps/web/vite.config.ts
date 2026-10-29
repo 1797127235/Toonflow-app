@@ -32,6 +32,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: "@", replacement: fileURLToPath(new URL("./src", import.meta.url)) },
+      { find: "@toonflow/assets", replacement: fileURLToPath(new URL("../../packages/assets", import.meta.url)) },
       { find: /^shiki$/, replacement: fileURLToPath(new URL("./src/lib/shiki.ts", import.meta.url)) },
     ],
   },

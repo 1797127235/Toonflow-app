@@ -93,6 +93,7 @@ const draftMentionTargets = shallowRef<{ key: symbol; element: HTMLElement; ment
 const draftMentionPreview = ref<InstanceType<typeof mentionContent>>();
 let editDraft: { model: AnyTagProps[][]; mentions: AgentMention[]; attachments: AgentAttachment[] } | undefined;
 let sender: xSender | undefined;
+const senderReady = shallowRef(false);
 const senderElement = ref<HTMLElement>();
 const skillMenuRef = ref<InstanceType<typeof skillMenu>>();
 const skillQuery = ref<string>();
@@ -213,11 +214,12 @@ async function selectSkill(name: string) {
 
 async function fillPrompt(prompt: string, attachments?: AgentAttachment[]) {
   const instance = sender;
-  if (!instance || locked.value) return;
+  if (!instance || locked.value) return false;
   draftMentions.value = [];
   if (attachments) draftAttachments.value = [...attachments];
   await instance.reset({ clearHistory: false, chatNode: [[{ type: "Write", text: prompt }]] });
   if (sender === instance) instance.focus("last");
+  return sender === instance;
 }
 
 async function editMessage(item: AgentMessage) {
@@ -386,6 +388,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     keyboardWrapFun: event => event.key === "Enter" && event.shiftKey && !event.isComposing,
   });
   sender = instance;
+  senderReady.value = true;
   if (!props.active || locked.value) instance.disable();
   instance.bus.on("agentConversation", xSender.EventSet.EVENT_COMMON_SEND, () => emit("submit"));
   instance.bus.on("agentConversation", xSender.EventSet.EVENT_COMMON_CHANGE, () => {
@@ -441,6 +444,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     cancelVoiceInput();
     draftMentionTargets.value = [];
     sender = undefined;
+    senderReady.value = false;
     senderResize = undefined;
     element.removeEventListener("paste", pasteAttachments, true);
     window.removeEventListener("dragend", resetAttachmentDrag, true);
@@ -470,7 +474,7 @@ async function clearDraft() {
   await sender?.reset();
 }
 
-defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restoreEditingDraft });
+defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restoreEditingDraft, ready: senderReady });
 </script>
 
 <style lang="scss">

@@ -1,0 +1,420 @@
+{
+  "id": "jeansLookbook",
+  "title": "牛仔裤换装图片工作流",
+  "description": "上传一张商品裤装图和 8 张模特参考图，批量把商品裤子换到每位模特身上。只替换裤子，保留人物身份、姿势、背景、光线和鞋子，一次得到 8 张成片。",
+  "tags": [
+    "电商服装",
+    "裤子换装",
+    "批量出图"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": null,
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "jeans-lookbook",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "牛仔裤换装图片工作流｜1 张商品裤装 + 8 张模特参考图 → 8 张成品\n① 克隆后替换「商品裤装图」和 8 张「模特参考图」；商品图可用平铺图、挂拍图或模特上身图。\n② 在右侧 8 个生成配置中选择支持参考图编辑的图片模型，逐个点生成，或只改需要重出的那一条。\n③ 换装结果只替换裤子，人物身份、姿势、背景、光线和鞋子保持不变。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换商品裤装图 · 平铺/挂拍/上身",
+      "type": "image",
+      "example": "media1.webp",
+      "sourceNodeId": "qian-product"
+    },
+    {
+      "id": "input2",
+      "title": "替换参考图1 · 模特与姿势",
+      "type": "image",
+      "example": "media2.webp",
+      "sourceNodeId": "qian-ref-1"
+    },
+    {
+      "id": "input3",
+      "title": "替换参考图2 · 模特与姿势",
+      "type": "image",
+      "example": "media3.webp",
+      "sourceNodeId": "qian-ref-2"
+    },
+    {
+      "id": "input4",
+      "title": "替换参考图3 · 模特与姿势",
+      "type": "image",
+      "example": "media4.webp",
+      "sourceNodeId": "qian-ref-3"
+    },
+    {
+      "id": "input5",
+      "title": "替换参考图4 · 模特与姿势",
+      "type": "image",
+      "example": "media5.webp",
+      "sourceNodeId": "qian-ref-4"
+    },
+    {
+      "id": "input6",
+      "title": "替换参考图5 · 模特与姿势",
+      "type": "image",
+      "example": "media6.webp",
+      "sourceNodeId": "qian-ref-5"
+    },
+    {
+      "id": "input7",
+      "title": "替换参考图6 · 模特与姿势",
+      "type": "image",
+      "example": "media7.webp",
+      "sourceNodeId": "qian-ref-6"
+    },
+    {
+      "id": "input8",
+      "title": "替换参考图7 · 模特与姿势",
+      "type": "image",
+      "example": "media8.webp",
+      "sourceNodeId": "qian-ref-7"
+    },
+    {
+      "id": "input9",
+      "title": "替换参考图8 · 模特与姿势",
+      "type": "image",
+      "example": "media9.webp",
+      "sourceNodeId": "qian-ref-8"
+    }
+  ],
+  "texts": [],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "步骤 1 · 把商品裤装换到参考图1",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input2}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media10.webp",
+      "sourceNodeId": "qian-config-1",
+      "sourceOutputNodeId": "qian-result-1"
+    },
+    {
+      "id": "step2",
+      "title": "步骤 2 · 把商品裤装换到参考图2",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input3}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input3",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media11.webp",
+      "sourceNodeId": "qian-config-2",
+      "sourceOutputNodeId": "qian-result-2"
+    },
+    {
+      "id": "step3",
+      "title": "步骤 3 · 把商品裤装换到参考图3",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input4}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input4",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media12.webp",
+      "sourceNodeId": "qian-config-3",
+      "sourceOutputNodeId": "qian-result-3"
+    },
+    {
+      "id": "step4",
+      "title": "步骤 4 · 把商品裤装换到参考图4",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input5}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input5",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media13.webp",
+      "sourceNodeId": "qian-config-4",
+      "sourceOutputNodeId": "qian-result-4"
+    },
+    {
+      "id": "step5",
+      "title": "步骤 5 · 把商品裤装换到参考图5",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input6}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input6",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media14.webp",
+      "sourceNodeId": "qian-config-5",
+      "sourceOutputNodeId": "qian-result-5"
+    },
+    {
+      "id": "step6",
+      "title": "步骤 6 · 把商品裤装换到参考图6",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input7}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input7",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media15.webp",
+      "sourceNodeId": "qian-config-6",
+      "sourceOutputNodeId": "qian-result-6"
+    },
+    {
+      "id": "step7",
+      "title": "步骤 7 · 把商品裤装换到参考图7",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input8}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input8",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media16.webp",
+      "sourceNodeId": "qian-config-7",
+      "sourceOutputNodeId": "qian-result-7"
+    },
+    {
+      "id": "step8",
+      "title": "步骤 8 · 把商品裤装换到参考图8",
+      "type": "image",
+      "promptTemplate": "商品裤装：{{input1}}\n模特参考：{{input9}}\n\n把图片1中的牛仔裤换到图片2的人物身上，裤型、水洗、颜色和细节与图片1保持一致；保留图片2的人物身份、姿势、背景、光线和鞋子，只替换裤子，其他部分保持不变。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input9",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media17.webp",
+      "sourceNodeId": "qian-config-8",
+      "sourceOutputNodeId": "qian-result-8"
+    }
+  ],
+  "outputs": [
+    "step1",
+    "step2",
+    "step3",
+    "step4",
+    "step5",
+    "step6",
+    "step7",
+    "step8"
+  ],
+  "adaptationNotes": [
+    "八条出图分支相互独立；原模板要求商品图和八张模特参考图。"
+  ],
+  "assets": [
+    {
+      "path": "media1.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianProduct.webp"
+    },
+    {
+      "path": "media2.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef1.webp"
+    },
+    {
+      "path": "media3.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef2.webp"
+    },
+    {
+      "path": "media4.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef3.webp"
+    },
+    {
+      "path": "media5.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef4.webp"
+    },
+    {
+      "path": "media6.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef5.webp"
+    },
+    {
+      "path": "media7.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef6.webp"
+    },
+    {
+      "path": "media8.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef7.webp"
+    },
+    {
+      "path": "media9.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianRef8.webp"
+    },
+    {
+      "path": "media10.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut1.webp"
+    },
+    {
+      "path": "media11.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut2.webp"
+    },
+    {
+      "path": "media12.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut3.webp"
+    },
+    {
+      "path": "media13.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut4.webp"
+    },
+    {
+      "path": "media14.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut5.webp"
+    },
+    {
+      "path": "media15.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut6.webp"
+    },
+    {
+      "path": "media16.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut7.webp"
+    },
+    {
+      "path": "media17.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/jeans-lookbook/media/image_qianOut8.webp"
+    }
+  ]
+}

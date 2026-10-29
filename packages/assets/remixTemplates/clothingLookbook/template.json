@@ -1,0 +1,267 @@
+{
+  "id": "clothingLookbook",
+  "title": "电商服装图片工作流",
+  "description": "替换模特和两套服装，复用都市街头场景及两种姿势，分别生成四组竖版换装图。保留效果示例，可独立编辑每条生成分支。",
+  "tags": [
+    "电商服装",
+    "模特换装",
+    "图生图"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": null,
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "clothing-lookbook",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "电商服装场景模板｜1 位模特 × 2 套服装 × 2 种姿势\n① 克隆后替换「模特图」和「服装 A / B」；调整两段姿势与共享场景。\n② 在生成配置中选择支持参考图编辑的图片模型，推荐 GPT Image 2.5；默认跟随当前账号图片模型。\n③ 四条分支可分别生成，统一竖幅 1152×2048。右侧四张图片为已有效果示例；替换素材后请从对应「生成」节点重新出图，结果更新到右侧固定输出。\n④ 发布商品图前，请核对人物一致性及服装颜色、花纹、版型、长度等细节。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换模特图",
+      "type": "image",
+      "example": "media1.png",
+      "sourceNodeId": "image-1791773086305-6kml5"
+    },
+    {
+      "id": "input2",
+      "title": "替换服装 A · 碎花连衣裙",
+      "type": "image",
+      "example": "media2.png",
+      "sourceNodeId": "image-1791773147783-ppaob"
+    },
+    {
+      "id": "input3",
+      "title": "替换服装 B · 系带风衣",
+      "type": "image",
+      "example": "media3.png",
+      "sourceNodeId": "image-1791773339163-xpgne"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "姿势 A · 侧身靠灯柱",
+      "content": "身体侧向斜靠灯柱，以肩部接触灯柱作为支撑，重心微偏。头部自然转向侧方，下颌微收，视线望向远处。双腿小幅前后交错，右手自然下垂，轻握手包。姿态松弛、利落，完整展示服装。",
+      "sourceNodeId": "text-1791773129529-sespl"
+    },
+    {
+      "id": "text2",
+      "title": "共享场景 · 都市街头",
+      "content": "都市街头，自然斜向日光。背景为古典建筑石墙、浅色石材地砖与带复古纹饰底座的灰色金属灯柱，保持简约、优雅、真实的时装摄影氛围。根据姿势选择靠灯柱或靠墙位置。",
+      "sourceNodeId": "text-1791773181466-nztyd"
+    },
+    {
+      "id": "text3",
+      "title": "姿势 B · 靠墙轻触后颈",
+      "content": "身体以三分之二侧身位站立，背部微倚墙面。左手自然抬起，指尖轻触后颈，手肘下沉；右手放松，轻握书籍。左肩斜挎皮包，头部微转，视线避开镜头望向远处。姿态自然，完整展示服装。",
+      "sourceNodeId": "text-1791773478236-ib4on"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "生成 · 服装 A · 靠灯柱",
+      "type": "image",
+      "promptTemplate": "人物参考：{{input1}}\n服装参考：{{input2}}\n\n使用图片1中的模特作为唯一人物来源，保持脸部特征、发型与身材比例一致；将图片2的服装穿在该模特身上，准确保留服装颜色、图案、版型、领口、肩带或袖型、腰带和长度，不沿用图片1的原服装，不自行增加商品细节。\n\n姿势要求：{{text1}}\n场景要求：{{text2}}\n\n生成竖幅全身电商服装场景图，头部和鞋子完整入镜，面料与服装细节清晰，人体结构自然；无文字、无水印、无拼图。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "1152x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media5.png",
+      "sourceNodeId": "config-1791774493558-tiync",
+      "sourceOutputNodeId": "jmejP6zkMxPAvZcDqamsn"
+    },
+    {
+      "id": "step2",
+      "title": "生成 · 服装 B · 靠灯柱",
+      "type": "image",
+      "promptTemplate": "人物参考：{{input1}}\n服装参考：{{input3}}\n\n使用图片1中的模特作为唯一人物来源，保持脸部特征、发型与身材比例一致；将图片2的服装穿在该模特身上，准确保留服装颜色、图案、版型、领口、肩带或袖型、腰带和长度，不沿用图片1的原服装，不自行增加商品细节。\n\n姿势要求：{{text1}}\n场景要求：{{text2}}\n\n生成竖幅全身电商服装场景图，头部和鞋子完整入镜，面料与服装细节清晰，人体结构自然；无文字、无水印、无拼图。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input3",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "1152x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media4.png",
+      "sourceNodeId": "config-1791774536263-uffi5",
+      "sourceOutputNodeId": "p9CyKCRakkxvM0DBFk7OK"
+    },
+    {
+      "id": "step3",
+      "title": "生成 · 服装 A · 靠墙",
+      "type": "image",
+      "promptTemplate": "人物参考：{{input1}}\n服装参考：{{input2}}\n\n使用图片1中的模特作为唯一人物来源，保持脸部特征、发型与身材比例一致；将图片2的服装穿在该模特身上，准确保留服装颜色、图案、版型、领口、肩带或袖型、腰带和长度，不沿用图片1的原服装，不自行增加商品细节。\n\n姿势要求：{{text3}}\n场景要求：{{text2}}\n\n生成竖幅全身电商服装场景图，头部和鞋子完整入镜，面料与服装细节清晰，人体结构自然；无文字、无水印、无拼图。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "text3",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "1152x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media6.png",
+      "sourceNodeId": "config-1791774654726-hd6tb",
+      "sourceOutputNodeId": "90-RjmFLbBrMyPrEWoayZ"
+    },
+    {
+      "id": "step4",
+      "title": "生成 · 服装 B · 靠墙",
+      "type": "image",
+      "promptTemplate": "人物参考：{{input1}}\n服装参考：{{input3}}\n\n使用图片1中的模特作为唯一人物来源，保持脸部特征、发型与身材比例一致；将图片2的服装穿在该模特身上，准确保留服装颜色、图案、版型、领口、肩带或袖型、腰带和长度，不沿用图片1的原服装，不自行增加商品细节。\n\n姿势要求：{{text3}}\n场景要求：{{text2}}\n\n生成竖幅全身电商服装场景图，头部和鞋子完整入镜，面料与服装细节清晰，人体结构自然；无文字、无水印、无拼图。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input3",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "text3",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "1152x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media7.png",
+      "sourceNodeId": "config-1791774722242-b69kv",
+      "sourceOutputNodeId": "Wv7TEwN-k8NhF3v-0z2GV"
+    }
+  ],
+  "outputs": [
+    "step1",
+    "step2",
+    "step3",
+    "step4"
+  ],
+  "adaptationNotes": [
+    "四条出图分支相互独立；输入为一位模特和两套服装，输出四张图。"
+  ],
+  "assets": [
+    {
+      "path": "media1.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_1F7MbY2lBRzemmlKVymM1.png"
+    },
+    {
+      "path": "media2.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_V0enBP7skJHLR3-5glVqt.png"
+    },
+    {
+      "path": "media3.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_iujM6o6mtsGO8PXElplv3.png"
+    },
+    {
+      "path": "media4.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_x8TYOZBj5EsdikZ3gSzxY.png"
+    },
+    {
+      "path": "media5.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_kNIpbTVKkL0lrC-jrtD8e.png"
+    },
+    {
+      "path": "media6.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_kncEvebQAF91Z4s-pugna.png"
+    },
+    {
+      "path": "media7.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/clothing-lookbook/media/image_gtUPmwBkIeCcLFLcoSqif.png"
+    }
+  ]
+}

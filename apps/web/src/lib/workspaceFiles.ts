@@ -120,7 +120,9 @@ export default function useWorkspaceFiles(directory?: MaybeRefOrGetter<string | 
 
   async function write(path: string, content: string | Blob | ArrayBuffer, exclusive = false, signal?: AbortSignal) {
     const directory = getDirectory();
-    await client.put("/write", content, { params: { directory, path, exclusive }, signal, headers: { "Content-Type": "application/octet-stream" } });
+    // ACT: 磁盘来源的 File 会保留原始文件引用，Chromium 上传前校验被改动即报 ERR_UPLOAD_FILE_CHANGED（crbug 40694432），先读进内存再传。
+    const body = content instanceof Blob ? await content.arrayBuffer() : content;
+    await client.put("/write", body, { params: { directory, path, exclusive }, signal, headers: { "Content-Type": "application/octet-stream" } });
     invalidateUrls(directory, path);
   }
 

@@ -1,0 +1,237 @@
+{
+  "id": "outfitChangeVideo",
+  "title": "换装视频工作流",
+  "description": "替换一张模特图和一件服装图，生成同一模特的换装图，再结合动作参考制作8秒竖版换装视频。",
+  "tags": [
+    "电商服装",
+    "换装视频",
+    "多图参考"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media14.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "outfit-change-video",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "换装视频模板｜人物形象图 → 一张换装图 → 动作参考视频\n① 替换模特图和一套服装，先生成或替换人物形象图。② 生成一张换装图，再生成8秒视频。生成会更新固定输出图；完成后再手动执行后续节点，后续读取最新结果。\n③ 可替换动作参考视频，并修改分镜、场景及动作节奏；保留已有图片和视频供预览。\n④ 图片推荐 GPT Image 2.5，视频原流程使用 Seedance；请选择支持多图与视频参考的可用模型，默认沿用项目现有选择逻辑。\n⑤ 替换输入后从对应「生成」节点重新生成，固定输出和下游引用会更新；商品细节需人工核对。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换模特图",
+      "type": "image",
+      "example": "media1.png",
+      "sourceNodeId": "image-1791775170633-h8ear"
+    },
+    {
+      "id": "input2",
+      "title": "替换服装 · 粉色上衣与白色短裙",
+      "type": "image",
+      "example": "media3.png",
+      "sourceNodeId": "image-1791775273055-p8wyq"
+    },
+    {
+      "id": "input6",
+      "title": "替换动作参考视频",
+      "type": "video",
+      "example": "media7.mp4",
+      "sourceNodeId": "video-1791775426979-c2i6g"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "人物形象图要求",
+      "content": "模特的三视图，身穿运动背心，短裤，运动鞋。要求：要能展示九头身的身材细节！横版拼接电商展示图，左侧为人物胸部以上特写，双手垂立，不能遮盖脸部，右侧为同一人物全身三视图（正面、90 度正侧面、正背面）横向均匀排列，画面顶部有黑色宋体中文标题「形象展示」，三视图下方分别标注对应文字「正面展示」「侧面展示」「背面展示」； 人物正视镜头，标准站姿，双手自然垂于身体两侧，脚上根据服装，自动搭配鞋子； 纯白色无影墙影棚背景，专业商业人像布光，35mm 胶片实拍效果，柔和自然光，自然细腻，高对比度，高饱和度，超高细节，写实风格。",
+      "sourceNodeId": "text-1791775219264-h39d0"
+    },
+    {
+      "id": "text2",
+      "title": "可编辑 · 换装分镜与场景",
+      "content": "室内沙发换装视频：暖色台灯、白色纱帘、棕色木地板。固定高角度俯拍（约45°），中全景，机位全程不动。保持同一人物、环境与光线，穿上参考服装后完成一次自然换装。转场为快速换装、站立后向后自然倾倒、靠在沙发上放松定格。动作衔接流畅，服装清晰，无文字水印。",
+      "sourceNodeId": "outfit-video-script"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "步骤 1 · 生成人物形象图",
+      "type": "image",
+      "promptTemplate": "人物参考：{{input1}}\n保持参考人物的脸部、发型和身份一致。\n形象图要求：{{text1}}",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x1152",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media2.png",
+      "sourceNodeId": "config-1791775190839-2tpci",
+      "sourceOutputNodeId": "703w8YDng-UX9Y-Ge3J5k"
+    },
+    {
+      "id": "step2",
+      "title": "步骤 2 · 生成换装图",
+      "type": "image",
+      "promptTemplate": "人物参考：{{step1}}\n服装参考：{{input2}}\n使用图片1中的同一位模特，保持脸部、发型和身材一致，穿上图片2中的完整服装，准确保留商品的颜色、图案、版型和长度。生成竖幅全身展示图，人物和鞋子完整入镜，背景简洁，姿势自然，面料细节清晰，不生成三视图或拼图。",
+      "references": [
+        {
+          "source": "step1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step1"
+      ],
+      "settings": {
+        "size": "1152x2048",
+        "quality": "2k",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media9.png",
+      "sourceNodeId": "outfit-look-1",
+      "sourceOutputNodeId": "image-1791775611023-b0nxl"
+    },
+    {
+      "id": "step7",
+      "title": "步骤 3 · 生成换装视频",
+      "type": "video",
+      "promptTemplate": "换装图：{{step2}}\n动作参考：{{input6}}\n分镜与场景：{{text2}}\n参考视频只提供动作、节奏与机位，人物及服装以本次换装图为准。",
+      "references": [
+        {
+          "source": "step2",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input6",
+          "type": "video",
+          "label": "video1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step2"
+      ],
+      "settings": {
+        "size": "9:16",
+        "count": 1,
+        "seconds": "8",
+        "vquality": "480p",
+        "generateAudio": "false",
+        "watermark": "false"
+      },
+      "originalModel": null,
+      "example": "media14.mp4",
+      "sourceNodeId": "outfit-video-config",
+      "sourceOutputNodeId": "video-1791775915390-oxxja"
+    }
+  ],
+  "outputs": [
+    "step7"
+  ],
+  "adaptationNotes": [
+    "先生成形象图，再生成一张换装图，最后生成视频；下游必须使用本次任务产物。",
+    "视频步骤需要同时支持一张换装图片和视频动作参考的模型。"
+  ],
+  "assets": [
+    {
+      "path": "media1.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_cvBpNBqU4ncETxO9YwGpE.png"
+    },
+    {
+      "path": "media2.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_wabw_5Ed8H7Yvbr59Onb1.png"
+    },
+    {
+      "path": "media3.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_3Phe2ag9QjQl_BnaeOpEP.png"
+    },
+    {
+      "path": "media4.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_JLV1hdTZpIOWYWm0X_xy7.png"
+    },
+    {
+      "path": "media5.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_4I7QDoLd_dnttwsV7eRhW.png"
+    },
+    {
+      "path": "media6.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_f0jthTK1hSAnPAyDEjnQ1.png"
+    },
+    {
+      "path": "media7.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/outfit-change-video/media/video_c3Xm8zcMAr4B7RxdLnWKG.mp4"
+    },
+    {
+      "path": "media8.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/outfit-change-video/media/image_wSr51K9o8Zfwl6MXaSQUJ.webp"
+    },
+    {
+      "path": "media9.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_UsEbCTYH2aiUa5WRg-LP3.png"
+    },
+    {
+      "path": "media10.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_mAC-zL16JaiSptwok79ao.png"
+    },
+    {
+      "path": "media11.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_WPeAtkvQL3udFuxVNK0fq.png"
+    },
+    {
+      "path": "media12.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_DE3x6j_r5Z8wApHY2n50i.png"
+    },
+    {
+      "path": "media13.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/outfit-change-video/media/image_JE09_A78ULZPW47S4zoe2.png"
+    },
+    {
+      "path": "media14.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/outfit-change-video/media/video_AAOmKSi2fdD7X9MaAN3XV.mp4"
+    }
+  ]
+}

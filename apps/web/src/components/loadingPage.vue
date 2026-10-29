@@ -60,7 +60,8 @@ watch([() => props.active, reducedMotion], ([active, reducedMotion]) => {
 }, { immediate: true });
 
 function finishDrawing(event: AnimationEvent) {
-  if (event.target !== logoElement.value?.querySelector("path:last-of-type")) return;
+  const paths = logoElement.value?.querySelectorAll("path");
+  if (event.target !== paths?.[paths.length - 1]) return;
   drawn.value = true;
   if (!props.active) filling.value = true;
 }
@@ -82,10 +83,8 @@ function finishFilling() {
     top: 50dvh;
     left: 50vw;
     width: 96px;
-    aspect-ratio: 1;
+    aspect-ratio: 36 / 40;
     transform: translate(-50%, -50%);
-
-    .dark & { filter: invert(1); }
 
     .logoOutline {
       width: 100%;
@@ -94,8 +93,8 @@ function finishFilling() {
 
       :deep(svg) { display: block; width: 100%; height: auto; overflow: visible; }
       :deep(path) {
-        stroke: #000;
-        stroke-width: 14;
+        stroke: #0E263A;
+        stroke-width: 0.3;
         stroke-linecap: round;
         stroke-linejoin: round;
         fill: none;
@@ -103,7 +102,7 @@ function finishFilling() {
         stroke-dashoffset: 1;
         animation: logoDraw 0.65s linear both;
       }
-      :deep(path[data-part="1"]) { animation-delay: 0.08s; }
+      :deep(path[data-part="7"]) { stroke: #FA8C16; animation-delay: 0.08s; }
     }
 
     .logoFill {

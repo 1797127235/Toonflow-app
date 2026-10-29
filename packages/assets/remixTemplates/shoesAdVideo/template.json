@@ -1,0 +1,166 @@
+{
+  "id": "shoesAdVideo",
+  "title": "鞋类广告宣传视频",
+  "description": "一张鞋子产品图先生成正面和背面多视角图，再生成 3×3 分镜设计图，最后按分镜与策划提示词生成 15 秒 16:9 高端产品广告视频。",
+  "tags": [
+    "鞋类",
+    "产品广告",
+    "图生视频"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media4.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "shoes-ad-video",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "鞋类广告宣传视频｜1 张鞋子产品图 → 多视角图 + 3×3 分镜图 → 15 秒广告成片\n① 克隆后替换「鞋子产品图」，按步骤 1 生成包含正面和背面的多视角图。\n② 步骤 2 参考产品图与多视角图生成 3×3 分镜图；步骤 3 选择视频模型，按产品图、多视角图、分镜图与策划提示词生成 16:9 成片。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换鞋子产品图",
+      "type": "image",
+      "example": "media1.webp",
+      "sourceNodeId": "image-1791803485779-shdx2"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "广告策划提示词",
+      "content": "你现在是世界顶级的鞋类广告导演、产品摄影师及视觉策划专家。你的任务是根据我提供的鞋子产品图片，构思并策划一支15秒的高端产品展示广告，突出鞋子的外观设计、材质工艺、穿着场景、功能特点与品牌质感。广告包含9个关键镜头，请严格按照以下两个步骤执行：\n\n第一步：策划与分镜设计\n\n请先分析产品图片中鞋子的真实外观，包括鞋型、颜色、材质、鞋底结构、鞋带、Logo、缝线、纹理和其他细节。后续所有镜头必须保持鞋子外观一致，不得擅自改变鞋型、颜色、品牌标识、结构或材质。\n\n根据鞋子的核心卖点、目标人群、使用场景、品牌调性及视觉特征，设计一个具有吸引力的视觉叙事逻辑。请输出一个包含9个镜头的Markdown分镜表格，表头必须包含：\n\n- 镜头序号（1-9）\n- 景别与运镜（如：超特写、特写、中景、低角度、推镜头、环绕镜头、跟拍）\n- 画面详细描述（精准描述鞋子在画面中的状态、角度、材质、光影、环境与动作，确保与原产品图片一致）\n- 时长（总计15秒）\n- 旁白/音效\n\n9个镜头需要形成完整的广告节奏，建议包含：\n\n1. 产品整体亮相\n2. 鞋面材质与纹理特写\n3. 鞋带、Logo、缝线或结构细节展示\n4. 鞋底、防滑纹路或缓震结构展示\n5. 穿着状态或脚部动态展示\n6. 真实使用场景展示\n7. 运动、行走或功能性能展示\n8. 产品360度或多角度展示\n9. 品牌感结尾与产品定格\n\n第二步：编写 Nano Banana Pro 绘图提示词\n\n请根据前面设计的9个镜头，编写一段专门用于 Nano Banana Pro 模型的英文提示词，用于生成一张3×3网格分镜设计图。整张大图必须包含9个按照顺序排列的16:9画面，每个画面对应一个广告镜头。\n\n提示词必须满足以下要求：\n\n1. 必须使用英文编写。\n2. 开头必须包含以下原文：\n\n3x3 grid storyboard sheet, 9 panels sequence, 16:9 aspect ratio per panel, consistent visual style\n\n3. 必须严格保持参考鞋子的外观一致：\n   - identical shoe silhouette and proportions\n   - identical color scheme\n   - identical upper material and texture\n   - identical sole structure and tread pattern\n   - identical laces, stitching, logo placement, and branding details\n   - no redesign, no deformation, no extra accessories\n\n4. 每个画面必须清晰展示一个不同的镜头，并按照1至9的顺序排列。每个面板应包含：\n   - 不同的景别或摄像机角度\n   - 清晰的产品主体\n   - 明确的光线方向与氛围\n   - 合理的背景和使用场景\n   - 具有商业广告质感的构图\n\n5. 画面风格要求：\n   - premium commercial shoe advertising\n   - cinematic product photography\n   - realistic materials\n   - studio-quality lighting\n   - sharp focus on the shoe\n   - subtle depth of field\n   - high-end brand campaign aesthetic\n   - clean composition\n   - consistent color grading\n   - photorealistic details\n\n6. 9个面板的具体内容：\n\nPanel 1: Hero shot of the shoe in a clean premium studio, three-quarter angle, full product visible, dramatic key light, elegant shadow.\n\nPanel 2: Extreme close-up of the upper material, showing realistic texture, stitching, pores, weave, and surface finish.\n\nPanel 3: Close-up of the laces, eyelets, logo, stitching, and construction details, preserving exact branding placement.\n\nPanel 4: Low-angle close-up of the outsole, showing the tread pattern, grip texture, cushioning structure, and contact surface.\n\nPanel 5: The shoe being worn on a person’s foot, natural standing pose, realistic fit, accurate proportions, no distortion.\n\nPanel 6: The wearer walking through a stylish urban environment, the shoe clearly visible, natural motion, cinematic tracking shot.\n\nPanel 7: Dynamic performance scene showing the shoe during movement, emphasizing flexibility, stability, traction, and comfort without changing the shoe design.\n\nPanel 8: Premium multi-angle product presentation, showing the same shoe from side, rear, top, and three-quarter views with consistent appearance.\n\nPanel 9: Final hero product shot, the shoe centered on a clean luxury background, refined lighting, subtle brand atmosphere, strong commercial campaign ending.\n\n7. 版式要求：\n\n- exactly 9 panels\n- 3 columns by 3 rows\n- panels arranged in numerical order from left to right, top to bottom\n- each panel visually separated by thin clean gutters\n- no overlapping panels\n- no missing panels\n- no extra panels\n- no collage confusion\n- each panel should read as a separate 16:9 cinematic frame\n- keep the shoe large and clearly recognizable in every relevant panel\n- maintain the same shoe identity across all nine panels\n\n8. 文字要求：\n\n- minimal or no text inside the storyboard panels\n- do not generate fake brand names\n- do not generate random logos\n- do not add incorrect product labels\n- do not add subtitles, captions, watermarks, or UI elements\n- if panel labels are necessary, use only simple labels: 1, 2, 3, 4, 5, 6, 7, 8, 9\n\n9. Negative prompt：\n\ndifferent shoe design, inconsistent shoe identity, altered silhouette, changed color, wrong material, incorrect sole, deformed shoe, extra laces, missing laces, distorted logo, duplicated shoe, floating shoe, malformed foot, extra toes, unnatural anatomy, random text, fake brand name, unreadable logo, watermark, subtitles, captions, UI elements, extra panels, missing panels, overlapping panels, inconsistent lighting, inconsistent perspective, low resolution, blurry details, cartoon style, illustration, CGI appearance, plastic-looking material, oversaturated colors, cluttered background, poor composition",
+      "sourceNodeId": "text-1791803512637-7d2em"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "步骤 1 · 生成多视角图",
+      "type": "image",
+      "promptTemplate": "帮我生成产品{{input1}} 的正面和背面图",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x1152",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media2.webp",
+      "sourceNodeId": "config-1791803571498-77nh5",
+      "sourceOutputNodeId": "U-UrrphyglD4jSIbNWw3V"
+    },
+    {
+      "id": "step2",
+      "title": "步骤 2 · 生成分镜图",
+      "type": "image",
+      "promptTemplate": "参考{{input1}}和{{step1}} ，根据{{text1}} ，帮我生成一张3×3网格的分镜设计图（即一张大图里包含9个按顺序排列的16:9画面）。\n",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "step1",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step1"
+      ],
+      "settings": {
+        "size": "2048x1152",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media3.webp",
+      "sourceNodeId": "config-1791803780623-et9pa",
+      "sourceOutputNodeId": "mlVxIR5y99K4EDbcVQmvT"
+    },
+    {
+      "id": "step3",
+      "title": "步骤 3 · 生成广告成片",
+      "type": "video",
+      "promptTemplate": "请根据产品图{{input1}}和多视角图{{step1}} ，以及视频分镜内容，以及分镜提示词约束{{text1}} ，制作视频。 ",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "step1",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [
+        "step2"
+      ],
+      "dependsOn": [
+        "step1"
+      ],
+      "settings": {
+        "size": "16:9",
+        "count": 1,
+        "seconds": "15",
+        "vquality": "480p"
+      },
+      "originalModel": null,
+      "example": "media4.mp4",
+      "sourceNodeId": "config-1791803933609-us43f",
+      "sourceOutputNodeId": "wEhJOQAVrHCtSZzY4WcIH"
+    }
+  ],
+  "outputs": [
+    "step2",
+    "step3"
+  ],
+  "adaptationNotes": [
+    "最终视频配置连入分镜图，但 composerContent 没有引用该图；原执行器不会将它作为参考发送。",
+    "原视频提示词包含分镜表与绘图策划要求，视频执行提示词需单独整理。"
+  ],
+  "assets": [
+    {
+      "path": "media1.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/shoes-ad-video/media/image_Iz6NXxQZSXLrgaYte2SGS.webp"
+    },
+    {
+      "path": "media2.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/shoes-ad-video/media/image_Y_P2wzrz7YvBMLyHMaaKk.webp"
+    },
+    {
+      "path": "media3.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/shoes-ad-video/media/image_t6rDzXXE6cM6KOJwgGjVt.webp"
+    },
+    {
+      "path": "media4.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/shoes-ad-video/media/video_gkvo7Q4boeSq4vPgzujSy.mp4"
+    }
+  ]
+}

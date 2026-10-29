@@ -77,7 +77,19 @@
             </div>
           </section>
           <section class="projectList" data-home-section="projects" aria-labelledby="projectListTitle">
-            <h2 id="projectListTitle">项目</h2>
+            <div class="projectListHeader">
+              <h2 id="projectListTitle">项目</h2>
+              <el-button
+                v-if="sortedProjects.length > projectPreviewCount"
+                class="projectListToggle"
+                text
+                type="primary"
+                :aria-expanded="projectListExpanded"
+                @click="projectListExpanded = !projectListExpanded"
+              >
+                {{ projectListExpanded ? "收起" : `展开全部（${sortedProjects.length}）` }}
+              </el-button>
+            </div>
             <div class="projectItems">
               <el-card class="projectCard" shadow="never" :bodyStyle="{ padding: '0', height: '100%' }">
                 <button class="projectLaunch" type="button" :disabled="creating || opening || relocationPicker?.selecting" :aria-busy="creating || relocationPicker?.selecting" title="选择空文件夹新建，或打开已有项目" @click="createProject(false)">
@@ -91,7 +103,7 @@
                   </span>
                 </button>
               </el-card>
-              <el-card v-for="project in sortedProjects" :key="project.directory" class="projectCard" shadow="never" :bodyStyle="{ padding: '0', height: '100%' }">
+              <el-card v-for="project in visibleProjects" :key="project.directory" class="projectCard" shadow="never" :bodyStyle="{ padding: '0', height: '100%' }">
                 <button class="projectEntry" type="button" :disabled="creating || opening" :title="project.directory" :aria-label="`打开项目 ${project.name}`" @click="openProject(project)">
                   <projectCover :directory="project.directory" />
                   <span class="projectInfo">
@@ -106,6 +118,7 @@
               </el-card>
             </div>
           </section>
+          <remixGallery :disabled="creating || opening" :busy="creating || opening || relocationPicker?.selecting" @start="createProject(false, $event)" />
         </el-main>
       </div>
     </el-scrollbar>
@@ -145,6 +158,9 @@ import assetLibraryDialog from "./assetLibraryDialog.vue";
 import bg from "./bg.vue";
 import projectCover from "./projectCover.vue";
 import workspacePicker from "./workspacePicker.vue";
+import remixGallery from "./remixGallery.vue";
+import type { RemixRequest } from "./remixTemplates";
+import { createRemixCanvas } from "./remixCanvas";
 
 const settingsVisible = ref(false);
 const assetsVisible = ref(false);
@@ -156,6 +172,7 @@ const activeSection = ref("home");
 const homeSections = [
   { id: "home", label: "首页", icon: IconHome },
   { id: "projects", label: "项目", icon: IconFolder },
+  { id: "workflows", label: "一键生同款", icon: IconPlus },
 ];
 const mobileConnect = defineAsyncComponent(() => import("@/components/mobileConnect.vue"));
 const router = useRouter();
@@ -247,7 +264,10 @@ watch([creating, opening], ([creating, opening]) => {
 
 const selectedModel = ref("");
 const reasoningEffort = ref("");
+const projectPreviewCount = 6;
+const projectListExpanded = ref(false);
 const sortedProjects = computed(() => [...projectList.value].sort((left, right) => right.lastOpenedAt - left.lastOpenedAt));
+const visibleProjects = computed(() => projectListExpanded.value ? sortedProjects.value : sortedProjects.value.slice(0, projectPreviewCount));
 
 function scrollToSection(section: string) {
   const wrap = pageScroll.value?.wrapRef;
@@ -418,17 +438,21 @@ async function renameProject(project: Project) {
   if (result) workspaceStore.renameProject(project.directory, result.value);
 }
 
-async function createProject(fromPrompt = true) {
+async function createProject(fromPrompt = true, remixRequest?: RemixRequest) {
   if (creating.value || opening.value || (fromPrompt && !workspaceDirectory.value)) return;
   const path = fromPrompt ? workspaceDirectory.value : await relocationPicker.value?.chooseDirectory();
   if (!path || creating.value || opening.value || pageLifetime.signal.aborted) return;
   creating.value = true;
   try {
     const { directory, empty } = await useWorkspaceFiles(path).list();
+    if (remixRequest && !empty) return ElMessage.warning("请选择空文件夹创建同款项目");
     if (fromPrompt && !empty) return ElMessage.warning("该文件夹不为空，请重新选择空文件夹；已有项目请使用“新建项目”入口或点击项目列表打开。");
-    if (empty) await useWorkspaceFiles(directory).writeJson("画布1.json", { toonflowCanvas: true, nodes: [], edges: [], viewport: { x: 0, y: 0, zoom: 1 } }, true);
+    const remixMessage = remixRequest ? await createRemixCanvas(directory, remixRequest) : undefined;
+    if (empty && !remixRequest) await useWorkspaceFiles(directory).writeJson("画布1.json", { toonflowCanvas: true, nodes: [], edges: [], viewport: { x: 0, y: 0, zoom: 1 } }, true);
     await workspaceStore.openProject(directory);
-    if (fromPrompt && (prompt.value.trim() || promptAttachments.value.length)) {
+    if (remixMessage) {
+      workspaceStore.pendingAgentMessage = { directory: workspaceStore.project!.directory, ...remixMessage, model: selectedModel.value, reasoningEffort: reasoningEffort.value };
+    } else if (fromPrompt && (prompt.value.trim() || promptAttachments.value.length)) {
       workspaceStore.pendingAgentMessage = { directory: workspaceStore.project!.directory, prompt: prompt.value, attachments: [...promptAttachments.value], model: selectedModel.value, reasoningEffort: reasoningEffort.value };
     }
     await enterWorkspace();
@@ -529,8 +553,6 @@ async function createProject(fromPrompt = true) {
           width: 30px;
           height: 30px;
           transition: opacity var(--sidebarFade) ease;
-
-          .dark & { filter: invert(1); }
         }
 
         .brandName {
@@ -664,10 +686,6 @@ async function createProject(fromPrompt = true) {
               flex-shrink: 0;
               width: clamp(28px, 3.4vw, 44px);
               height: clamp(28px, 3.4vw, 44px);
-
-              .dark & {
-                filter: invert(1);
-              }
             }
 
             h1 {
@@ -833,11 +851,24 @@ async function createProject(fromPrompt = true) {
           max-width: 1280px;
           margin: 0 auto;
 
-          h2 {
-            margin: 0 0 20px;
-            font-size: 22px;
-            font-weight: 600;
-            line-height: 1.5;
+          .projectListHeader {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+
+            h2 {
+              margin: 0;
+              font-size: 22px;
+              font-weight: 600;
+              line-height: 1.5;
+            }
+
+            .projectListToggle {
+              flex-shrink: 0;
+              margin: 0;
+            }
           }
 
           .projectItems {

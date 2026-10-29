@@ -1,0 +1,156 @@
+{
+  "id": "danceCoverVideo",
+  "title": "人物舞蹈复刻视频",
+  "description": "一张人物图加一段舞蹈参考视频，让视频中的人物以相同身份外观完整复刻参考视频的整套舞蹈动作，提供教学参考和动作捕捉两条独立分支。",
+  "tags": [
+    "舞蹈复刻",
+    "动作参考",
+    "图生视频"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media3.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "dance-cover-video",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "人物舞蹈复刻视频｜1 张人物图 + 1 段舞蹈参考视频 → 人物跳同款舞蹈\n① 两条分支相互独立：分支 A 用教学视频做动作与时间参考，分支 B 用深度动作捕捉视频；克隆后替换对应的人物图和参考视频。\n② 替换素材后选中人物图与参考视频重新生成视频；人物身份外观保持一致，动作按参考视频完整复刻、不镜像不删减。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换舞蹈参考视频 A · 教学",
+      "type": "video",
+      "example": "media1.mp4",
+      "sourceNodeId": "video-1791795394883-8tlfc"
+    },
+    {
+      "id": "input2",
+      "title": "替换人物图 A",
+      "type": "image",
+      "example": "media2.webp",
+      "sourceNodeId": "image-1791795774134-fz7wz"
+    },
+    {
+      "id": "input3",
+      "title": "替换舞蹈参考视频 B · 动作捕捉",
+      "type": "video",
+      "example": "media4.mp4",
+      "sourceNodeId": "video-1791796472458-0uorf"
+    },
+    {
+      "id": "input4",
+      "title": "替换人物图 B",
+      "type": "image",
+      "example": "media5.webp",
+      "sourceNodeId": "image-1791796509650-8bmgd"
+    }
+  ],
+  "texts": [],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "成果 · 舞蹈复刻视频 A",
+      "type": "video",
+      "promptTemplate": "使用图片1 中的人物作为唯一主角，使用视频1 作为动作与时间参考，生成完整的舞蹈视频。\n\n人物外观：\n严格保持图片1 中人物的身份与外观，包括脸部特征、发型、发色、体型、身体比例、肤色、服装和配饰。整段视频中人物外观保持一致，面部清晰稳定，服装不发生变化。\n参考视频A中的白模或灰度深度信息仅用于指导姿势、动作和空间位置；最终画面呈现参考图片B中人物的真实外观与服装。\n\n舞蹈动作：\n完整复刻参考视频1 中舞蹈教学者的整套动作，严格遵循原视频的动作顺序、节奏、停顿时长、身体朝向、动作幅度、重心变化和移动路线。\n按照原视频时间轴同步完成每一个动作，准确还原手臂与手部姿势、抬腿与踏步、屈膝、转身、身体倾斜及定格动作。保持原视频的左右方向，不进行镜像翻转。\n保留所有教学停顿、重复动作和动作之间的衔接，不自行编舞、不添加或遗漏动作，不以循环片段替代完整舞蹈。人物从参考视频的起始姿势开始，以对应的结束姿势结束。\n\n动作与身体：\n身体结构和关节运动符合人体规律，四肢比例稳定，动作连贯自然。双脚接地可靠，踏步、落脚和重心转换准确协调，无滑步、漂浮或肢体穿模。\n在动作全过程中保持人物身份与面部特征稳定，头部转动、视线方向和身体朝向跟随参考视频。头发和衣物随动作自然运动。\n\n构图与镜头：\n人物作为唯一舞者，在舞台中央沿参考视频的路线完成动作。使用固定机位、全身构图，完整展示头部、双手和双脚，为抬臂、抬腿及横向移动保留足够空间。\n保持与参考视频一致的拍摄角度，镜头稳定，不切镜、不推拉、不环绕。背景简洁，光照稳定，无其他人物或遮挡舞蹈动作的物体。\n\n时长与成片：\n视频时长与视频1 保持一致，动作起止时间与原视频同步。画面清晰，人物外观一致，动作平滑，重点呈现完整、准确的舞蹈复刻。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "video",
+          "label": "video1"
+        },
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "9:16",
+        "seconds": "12",
+        "vquality": "480p",
+        "generateAudio": "false",
+        "watermark": "false"
+      },
+      "originalModel": null,
+      "example": "media3.mp4",
+      "sourceNodeId": "video-1791795862980-tip9c",
+      "sourceOutputNodeId": "video-1791795862980-tip9c"
+    },
+    {
+      "id": "step2",
+      "title": "成果 · 舞蹈复刻视频 B",
+      "type": "video",
+      "promptTemplate": "使用图片1 中的人物作为唯一主角，使用视频1 作为动作与时间参考，生成完整的舞蹈视频。\n\n人物外观：\n严格保持图片1 中人物的身份与外观，包括脸部特征、发型、发色、体型、身体比例、肤色、服装和配饰。整段视频中人物外观保持一致，面部清晰稳定，服装不发生变化。\n参考视频A中的白模或灰度深度信息仅用于指导姿势、动作和空间位置；最终画面呈现参考图片B中人物的真实外观与服装。\n\n舞蹈动作：\n完整复刻参考视频1 中舞蹈教学者的整套动作，严格遵循原视频的动作顺序、节奏、停顿时长、身体朝向、动作幅度、重心变化和移动路线。\n按照原视频时间轴同步完成每一个动作，准确还原手臂与手部姿势、抬腿与踏步、屈膝、转身、身体倾斜及定格动作。保持原视频的左右方向，不进行镜像翻转。\n保留所有教学停顿、重复动作和动作之间的衔接，不自行编舞、不添加或遗漏动作，不以循环片段替代完整舞蹈。人物从参考视频的起始姿势开始，以对应的结束姿势结束。\n\n动作与身体：\n身体结构和关节运动符合人体规律，四肢比例稳定，动作连贯自然。双脚接地可靠，踏步、落脚和重心转换准确协调，无滑步、漂浮或肢体穿模。\n在动作全过程中保持人物身份与面部特征稳定，头部转动、视线方向和身体朝向跟随参考视频。头发和衣物随动作自然运动。\n\n构图与镜头：\n人物作为唯一舞者，在舞台中央沿参考视频的路线完成动作。使用固定机位、全身构图，完整展示头部、双手和双脚，为抬臂、抬腿及横向移动保留足够空间。\n保持与参考视频一致的拍摄角度，镜头稳定，不切镜、不推拉、不环绕。背景简洁，光照稳定，无其他人物或遮挡舞蹈动作的物体。\n\n时长与成片：\n视频时长与视频1 保持一致，动作起止时间与原视频同步。画面清晰，人物外观一致，动作平滑，重点呈现完整、准确的舞蹈复刻。",
+      "references": [
+        {
+          "source": "input3",
+          "type": "video",
+          "label": "video1"
+        },
+        {
+          "source": "input4",
+          "type": "image",
+          "label": "image1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "9:16",
+        "seconds": "11",
+        "vquality": "480p",
+        "generateAudio": "false",
+        "watermark": "false"
+      },
+      "originalModel": null,
+      "example": "media6.mp4",
+      "sourceNodeId": "video-1791796527245-aoj3n",
+      "sourceOutputNodeId": "video-1791796527245-aoj3n"
+    }
+  ],
+  "outputs": [
+    "step1",
+    "step2"
+  ],
+  "adaptationNotes": [
+    "教学与动作捕捉是两条独立分支，应让用户选择一条，不能默认同时执行。",
+    "参考视频与配置时长不完全一致，执行前需按当前模型支持核对。",
+    "两条分支原提示词都含白模/灰度说明；教学分支需按实际参考内容适配。"
+  ],
+  "assets": [
+    {
+      "path": "media1.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/dance-cover-video/media/video_yVXmIgo39F8ibGCKWSXLY.mp4"
+    },
+    {
+      "path": "media2.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/dance-cover-video/media/image_rpW4AB7QnYXSJgyNVEDFh.webp"
+    },
+    {
+      "path": "media3.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/dance-cover-video/media/video_OdNfD6K97roKhuc5i3j3i.mp4"
+    },
+    {
+      "path": "media4.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/dance-cover-video/media/video_shfkC95yleuUv1m5YmqVp.mp4"
+    },
+    {
+      "path": "media5.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/dance-cover-video/media/image_cJmoR5mhxT5xnP4A7kyd_.webp"
+    },
+    {
+      "path": "media6.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/dance-cover-video/media/video_BJ4OExECczy3Rhiy91ONy.mp4"
+    }
+  ]
+}

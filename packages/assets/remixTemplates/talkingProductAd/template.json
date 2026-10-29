@@ -1,0 +1,140 @@
+{
+  "id": "talkingProductAd",
+  "title": "口播广告 Grok 工作流",
+  "description": "替换人物、门店与商品参考图，编辑口播文案和表演要求，生成带声音的竖版商品广告，附两段成果示例。",
+  "tags": [
+    "口播广告",
+    "商品展示",
+    "图生视频"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media5.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "talking-product-ad",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "口播广告模板｜人物 + 门店场景 + 商品 + 口播文案\n① 替换三张参考图，编辑口播台词和场景表演说明。现有图片是截图预览，正式出片建议替换为清晰、无界面按钮的原图。\n② 原流程使用 Grok 视频模型；生成时选择支持多图参考及音频输出的可用视频模型，模型下拉框沿用现有逻辑。\n③ 默认5秒、9:16、480p、有声音，可按文案长度调整时长；右侧两段视频为原有成果示例。\n④ 从「生成 · 竖版口播广告」重新生成，替换素材不会自动更新示例；请按实际商品修改台词并检查口型和商品细节。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换门店或场景图",
+      "type": "image",
+      "example": "media1.png",
+      "sourceNodeId": "image-1791447781021-uapuj"
+    },
+    {
+      "id": "input2",
+      "title": "替换人物参考图",
+      "type": "image",
+      "example": "media2.png",
+      "sourceNodeId": "image-1791447784423-6yr2c"
+    },
+    {
+      "id": "input3",
+      "title": "替换商品图",
+      "type": "image",
+      "example": "media3.png",
+      "sourceNodeId": "image-1791447786211-p682m"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "可编辑 · 口播文案",
+      "content": "家人们，这款折叠屏手机，展开大屏，合上轻巧，怎么折都有面！",
+      "sourceNodeId": "talking-ad-copy"
+    },
+    {
+      "id": "text2",
+      "title": "可编辑 · 场景与表演",
+      "content": "真实商品广告视频，从首帧自然启动动作，开头无静止卡顿。全程保持同一个门店场景、人物、服装与光线，不切换环境。人物手持商品，配合自然肢体手势和产品展示动作介绍产品；口型与中文口播匹配，声音清晰，背景音不过强，不添加文字、水印或额外标识。",
+      "sourceNodeId": "talking-ad-scene"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "生成 · 竖版口播广告",
+      "type": "video",
+      "promptTemplate": "人物参考：{{input2}}\n门店背景：{{input1}}\n商品参考：{{input3}}\n\n图片1中的人物站在图片2的门店场景中，手持并介绍图片3的商品。保持人物身份与商品外观一致，不带入参考截图中的按钮、边框或标记。\n表演要求：{{text2}}\n人物中文口播台词：{{text1}}",
+      "references": [
+        {
+          "source": "input2",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "input3",
+          "type": "image",
+          "label": "image3"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "9:16",
+        "count": 1,
+        "seconds": "5",
+        "vquality": "480p",
+        "generateAudio": "true",
+        "watermark": "false"
+      },
+      "originalModel": null,
+      "example": "media5.mp4",
+      "sourceNodeId": "talking-ad-config",
+      "sourceOutputNodeId": "video-1791777716300-vfo4o"
+    }
+  ],
+  "outputs": [
+    "step1"
+  ],
+  "adaptationNotes": [
+    "原模板有两个历史视频示例，生成配置只指向其中一个；不能把两段示例当作两次待执行生成。",
+    "五秒为原配置值，口播文案长度与真实语音能力需在执行前核实。"
+  ],
+  "assets": [
+    {
+      "path": "media1.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/talking-product-ad/media/image_0MiINpmGEnZhxkHEjG3jL.png"
+    },
+    {
+      "path": "media2.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/talking-product-ad/media/image_5SIq3O5wf5cWOSn4IH_FC.png"
+    },
+    {
+      "path": "media3.png",
+      "mimeType": "image/png",
+      "sourcePath": "/templates/talking-product-ad/media/image_N1l1qXu6jO1yBYMTT6_ZO.png"
+    },
+    {
+      "path": "media4.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/talking-product-ad/media/video_yj1fWwuIuqRqSYtgC83xN.mp4"
+    },
+    {
+      "path": "media5.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/talking-product-ad/media/video_VV2aa11uasQ3FJmmW26c-.mp4"
+    }
+  ]
+}

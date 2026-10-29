@@ -1,0 +1,128 @@
+{
+  "id": "apparelShowcaseVideo",
+  "title": "服装悬浮展示视频",
+  "description": "一张商品服装图先生成正视图和背视图，再让服装悬浮绕轴旋转展示正面、侧面和背面，生成 15 秒 16:9 商品展示视频。",
+  "tags": [
+    "电商服装",
+    "悬浮旋转",
+    "图生视频"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media3.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "apparel-showcase-video",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "服装悬浮展示视频｜1 张商品服装图 → 正背视图 → 15 秒悬浮旋转展示视频\n① 克隆后替换「商品服装图」，先按步骤 1 生成服装正视图和背视图。\n② 再按步骤 2 用悬浮旋转提示词，以正背视图为参考生成 16:9 悬浮展示视频；生成前在生成配置中选好账号可用的模型。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换商品服装图",
+      "type": "image",
+      "example": "media1.webp",
+      "sourceNodeId": "image-1791802578724-l6svt"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "正背视图提示词",
+      "content": "帮我生成服装的正视图和背视图",
+      "sourceNodeId": "text-1791802272578-lvjjn"
+    },
+    {
+      "id": "text2",
+      "title": "悬浮旋转提示词",
+      "content": "固定机位。画面中的衣服保持悬浮，围绕自身竖直中心轴平滑旋转，依次展示正面、侧面、背面和另一侧，再回到正面。约5秒完成一轮，随后柔和反向转动，整体持续15秒。\n\n衣服中心、大小、颜色和设计结构始终一致。袖口与下摆随转动产生轻微、自然的滞后摆动，保持面料重量与垂坠感。背景、光源及相机位置固定，投影随衣服姿态自然变化。结尾回到接近首帧的姿态。",
+      "sourceNodeId": "text-1791802685262-g1hr0"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "步骤 1 · 生成正背视图",
+      "type": "image",
+      "promptTemplate": "{{input1}} {{text1}} ",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x1152",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media2.webp",
+      "sourceNodeId": "config-1791802618863-jzwhe",
+      "sourceOutputNodeId": "1ZbgzNsBIh8T31P0JK6a0"
+    },
+    {
+      "id": "step2",
+      "title": "步骤 2 · 生成悬浮展示视频",
+      "type": "video",
+      "promptTemplate": "以{{step1}} 为产品参考，按照提示词 {{text2}} 要求生成视频",
+      "references": [
+        {
+          "source": "step1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step1"
+      ],
+      "settings": {
+        "size": "16:9",
+        "count": 1,
+        "seconds": "15",
+        "vquality": "480p"
+      },
+      "originalModel": null,
+      "example": "media3.mp4",
+      "sourceNodeId": "config-1791802712959-w46s0",
+      "sourceOutputNodeId": "-7HyZa64WHlweSE06SeVG"
+    }
+  ],
+  "outputs": [
+    "step2"
+  ],
+  "adaptationNotes": [
+    "一张服装输入，依次生成正背视图与十五秒视频；不要复用历史正背视图作为新商品结果。"
+  ],
+  "assets": [
+    {
+      "path": "media1.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/apparel-showcase-video/media/image_3zO5wc6SWbmAp2yrZz3jq.webp"
+    },
+    {
+      "path": "media2.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/apparel-showcase-video/media/image_X7jr_Gs8sMjD1oCRd_KDc.webp"
+    },
+    {
+      "path": "media3.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/apparel-showcase-video/media/video_ISXr-auUl8KIF43MQsLEE.mp4"
+    }
+  ]
+}

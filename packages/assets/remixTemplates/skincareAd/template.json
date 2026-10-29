@@ -1,0 +1,175 @@
+{
+  "id": "skincareAd",
+  "title": "护肤广告宣传视频",
+  "description": "一张护肤品产品图配合模特形象提示词生成模特图，再汇总产品、模特和策划提示词生成分镜图，最后按分镜生成 15 秒 16:9 高端护肤广告成片。",
+  "tags": [
+    "护肤美妆",
+    "产品广告",
+    "图生视频"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media4.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "skincare-ad",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "护肤广告宣传视频｜1 张产品图 → 模特形象图 + 3×3 分镜图 → 15 秒广告成片\n① 克隆后替换「产品图」，可修改「模特形象提示词」重新生成符合品牌调性的模特图。\n② 步骤 1 汇总产品图、模特图和策划提示词生成 3×3 分镜图；步骤 2 选择视频模型，按分镜与提示词生成 16:9 成片。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换产品图",
+      "type": "image",
+      "example": "media1.webp",
+      "sourceNodeId": "image-1791804683765-3i2dg"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "模特形象提示词",
+      "content": "高端护肤品肖像，画面里只有一位二十多岁的东亚成年女性，纯白无缝背景。神情平静自信，皮肤水润有自然光泽，淡妆，头发整齐离开面部。柔和均匀的棚拍光线，真实皮肤纹理，干净简约，平视肩部以上近景，高端美妆摄影，85mm 镜头。不要产品、瓶子、手持物品、道具、文字、标志和水印。",
+      "sourceNodeId": "text-1791804768403-coa0h"
+    },
+    {
+      "id": "text2",
+      "title": "广告策划提示词",
+      "content": "你现在是世界顶级的护肤品广告导演、皮肤护理视觉策划师、产品摄影师和美容品牌创意总监。你的任务是根据我提供的护肤品图片、产品功效和目标人群，策划一支15秒的高端护肤品广告。\n\n本产品的核心功效是：[产品功效]\n目标人群是：[目标人群]\n主要使用场景是：[使用场景]\n品牌风格是：[品牌风格，例如：高级、自然、科技、温和、年轻、奢华]\n\n广告必须围绕产品功效展开，并且必须出现真实人物。人物不能只是背景装饰，而要通过人物的肤质、表情、使用动作、生活场景和肌肤状态，直观体现产品的使用目的与品牌氛围。\n\n第一步：分析产品与策划分镜\n\n请先仔细分析参考图片中的护肤品外观，包括：\n\n- 瓶身、罐体、软管或包装的形状和比例\n- 产品颜色、材质、透明度和表面质感\n- 瓶盖、泵头、滴管、喷头或涂抹器结构\n- Logo、标签、字体、文字排版和品牌细节\n- 产品的真实质地，例如乳霜、乳液、精华液、凝胶、油状液体或喷雾\n\n后续所有镜头必须保持产品外观一致，不得改变瓶身结构、颜色、包装设计、Logo位置、标签布局、产品容量比例或材质。\n\n请根据产品的真实功效设计人物和剧情：\n\n- 补水保湿：表现干燥肌肤被温和滋润后的水润光泽，人物肌肤自然、柔软、通透\n- 舒缓修护：表现肌肤不适、干燥或泛红状态下的温和护理过程，使用柔和光线和舒缓表情\n- 提亮肤色：表现肤色均匀、自然透亮和健康光泽，不要出现不自然的漂白效果\n- 抗老紧致：使用符合目标年龄的人物，表现成熟肌肤的精致纹理、护理过程和健康紧致感，不要制造不真实的瞬间逆龄\n- 控油清爽：表现人物在日常或城市环境中的清爽肤感、自然哑光质地和干净的T区状态\n- 防晒护理：表现人物在户外阳光环境中的涂抹动作、轻盈肤感和日常防护场景\n- 敏感肌护理：使用自然、克制、温和的画面，表现轻柔涂抹、舒缓触感和安心的护理氛围\n- 淡斑或痘肌护理：只表现规律护理、洁净肌肤和自然状态，不要制造夸张的瞬间祛痘或瞬间消除色斑效果\n\n请输出一个包含9个镜头的Markdown分镜表格，表头必须包含：\n\n- 镜头序号（1-9）\n- 人物设定与状态\n- 景别与运镜\n- 画面详细描述\n- 产品功效表达\n- 时长\n- 旁白/音效\n\n总时长必须为15秒，9个镜头应形成完整的广告叙事：\n\n1. 产品与人物共同亮相，建立品牌氛围\n2. 人物面部或肌肤状态特写，体现与产品功效相关的需求\n3. 产品包装和质地的微距特写\n4. 人物打开、按压、滴取或取用产品\n5. 人物将产品涂抹在脸部、手部或身体肌肤上\n6. 特写表现产品在肌肤上的延展性、吸收感或使用质感\n7. 人物在符合产品功效的真实生活场景中使用产品\n8. 人物状态与产品多角度展示结合，强化功效记忆点\n9. 产品最终定格，同时保留人物或人物局部，形成品牌广告结尾\n\n人物要求：\n\n- 使用同一位人物贯穿所有相关镜头\n- 保持人物的脸型、发型、肤色、年龄、五官和服装基本一致\n- 人物的肌肤必须真实自然，有正常皮肤纹理\n- 人物表情自然、高级、放松，不要夸张表演\n- 人物动作符合真实护肤流程\n- 人物应与产品功效和目标人群匹配\n- 不要出现多余人物、额外手指、畸形手部或不自然的面部结构\n- 产品在人物手中、脸旁或台面上必须保持正确比例\n\n第二步：编写 Nano Banana Pro 绘图提示词\n\n请根据前面设计的9个镜头，编写一段专门用于 Nano Banana Pro 模型的英文提示词，用于生成一张3×3网格分镜设计图。\n\n提示词必须使用英文，并且开头必须包含以下原文：\n\n3x3 grid storyboard sheet, 9 panels sequence, 16:9 aspect ratio per panel, consistent visual style\n\n英文提示词必须明确说明：\n\n- the product’s exact skincare benefit: [INSERT THE PRODUCT BENEFIT]\n- the target audience: [INSERT THE TARGET AUDIENCE]\n- the same person appears consistently across all human-centered panels\n- the person’s identity, facial features, skin tone, hairstyle, age, and clothing remain consistent\n- the human presence is essential, not decorative\n- the visual storytelling is built around the product’s actual benefit\n- the product packaging remains identical in every panel\n\n人物与功效必须根据产品实际定位呈现：\n\nFor hydration and moisturizing products:\nshow naturally hydrated, fresh, supple-looking skin, a soft dewy finish, gentle application, and a clean morning beauty environment.\n\nFor soothing and repairing products:\nshow a calm, relaxed person with natural skin texture, gentle application, warm diffused lighting, and a quiet self-care atmosphere.\n\nFor brightening products:\nshow an even, luminous, healthy-looking complexion under clean natural light, without bleaching effects or unnatural skin color changes.\n\nFor anti-aging and firming products:\nshow a mature or age-appropriate model, elegant skincare application, refined skin texture, healthy radiance, and a sophisticated luxury beauty atmosphere without instant age reversal.\n\nFor oil-control products:\nshow a fresh, balanced, naturally matte complexion, realistic urban or warm-weather conditions, and a clean, energetic lifestyle scene.\n\nFor sunscreen products:\nshow the person applying the product correctly before going outdoors, bright natural sunlight, a lightweight skincare feeling, and an active daily lifestyle.\n\nFor sensitive-skin products:\nshow a gentle touch, relaxed facial expression, soft neutral lighting, minimal styling, and a calm, reassuring skincare environment.\n\nFor blemish-care or spot-care products:\nshow a clean skincare routine, careful application, realistic skin texture, and a healthy-looking complexion without exaggerated instant transformation.\n\nThe nine panels must contain the following scenes:\n\nPanel 1: A premium hero shot showing the exact skincare product in the foreground and the same person softly visible in the background, establishing the product benefit and target audience through the person’s appearance and environment.\n\nPanel 2: A close-up portrait of the same person showing the natural skin condition or skincare concern related to the product benefit, realistic skin texture, subtle expression, elegant beauty lighting, and no exaggerated problem areas.\n\nPanel 3: An extreme macro close-up of the exact product packaging, including the bottle, jar, tube, cap, pump, dropper, logo, label, material, reflections, and surface finish, with the same person’s hand entering the frame naturally.\n\nPanel 4: The same person opening, pressing, dispensing, dropping, or applying the product, using the correct packaging mechanism, realistic hand anatomy, accurate product amount, and refined commercial composition.\n\nPanel 5: The same person applying the product to the face, cheek, forehead, hand, neck, or other appropriate area, depending on the product’s intended use, with a natural and believable skincare gesture.\n\nPanel 6: A macro close-up of the product spreading across the person’s skin, clearly showing the real texture of the cream, lotion, gel, serum, oil, or mist, realistic absorption and natural skin detail.\n\nPanel 7: The same person using the product in a lifestyle scene that matches its benefit, such as a morning bathroom routine, nighttime self-care, outdoor preparation, gym bag routine, office routine, travel routine, or relaxing spa environment.\n\nPanel 8: A premium beauty portrait of the same person together with the exact product, showing the person’s natural healthy-looking skin and confident relaxed expression, while preserving realistic skin texture and consistent identity.\n\nPanel 9: A final luxury product hero shot with the exact skincare product centered in the foreground and the same person softly present in the background or reflected in a mirror, creating a refined, emotionally clear brand ending.\n\nMaintain exact product consistency across all panels:\n\n- identical bottle, jar, tube, or container silhouette\n- identical proportions and dimensions\n- identical packaging color and finish\n- identical cap, pump, dropper, applicator, and closure\n- identical logo placement and label layout\n- identical visible brand details\n- identical material, transparency, reflections, and texture\n- no redesign\n- no deformation\n- no invented packaging elements\n- no fake product names\n- no fake ingredients\n- no fake certifications\n- no random logos\n- no altered product claims\n\nMaintain human consistency across all panels:\n\n- same person in every human-centered panel\n- same facial structure and identity\n- same skin tone and age\n- same hairstyle and hair color\n- same clothing or coordinated clothing\n- same realistic skin texture\n- natural facial expression\n- realistic hands and fingers\n- realistic skincare gestures\n- no extra people unless specifically requested\n- no facial distortion\n- no plastic-looking skin\n- no impossible beauty transformation\n\nComposition and grid requirements:\n\n- exactly 9 panels\n- 3 columns by 3 rows\n- panels arranged in numerical order from left to right, top to bottom\n- each panel is a separate cinematic 16:9 frame\n- thin clean gutters between panels\n- no overlapping panels\n- no missing panels\n- no extra panels\n- no collage confusion\n- consistent lighting, color grading, lens language, and commercial beauty style\n- the same person and the same skincare product remain recognizable throughout the storyboard\n- the product must be clearly visible in every relevant panel\n- the person must be clearly visible in the human-centered panels\n\nVisual style:\n\npremium skincare advertising, luxury beauty campaign, cinematic beauty film, photorealistic human portrait, realistic skin texture, realistic product packaging, elegant commercial lighting, soft diffused highlights, controlled reflections, subtle depth of field, clean beauty composition, refined color grading, high-end cosmetic campaign, natural human presence, sophisticated visual storytelling, realistic skincare application, emotionally engaging product narrative\n\nText requirements:\n\n- preserve visible packaging text only when it can be reproduced accurately\n- do not invent or alter brand names\n- do not generate random text\n- do not add medical claims\n- do not add guaranteed results\n- do not add subtitles, captions, slogans, promotional banners, watermarks, or UI elements\n- if panel labels are necessary, use only simple labels: 1, 2, 3, 4, 5, 6, 7, 8, 9\n\nNegative prompt:\n\ndifferent skincare product, inconsistent product identity, altered bottle shape, changed packaging color, wrong cap, wrong pump, wrong dropper, incorrect label, distorted logo, fake brand name, invented text, unreadable packaging, missing packaging details, extra packaging elements, duplicated product, floating product, deformed container, melted container, broken bottle, incorrect product texture, excessive cream, unrealistic liquid, inconsistent person, different face, different hairstyle, different skin tone, different age, extra people, distorted face, plastic skin, overly retouched skin, unnatural skin color, impossible skin transformation, instant whitening, instant wrinkle removal, instant acne removal, medical claim, guaranteed result, exaggerated before-and-after effect, malformed hands, extra fingers, distorted anatomy, unnatural application gesture, random text, subtitles, captions, watermark, UI elements, extra panels, missing panels, overlapping panels, inconsistent lighting, inconsistent perspective, low resolution, blurry details, cartoon style, illustration, cheap CGI appearance, oversaturated colors, cluttered background, poor composition",
+      "sourceNodeId": "text-1791805131706-slw4f"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "步骤 1 · 生成分镜图",
+      "type": "image",
+      "promptTemplate": "产品图为{{input1}} ，模特参考{{step3}} ，，请根据提示词，帮我生成一张3×3网格的分镜设计图（即一张大图里包含9个按顺序排列的16:9画面）。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "step3",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [
+        "text2"
+      ],
+      "dependsOn": [
+        "step3"
+      ],
+      "settings": {
+        "size": "2048x1152",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media3.webp",
+      "sourceNodeId": "config-1791804758308-jz1mh",
+      "sourceOutputNodeId": "McfD42Ex4GBZAAGyvUGsz"
+    },
+    {
+      "id": "step2",
+      "title": "步骤 2 · 生成广告成片",
+      "type": "video",
+      "promptTemplate": "产品图参考{{input1}} ，模特图参考{{step3}} ，分镜图参考{{step1}} ，，根据提示词{{text2}} 生成视频。",
+      "references": [
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "step3",
+          "type": "image",
+          "label": "image2"
+        },
+        {
+          "source": "step1",
+          "type": "image",
+          "label": "image3"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step3",
+        "step1"
+      ],
+      "settings": {
+        "size": "16:9",
+        "count": 1,
+        "seconds": "15",
+        "vquality": "480p"
+      },
+      "originalModel": null,
+      "example": "media4.mp4",
+      "sourceNodeId": "config-1791805347160-cjnje",
+      "sourceOutputNodeId": "0UOla3a_KxfxnrtPkdKsG"
+    },
+    {
+      "id": "step3",
+      "title": "成果 · 模特形象图",
+      "type": "image",
+      "promptTemplate": "文本1 ",
+      "references": [
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "1:1",
+        "quality": "auto",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media2.webp",
+      "sourceNodeId": "image-1791804928791-54d29",
+      "sourceOutputNodeId": "image-1791804928791-54d29"
+    }
+  ],
+  "outputs": [
+    "step2"
+  ],
+  "adaptationNotes": [
+    "模特图由独立图片节点连接模特形象文本生成，已提取为 step3；它必须先于分镜图执行，不能按 steps 数组顺序直接运行。",
+    "分镜配置连入了策划文本，却没有在 composerContent 中引用；原执行器不会把该策划文本发给模型。",
+    "策划文本里的产品功效、目标人群和使用场景等占位词尚需变成用户输入。",
+    "原视频提示词包含绘图策划指令，视频执行提示词需单独整理。"
+  ],
+  "assets": [
+    {
+      "path": "media1.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/skincare-ad/media/image_1tfBXAq40asvCy0qFrdmD.webp"
+    },
+    {
+      "path": "media2.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/skincare-ad/media/image_W6H0vjiLsq3C1vZXaL0Ki.webp"
+    },
+    {
+      "path": "media3.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/skincare-ad/media/image_6v-qdyGbpShKfUaS5LNnx.webp"
+    },
+    {
+      "path": "media4.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/skincare-ad/media/video_Beh4Y14mI5K0NKIchXEZV.mp4"
+    }
+  ]
+}

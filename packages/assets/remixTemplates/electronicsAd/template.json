@@ -1,0 +1,283 @@
+{
+  "id": "electronicsAd",
+  "title": "3C产品宣传广告",
+  "description": "一张 3C 产品图延伸出电商海报、直播间场景图和 15 秒竖版宣传视频：先生成风格海报与场景图，再让文本模型写分镜脚本、图生成分镜图，最后按脚本与分镜图生成视频。",
+  "tags": [
+    "3C数码",
+    "产品广告",
+    "图生视频"
+  ],
+  "author": "官方",
+  "status": "extracted",
+  "cover": "cover.webp",
+  "previewVideo": "media6.mp4",
+  "source": {
+    "project": "infinite-canvas",
+    "templateId": "electronics-ad",
+    "path": "web/public/templates/templates.json"
+  },
+  "instructions": "3C 产品宣传广告｜1 张产品图 → 海报 / 直播间场景图 / 15 秒竖版宣传视频\n① 克隆后先替换「白色产品图」等参考素材，或修改「产品需求提示词」重新生成自己的产品图。\n② 按步骤依次生成海报、直播间图、分镜脚本和 3×3 分镜图；脚本与分镜图决定成片质量，可反复改提示词重出。\n③ 最后一步选择账号可用的视频模型，按脚本与分镜图生成 9:16 宣传视频。",
+  "inputs": [
+    {
+      "id": "input1",
+      "title": "替换白色产品图",
+      "type": "image",
+      "example": "media2.webp",
+      "sourceNodeId": "image-1791798758530-001pw"
+    }
+  ],
+  "texts": [
+    {
+      "id": "text1",
+      "title": "产品需求提示词",
+      "content": "给出一个设计高级简约，白色背景，黑白双色两个鼠标",
+      "sourceNodeId": "text-1791798564931-e1zyc"
+    },
+    {
+      "id": "text2",
+      "title": "海报风格提示词",
+      "content": "- **设计风格 (Overall Aesthetic)：**\\\n  **暗黑空间与光影美学 (Dark Space & Light Art)**。摒弃繁杂背景，利用强烈的聚光灯、星环发光或地平线光晕营造深邃的“失重悬浮感”与“无限空间感”，突出产品的几何雕塑感与未来科技属性。\n\n- **排版布局 (Layout & Typography)：**\\\n  **严格的中轴对称式构图 (Vertical Symmetry)**。采用“上文下图”结构：顶部居中排布无衬线体（Sans-serif）主副标题，字号对比强烈；画面中下部作为核心视觉区，产品呈悬浮或仰视姿态拔地而起。留黑（负空间）极大，视线高度聚焦于产品主体与核心光影。\n\n- **色调配色 (Color Palette & Tone)：**\\\n  整体基调为**深邃冷峻的曜石黑/深空灰 (Obsidian Black/Space Grey)**。以高对比度的\\*\\*冷色发光（如冰川蓝、霓虹青）**或**高饱和暖光（日落金、晨曦橙）\\*\\*作为环境渲染与产品轮廓光（Rim Light），形成极致的明暗冲突（Chiaroscuro），极具电影级的高级质感与能量爆发感。",
+      "sourceNodeId": "text-1791799260965-rzi1u"
+    },
+    {
+      "id": "text3",
+      "title": "直播间风格提示词",
+      "content": "- **整体设计风格 (Overall Aesthetic)：**\\\n  **高阶极简与建筑空间美学 (Advanced Minimalism & Architectural Space)**。摒弃了传统直播间繁杂的背景与装饰，采用类似现代高端美术馆或Apple Store的陈列逻辑。大量使用干净的几何线条（如圆柱体展台、巨大的圆形顶灯、利落的平直线条），强调材质的哑光质感与空间的呼吸感，传递出专业、纯粹、克制的高端科技品牌调性。\n\n- **空间布局与排版 (Spatial Layout & Composition)：**\\\n  **严格的中轴对称式构图 (Strict Central Axis Symmetry)**。\n\n  - **视觉锚点：** 画面以绝对居中的立柱发光带和正前方的几何展台构成强烈的中心视觉锚点，确保直播时的焦点完全锁定在主播与核心产品上。\n\n  - **两侧留白：** 左右两侧墙面采用大面积留白（负空间），仅辅以对称的极简悬浮一字隔板，形成视觉上的平衡与延伸。\n\n  - **纵深层级：** 通过“顶部环形灯带 - 背景发光立柱 - 前景立体展台”构建出清晰的Z轴空间景深，使平面的直播画面具有建筑级的立体感。\n\n- **色调与光影配色 (Color Palette & Lighting Tone)：**\\\n  **低饱和暖调中性色与漫反射光影 (Low-saturation Warm Neutrals & Diffuse Lighting)**。\n\n  - **色彩基调：** 整体摒弃了科技行业常见的暗黑或高饱和霓虹色，转而采用大面积的**暖灰色 (Warm Grey)、米白色 (Off-White) 与砂岩色 (Sandstone)**。这种低饱和的单色调（Monochromatic）营造出一种治愈、高级且不喧宾夺主的背景氛围。\n\n  - **光影设计：** 核心采用**无主灯设计的漫反射环境光 (Ambient Diffuse Light)**。利用背景的隐藏式发光带（柔和的奶油暖光）和顶部的洗墙灯，消除了生硬的物理阴影。品牌标识与核心区域采用自发光设计，以光线代替实体制轮廓，呈现出轻盈的未来科技质感。",
+      "sourceNodeId": "text-1791800713300-13aks"
+    },
+    {
+      "id": "text4",
+      "title": "视频广告策划提示词",
+      "content": "你现在是世界顶级的3C数码短片导演及视觉策划专家。你的任务是根据我提供的产品图片，构思并策划一支15秒的视频广告，高端的创意产品展示。包含9个关键镜头。请严格按照以下两个步骤执行：第一步：策划与分镜设计基于产品卖点、风格及视觉特征，设计一个引人入胜的视觉叙事逻辑。请输出一个包含9个镜头的Markdown分镜表格，表头需包含：镜头序号(1-9) 景别与运镜(如：特写/推镜头低角度) 画面详细描述(需精确描述产品在画面中的状态，确保与原产品一致) 时长(总计15秒) 旁白/音效。第二步：编写nano banana pro绘画提示词。我需要你编写一段专门用于nanobananapro模型的提示词，生成一张3x3网格的分镜设计图(即一张大图里包含9个按顺序排列的16:9画面)。提示词编写要求：结构：必须以英文编写。核心指令：开头必须包含3x3 grid storyboard sheet, 9 panels sequence, 16:9 aspect ratio per panel, consistent visual style",
+      "sourceNodeId": "text-1791801081726-bob6q"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step1",
+      "title": "步骤 1 · 生成产品海报",
+      "type": "image",
+      "promptTemplate": "- **设计风格 (Overall Aesthetic)：**\\\n  **暗黑空间与光影美学 (Dark Space & Light Art)**。摒弃繁杂背景，利用强烈的聚光灯、星环发光或地平线光晕营造深邃的“失重悬浮感”与“无限空间感”，突出产品的几何雕塑感与未来科技属性。\n\n- **排版布局 (Layout & Typography)：**\\\n  **严格的中轴对称式构图 (Vertical Symmetry)**。采用“上文下图”结构：顶部居中排布无衬线体（Sans-serif）主副标题，字号对比强烈；画面中下部作为核心视觉区，产品呈悬浮或仰视姿态拔地而起。留黑（负空间）极大，视线高度聚焦于产品主体与核心光影。\n\n- **色调配色 (Color Palette & Tone)：**\\\n  整体基调为**深邃冷峻的曜石黑/深空灰 (Obsidian Black/Space Grey)**。以高对比度的\\*\\*冷色发光（如冰川蓝、霓虹青）**或**高饱和暖光（日落金、晨曦橙）\\*\\*作为环境渲染与产品轮廓光（Rim Light），形成极致的明暗冲突（Chiaroscuro），极具电影级的高级质感与能量爆发感。",
+      "references": [
+        {
+          "source": "step6",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "text2",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "input1",
+          "type": "image",
+          "label": "image2"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step6"
+      ],
+      "settings": {
+        "size": "2048x1152",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media3.webp",
+      "sourceNodeId": "config-1791799308714-9sq1z",
+      "sourceOutputNodeId": "WWu-YaVobzwljSHeTtETm"
+    },
+    {
+      "id": "step2",
+      "title": "步骤 2 · 生成直播间场景图",
+      "type": "image",
+      "promptTemplate": "- **整体设计风格 (Overall Aesthetic)：**\\\n  **高阶极简与建筑空间美学 (Advanced Minimalism & Architectural Space)**。摒弃了传统直播间繁杂的背景与装饰，采用类似现代高端美术馆或Apple Store的陈列逻辑。大量使用干净的几何线条（如圆柱体展台、巨大的圆形顶灯、利落的平直线条），强调材质的哑光质感与空间的呼吸感，传递出专业、纯粹、克制的高端科技品牌调性。\n\n- **空间布局与排版 (Spatial Layout & Composition)：**\\\n  **严格的中轴对称式构图 (Strict Central Axis Symmetry)**。\n\n  - **视觉锚点：** 画面以绝对居中的立柱发光带和正前方的几何展台构成强烈的中心视觉锚点，确保直播时的焦点完全锁定在主播与核心产品上。\n\n  - **两侧留白：** 左右两侧墙面采用大面积留白（负空间），仅辅以对称的极简悬浮一字隔板，形成视觉上的平衡与延伸。\n\n  - **纵深层级：** 通过“顶部环形灯带 - 背景发光立柱 - 前景立体展台”构建出清晰的Z轴空间景深，使平面的直播画面具有建筑级的立体感。\n\n- **色调与光影配色 (Color Palette & Lighting Tone)：**\\\n  **低饱和暖调中性色与漫反射光影 (Low-saturation Warm Neutrals & Diffuse Lighting)**。\n\n  - **色彩基调：** 整体摒弃了科技行业常见的暗黑或高饱和霓虹色，转而采用大面积的**暖灰色 (Warm Grey)、米白色 (Off-White) 与砂岩色 (Sandstone)**。这种低饱和的单色调（Monochromatic）营造出一种治愈、高级且不喧宾夺主的背景氛围。\n\n  - **光影设计：** 核心采用**无主灯设计的漫反射环境光 (Ambient Diffuse Light)**。利用背景的隐藏式发光带（柔和的奶油暖光）和顶部的洗墙灯，消除了生硬的物理阴影。品牌标识与核心区域采用自发光设计，以光线代替实体制轮廓，呈现出轻盈的未来科技质感。",
+      "references": [
+        {
+          "source": "step6",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "text3",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step6"
+      ],
+      "settings": {
+        "size": "1152x2048",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media4.webp",
+      "sourceNodeId": "config-1791800762178-4vyzn",
+      "sourceOutputNodeId": "n8PuCXT24TwG-DiHvz_6p"
+    },
+    {
+      "id": "step3",
+      "title": "步骤 3 · 生成分镜脚本",
+      "type": "text",
+      "promptTemplate": "你现在是世界顶级的3C数码短片导演及视觉策划专家。你的任务是根据我提供的产品图片，构思并策划一支15秒的视频广告，高端的创意产品展示。包含9个关键镜头。请严格按照以下两个步骤执行：第一步：策划与分镜设计基于产品卖点、风格及视觉特征，设计一个引人入胜的视觉叙事逻辑。请输出一个包含9个镜头的Markdown分镜表格，表头需包含：镜头序号(1-9) 景别与运镜(如：特写/推镜头低角度) 画面详细描述(需精确描述产品在画面中的状态，确保与原产品一致) 时长(总计15秒) 旁白/音效。第二步：编写nano banana pro绘画提示词。我需要你编写一段专门用于nanobananapro模型的提示词，生成一张3x3网格的分镜设计图(即一张大图里包含9个按顺序排列的16:9画面)。提示词编写要求：结构：必须以英文编写。核心指令：开头必须包含3x3 grid storyboard sheet, 9 panels sequence, 16:9 aspect ratio per panel, consistent visual style",
+      "references": [
+        {
+          "source": "text4",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "step6",
+          "type": "image",
+          "label": "image1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step6"
+      ],
+      "settings": {
+        "size": "9:16",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": null,
+      "sourceNodeId": "config-1791801093509-6igf4",
+      "sourceOutputNodeId": "2hTE5DrIeXWXdLtWQJSyb"
+    },
+    {
+      "id": "step4",
+      "title": "步骤 4 · 生成分镜图",
+      "type": "image",
+      "promptTemplate": "根据产品{{step6}} {{step3}} 我需要你编写一段专门用于 GPT模型的提示词，生成一张3x3网格的分镜设计图(即一张大图里包含9个按顺序排列的16:9画面)。",
+      "references": [
+        {
+          "source": "step6",
+          "type": "image",
+          "label": "image1"
+        },
+        {
+          "source": "step3",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step6",
+        "step3"
+      ],
+      "settings": {
+        "size": "2048x1152",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media5.webp",
+      "sourceNodeId": "config-1791801242963-tuebv",
+      "sourceOutputNodeId": "g2FOE2MyoEFcYq0vhuhDh"
+    },
+    {
+      "id": "step5",
+      "title": "步骤 5 · 生成宣传视频",
+      "type": "video",
+      "promptTemplate": "按照脚本{{step3}} 与分镜图{{step4}} ，，生成视频",
+      "references": [
+        {
+          "source": "step3",
+          "type": "text",
+          "label": "text1"
+        },
+        {
+          "source": "step4",
+          "type": "image",
+          "label": "image1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [
+        "step3",
+        "step4"
+      ],
+      "settings": {
+        "size": "9:16",
+        "count": 1,
+        "seconds": "15",
+        "vquality": "480p"
+      },
+      "originalModel": null,
+      "example": "media6.mp4",
+      "sourceNodeId": "config-1791801772458-jevyr",
+      "sourceOutputNodeId": "JcXDvh0SCj5F6wbi8hNLa"
+    },
+    {
+      "id": "step6",
+      "title": "产品渲染图 · 黑白双鼠标",
+      "type": "image",
+      "promptTemplate": "文本1 ",
+      "references": [
+        {
+          "source": "text1",
+          "type": "text",
+          "label": "text1"
+        }
+      ],
+      "connectedButNotReferenced": [],
+      "dependsOn": [],
+      "settings": {
+        "size": "2048x1152",
+        "quality": "auto",
+        "count": 1
+      },
+      "originalModel": null,
+      "example": "media1.webp",
+      "sourceNodeId": "image-1791798573841-6kii5",
+      "sourceOutputNodeId": "image-1791798573841-6kii5"
+    }
+  ],
+  "outputs": [
+    "step1",
+    "step2",
+    "step5"
+  ],
+  "adaptationNotes": [
+    "海报和直播间图为独立产物，不是最终视频的必需依赖。",
+    "产品渲染图由独立图片节点连接产品需求文本生成；输入白色产品图只用于海报分支，不会自动替换视频链路中的产品，适配时需明确产品输入来源。",
+    "原分镜脚本输出节点 content 保存的是策划要求，不能作为已完成脚本复用；必须重新执行文本生成。",
+    "原分镜图步骤含有‘编写提示词’措辞，图片生成和文本生成职责需要在适配时分开。"
+  ],
+  "assets": [
+    {
+      "path": "media1.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/electronics-ad/media/image_unu38nnlt_ghg3th2eQm3.webp"
+    },
+    {
+      "path": "media2.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/electronics-ad/media/image_juOXofMgnDSFB-581-mKw.webp"
+    },
+    {
+      "path": "media3.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/electronics-ad/media/image_KHsnv9nY48uN2bN_5gvz1.webp"
+    },
+    {
+      "path": "media4.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/electronics-ad/media/image_OzkxI6SvAftoXylR2vccR.webp"
+    },
+    {
+      "path": "media5.webp",
+      "mimeType": "image/webp",
+      "sourcePath": "/templates/electronics-ad/media/image_2EMcY9E8w6Yd8HmxY8dzo.webp"
+    },
+    {
+      "path": "media6.mp4",
+      "mimeType": "video/mp4",
+      "sourcePath": "/templates/electronics-ad/media/video_XuR5hqT3EMSxYEPMBGjxp.mp4"
+    }
+  ]
+}

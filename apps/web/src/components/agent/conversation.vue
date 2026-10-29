@@ -328,14 +328,20 @@ async function sendMessage(source?: AgentMessage) {
   }
 }
 
-watch(() => !props.initialSession?.parentFile && !!workspaceStore.pendingAgentMessage && props.active && !locked.value && !!input.value && !!createCanvasContext?.(), async ready => {
-  const message = workspaceStore.pendingAgentMessage;
+watch([() => workspaceStore.pendingAgentMessage, () => !props.initialSession?.parentFile && props.active && !locked.value && !!input.value?.ready && !!createCanvasContext?.()], async ([message, ready]) => {
   const instance = input.value;
   if (!ready || !message || !instance || message.directory !== directory) return;
-  workspaceStore.pendingAgentMessage = null;
-  await instance.fillPrompt(message.prompt, message.attachments ?? []);
-  if (input.value === instance && props.active) void sendMessage();
-}, { flush: "post" });
+  try {
+    if (!await instance.fillPrompt(message.prompt, message.attachments ?? [])) return;
+    if (input.value !== instance || !props.active || workspaceStore.pendingAgentMessage !== message) return;
+    selectedModel.value = message.model;
+    reasoningEffort.value = message.reasoningEffort;
+    workspaceStore.pendingAgentMessage = null;
+    void sendMessage();
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "载入创作任务失败，请重新打开助手");
+  }
+}, { flush: "post", immediate: true });
 
 onBeforeUnmount(() => controller?.abort());
 </script>
