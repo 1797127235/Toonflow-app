@@ -1,4 +1,4 @@
-const version = "2.4.0";
+const version = "2.5.0";
 
 const rules = [
   {
@@ -31,9 +31,9 @@ const rules = [
  *   1. Grok 图片      POST /v1/images/generations、/v1/images/edits(multipart)
  *   1b.GPT Image      POST /v1/images/generations、/v1/images/edits(multipart)，OpenAI 原生参数
  *   1c. MidJourney    POST /v1/images/generations（仅 JSON，n=1，固定返回 4 张）
- *   2. Grok 视频      POST /v1/videos/generations        → GET /v1/videos/generations/{id}
+ *   2. Grok 视频      POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   3. MiniMax-H3     POST /v1/videos                    → GET /v1/videos/{id}(/content)
- *   4. MiniMax-H3-Max POST /v1/video/generations         → GET /v1/video/generations/{id}
+ *   4. MiniMax-H3-Max POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   5. 万相 3.0       POST /api/v1/services/aigc/...     → GET /api/v1/tasks/{id}
  *   6. Seedance 2.x   POST /api/v3/contents/generations/tasks → GET 同路径/{id}
  *
@@ -655,6 +655,9 @@ async function resolveGrokAssets(
   return { urls: compressed.map(dataUri), videoUrls: [], viaGateway: false };
 }
 
+// 实测上游枚举：adaptive 会被拒（"unknown variant `adaptive`"），只认这 9 个。
+const GROK_RATIOS = new Set(["1:1", "16:9", "9:16", "4:3", "3:4", "3:2", "2:3", "21:9", "5:2"]);
+
 async function generateGrokVideo(context: ProviderContext, request: VideoRequest): Promise<MediaAsset[]> {
   context.signal?.throwIfAborted();
   const apiKey = apiKeyOf(context);
@@ -675,12 +678,19 @@ async function generateGrokVideo(context: ProviderContext, request: VideoRequest
 
   const assets = await resolveGrokAssets(context, sources, videos, signal);
 
+  // 实测 xAI 只认小写 480p/720p/1080p（1080P、4k 均 400）与 1–15 整数秒（20 秒被拒）。
+  const duration = Math.round(Number(request.duration ?? 8));
+  if (!Number.isInteger(duration) || duration < 1 || duration > 15) throw new Error("Grok 视频时长须为 1–15 秒的整数");
+  const resolution = String(request.resolution ?? "720p").trim().toLowerCase();
+  if (!["480p", "720p", "1080p"].includes(resolution)) throw new Error(`Grok 视频分辨率须为 480p / 720p / 1080p，收到 ${resolution}`);
+  const ratio = String(request.ratio ?? "16:9").trim();
+  if (!GROK_RATIOS.has(ratio)) throw new Error(`Grok 视频不支持输出比例 ${ratio}，可选 ${[...GROK_RATIOS].join(" / ")}`);
   const body: Record<string, unknown> = {
     model: request.model,
     prompt: request.prompt,
-    duration: Number(request.duration) || 8,
-    resolution: request.resolution || "720p",
-    aspect_ratio: request.ratio || "16:9",
+    duration,
+    resolution,
+    aspect_ratio: ratio,
   };
   if (typeof request.generateAudio === "boolean") body.generate_audio = request.generateAudio;
   if (typeof request.watermark === "boolean") body.watermark = request.watermark;
@@ -693,13 +703,13 @@ async function generateGrokVideo(context: ProviderContext, request: VideoRequest
   }
   if (assets.videoUrls.length) body.videos = assets.videoUrls.map(url => ({ url }));
 
-  const created = await post(context, `${baseUrl}/videos/generations`, body, signal);
+  const created = await post(context, `${baseUrl}/videos`, body, signal);
   const task = created.data && typeof created.data === "object" && !Array.isArray(created.data) ? record(created.data) : created;
   const requestId = task.request_id ?? task.id ?? task.task_id;
   if (typeof requestId !== "string" || !requestId) throw new Error("C2A Grok 视频接口没有返回 request_id");
 
   const url = await pollUntil(signal, 5000, 600_000, async () => {
-    const value = await get(context, `${baseUrl}/videos/generations/${encodeURIComponent(requestId)}`, signal);
+    const value = await get(context, `${baseUrl}/videos/${encodeURIComponent(requestId)}`, signal);
     const data = taskOf(value);
     if (taskFailed(data)) throw new Error(context.tool.errorMessage(value) || String(data.message ?? "") || "C2A Grok 视频生成失败");
     if (!taskDone(data)) return null;
@@ -731,9 +741,10 @@ async function generateH3(context: ProviderContext, request: VideoRequest): Prom
   const ratio = request.ratio || "16:9";
   if (!["16:9", "9:16"].includes(ratio)) throw new Error("MiniMax-H3 只确认了 16:9 与 9:16，其他比例请使用 MiniMax-H3-Max");
 
-  const resolution = String(request.resolution ?? "768p").toLowerCase();
-  if (!["480p", "720p", "768p", "1080p", "2k"].includes(resolution))
-    throw new Error("MiniMax-H3 分辨率须为 768P 或 2K（480p/720p 映射 768P，1080p 映射 2K）");
+  // 实测该模型只认 768p 与 2k 两档（按 size 提交为 1280×720 / 1792×1024），其余档位请改用 H3-Max。
+  const tier = String(request.resolution ?? "768p").trim().toLowerCase();
+  const resolution = ["1080p", "2k"].includes(tier) ? "2k" : ["720p", "768p"].includes(tier) ? "768p" : undefined;
+  if (!resolution) throw new Error(`MiniMax-H3 只支持 768p 与 2k 两档，收到 ${tier}；其他档位请改用 MiniMax-H3-Max`);
 
   const videos = request.videos ?? [];
   const audios = request.audios ?? [];
@@ -744,7 +755,7 @@ async function generateH3(context: ProviderContext, request: VideoRequest): Prom
 
   const image = images.length ? await fitImage(context, images[0], { minSide: 256, maxSide: 5760, capBytes: 3 * MB }) : undefined;
 
-  const use2K = ["1080p", "2k"].includes(resolution);
+  const use2K = resolution === "2k";
   const size = use2K
     ? (ratio === "16:9" ? "1792x1024" : "1024x1792")
     : (ratio === "16:9" ? "1280x720" : "720x1280");
@@ -816,56 +827,50 @@ async function generateH3Max(context: ProviderContext, request: VideoRequest): P
   const images = request.images ?? [];
   const referenceMode = Array.isArray(request.mode) || images.length > 2 || videos.length > 0 || audios.length > 0;
 
-  if (images.length > 9 || videos.length > 3 || audios.length > 3 || images.length + videos.length + audios.length > 12)
-    throw new Error("MiniMax-H3-Max 参考图最多 9 张、视频最多 3 段、音频最多 3 段，混合素材合计最多 12 个");
-  if (audios.length && !images.length && !videos.length)
-    throw new Error("MiniMax-H3-Max 的参考音频必须搭配至少一张参考图片或一段参考视频");
-  if (!images.length && !videos.length && !audios.length && ratio === "adaptive")
+  // 实测视频协议不认 audios / audio（VIDEO_PARAMETER_UNKNOWN），H3-Max 在本网关没有参考音频。
+  if (audios.length) throw new Error("MiniMax-H3-Max 不支持参考音频");
+  if (images.length > 9 || videos.length > 3 || images.length + videos.length > 12)
+    throw new Error("MiniMax-H3-Max 参考图最多 9 张、视频最多 3 段，混合素材合计最多 12 个");
+  if (!images.length && !videos.length && ratio === "adaptive")
     throw new Error("纯文生视频必须选择具体比例，不能使用自适应");
 
   const ordered = referenceMode ? images : [...frames, ...images].slice(0, 2);
   const prepared = await Promise.all(ordered.map(input => fitImage(context, input, { minSide: 256, maxSide: 5760, capBytes: 3 * MB })));
 
-  const content: Record<string, unknown>[] = [{ type: "text", text: prompt }];
-  prepared.forEach((input, index) => {
-    const role = referenceMode ? "reference_image" : index === 0 ? "first_frame" : "last_frame";
-    content.push({ type: "image_url", image_url: { url: dataUri(input) }, role });
-  });
-  for (const video of videos) {
-    content.push({ type: "video_url", video_url: { url: inlineMedia(video, "参考视频", 50 * MB) }, role: "reference_video" });
-  }
-  for (const audio of audios) {
-    content.push({ type: "audio_url", audio_url: { url: inlineMedia(audio, "参考音频", 15 * MB) }, role: "reference_audio" });
-  }
-
+  // 实测统一视频接口只接受 images[{url,role}] 与 videos[{url}]；
+  // content[]、size、aigc_watermark 都会被拒（VIDEO_PARAMETER_*），比例字段是 aspect_ratio。
   const body: Record<string, unknown> = {
     model: request.model,
-    content,
+    prompt,
     duration: seconds,
     resolution,
-    ratio: prepared.length && !referenceMode ? "adaptive" : ratio,
+    aspect_ratio: prepared.length && !referenceMode ? "adaptive" : ratio,
   };
-  if (typeof request.watermark === "boolean") body.aigc_watermark = request.watermark;
+  if (prepared.length)
+    body.images = prepared.map((input, index) => ({
+      url: dataUri(input),
+      role: referenceMode ? "reference_image" : index === 0 ? "first_frame" : "last_frame",
+    }));
+  if (videos.length) {
+    const refs: Record<string, unknown>[] = [];
+    for (const video of videos) refs.push({ url: (await uploadAsset(context, video, signal)) ?? inlineMedia(video, "参考视频", 50 * MB), role: "reference_video" });
+    body.videos = refs;
+  }
+  if (typeof request.generateAudio === "boolean") body.generate_audio = request.generateAudio;
+  if (typeof request.watermark === "boolean") body.watermark = request.watermark;
   if (new TextEncoder().encode(JSON.stringify(body)).byteLength > 64 * MB) throw new Error("请求 JSON（含 Base64）不能超过 64 MB，请减少素材或先压缩");
 
-  const created = await post(context, `${baseUrl}/video/generations`, body, signal);
+  const created = await post(context, `${baseUrl}/videos`, body, signal);
   const taskId = created.id ?? created.task_id;
   if (typeof taskId !== "string" || !taskId) throw new Error(readError(created) || "C2A H3-Max 创建响应缺少任务 ID；请核对任务记录，不要重复提交");
 
-  const url = await pollUntil(signal, 5000, 900_000, async () => {
-    const value = await get(context, `${baseUrl}/video/generations/${encodeURIComponent(taskId)}`, signal);
-    const task = taskOf(value);
+  await pollUntil(signal, 5000, 900_000, async () => {
+    const task = taskOf(await get(context, `${baseUrl}/videos/${encodeURIComponent(taskId)}`, signal));
     if (taskFailed(task)) throw new Error(`任务 ${taskId}：${readError(task) || task.message || task.status}，请核对原任务，不要重复提交`);
-    if (!taskDone(task)) return null;
-    const list = Array.isArray(task.data) ? task.data : [];
-    const first = list.map(item => record(item)).find(item => typeof item.url === "string" && item.url);
-    const content = task.content && typeof task.content === "object" && !Array.isArray(task.content) ? record(task.content) : undefined;
-    for (const candidate of [first?.url, content?.url, task.video_url, task.url]) {
-      if (typeof candidate === "string" && candidate) return candidate;
-    }
-    throw new Error(`任务 ${taskId} 已完成但缺少视频地址，请核对 C2A 原始任务记录`);
+    return taskDone(task) ? true : null;
   });
-  return finalizeVideo(context, url, apiKey, signal);
+  // 实测 H3-Max 的查询响应从不回视频地址，成片只挂在 /content 上。
+  return finalizeVideo(context, `${baseUrl}/videos/${encodeURIComponent(taskId)}/content`, apiKey, signal);
 }
 
 // ────────────────────────────── 6. Seedance 2.x ─────────────────────────────
@@ -1153,9 +1158,9 @@ export default {
 - **Grok 图片**：\`/images/generations\`；带参考图走 \`/images/edits\`（multipart，单图 \`image\`、多图 \`image[]\`）。
 - **GPT Image**：同样 \`/images/generations\` 与 \`/images/edits\`，但走 OpenAI 原生参数（显式 \`size\` 像素与 \`quality\`）；1K/2K/4K 会换算成 WxH，\`gpt-image-2.5-flare\` 实测 4K 被上游拒绝，只开放到 2K。
 - **MidJourney**：只支持 JSON 同步调用（multipart 会被拒），\`n\` 必须为 1，参考图按 \`images[].image_url\` 提交；\`size\` 会被上游忽略，比例只能写进 prompt 的 \`--ar\`，所以只开放 1K 档。单次固定返回 4 张并按 4 张计费，此处只交付第一张。
-- **Grok 视频**：\`/videos/generations\` 建任务并轮询；参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
-- **MiniMax-H3**：\`/videos\` 建任务并轮询，只支持 16:9 / 9:16 与单张参考图。
-- **MiniMax-H3-Max**：\`/video/generations\`，参考素材按 \`content[]\` + role 提交，支持图 / 视频 / 音频混合。
+- **Grok 视频**：\`/videos\` 建任务、\`/videos/{request_id}\` 轮询、\`/videos/{request_id}/content\` 下载；1–15 秒，480p/720p/1080p，比例为 xAI 枚举（1:1、16:9、9:16、4:3、3:4、3:2、2:3、21:9、5:2）。参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
+- **MiniMax-H3**：\`/videos\` 建任务并轮询，\`size\` 提交 1280×720 / 1792×1024；4–30 秒，只支持 768p 与 2k 两档、16:9 / 9:16 与单张参考图。
+- **MiniMax-H3-Max**：同样 \`/videos\`，参考素材按 \`images[{url,role}]\` / \`videos[{url}]\` 提交；5–15 秒，480p/768p/1080p/2k/4k（720p 上游拒绝），不接参考音频，成片只挂在 \`/content\` 上。
 - **万相 3.0**：DashScope 原生 \`/api/v1/services/aigc/video-generation/video-synthesis\`，首尾帧与参考素材互斥。
 - **Seedance 2.0 / Fast / Mini / 2.5**：火山方舟原生 \`/api/v3/contents/generations/tasks\`，使用 \`content[]\` + role 并轮询任务。支持文生视频、参考图生视频、视频生视频、音频生视频，以及图片/视频/音频混合参考；首帧/首尾帧与全模态参考互斥，2.5 首帧比例自动跟随图片。2.5 支持纯音频输入，2.0 系列的音频必须搭配图片或视频。本地参考视频复用素材网关转为公网 URL（当前网关单文件上限 20 MB），音频按公网 URL 或 Base64 发送。按实际 Token 用量结算，暂不提供按秒报价。
 
@@ -1298,7 +1303,8 @@ export default {
       id: "MiniMax-H3-Max",
       label: "MiniMax H3 Max",
       type: "video",
-      mode: ["text", "startFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
+      // 本网关 H3-Max 不接参考音频：视频协议对 audios / audio 直接报 VIDEO_PARAMETER_UNKNOWN。
+      mode: ["text", "startFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3"]],
       durationResolutionMap: [{ duration: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "768p", "1080p", "2k", "4k"] }],
     },
     {
