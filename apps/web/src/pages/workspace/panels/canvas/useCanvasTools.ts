@@ -74,14 +74,14 @@ export function useCanvasTools(options: {
       },
       async call(request, signal) {
         if (redirected) return redirected.call(request, signal);
-        canvasSignal.throwIfAborted();
-        id = options.getCanvasBinding().id;
         const changesCanvas = request.name === "addCanvas" || request.name === "switchCanvas" || request.name === "renameCanvas";
         // ACT: 转写按音频时长运行，复用 ASR 的停滞与收尾超时，不套用画布操作的总时限。
         const callSignal = AbortSignal.any([workspaceSignal, ...(changesCanvas ? [] : [canvasSignal]), ...(request.name === "transcribeAudio" ? [] : [AbortSignal.timeout(120000)]), ...(signal ? [signal] : [])]);
-        callSignal.throwIfAborted();
         let cancel = () => {};
         try {
+          canvasSignal.throwIfAborted();
+          id = options.getCanvasBinding().id;
+          callSignal.throwIfAborted();
           return await Promise.race([
             Promise.resolve().then(async () => {
               canvasSignal.throwIfAborted();
@@ -94,10 +94,10 @@ export function useCanvasTools(options: {
                   return nextContext.call({ name: "getCanvas", args: {} }, callSignal);
                 }
                 const binding = options.getCanvasBinding();
-                if (binding.id !== result) throw new Error("画布已再次切换，请重新发送消息");
-                binding.signal.throwIfAborted();
+                if (binding.id !== result) throw Object.assign(new Error("画布已再次切换，请重新发送消息"), { code: "CANVAS_UNAVAILABLE" });
                 id = binding.id;
                 canvasSignal = binding.signal;
+                canvasSignal.throwIfAborted();
                 result = await execute({ name: "getCanvas", args: {} }, callSignal, id);
               }
               if (!isCanvasRead(request.name) && request.name !== "selectNodes" && request.name !== "transcribeAudio") await options.flushSave();
@@ -110,6 +110,12 @@ export function useCanvasTools(options: {
               callSignal.addEventListener("abort", cancel, { once: true });
             }),
           ]);
+        } catch (error) {
+          if (signal?.aborted) throw signal.reason;
+          if (canvasSignal.aborted || workspaceSignal.aborted || callSignal.aborted) {
+            throw Object.assign(new Error(error instanceof Error ? error.message : "画布已不可用，请重新发送消息"), { code: "CANVAS_UNAVAILABLE" });
+          }
+          throw error;
         } finally {
           callSignal.removeEventListener("abort", cancel);
         }

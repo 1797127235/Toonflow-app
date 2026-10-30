@@ -30,7 +30,8 @@
       v-model:restoringAttachment="restoringAttachment"
       :active="active"
       :disabled="disabled"
-      :busy="busy"
+      :busy="busy || !!remoteRunId"
+      :stopping="stopping"
       :remoteRunning="remoteRunning"
       :deletingId="deletingId"
       :directory="directory"
@@ -69,6 +70,8 @@ const createCanvasContext = inject<(() => CanvasContext | undefined) | undefined
 const messages = ref<AgentMessage[]>((props.initialSession?.messages ?? []).map(message => ({ ...message })));
 const stream = createConversationStream(messages);
 const remoteRunning = ref(props.initialSession?.running ?? false);
+const remoteRunId = ref(props.initialSession?.runId);
+const stopping = ref(false);
 const stats = ref(props.initialSession?.stats);
 const contextUsage = ref(props.initialSession?.contextUsage);
 const busy = ref(false);
@@ -77,9 +80,9 @@ const deletingId = ref<string>();
 const restoringAttachment = ref(false);
 const input = ref<InstanceType<typeof messageInput>>();
 const voiceActive = ref(false);
-const locked = computed(() => props.disabled || busy.value || deletingId.value !== undefined || restoringAttachment.value || voiceActive.value);
+const locked = computed(() => props.disabled || busy.value || stopping.value || !!remoteRunId.value || deletingId.value !== undefined || restoringAttachment.value || voiceActive.value);
 const editingId = ref<string>();
-let controller: AbortController | undefined;
+let cancelCurrent: (() => Promise<void>) | undefined;
 const pendingMessage = props.initialSession?.parentFile ? undefined : workspaceStore.pendingAgentMessage;
 const selectedModel = ref(pendingMessage?.model ?? (props.initialSession?.providerId && props.initialSession.modelId
   ? JSON.stringify([props.initialSession.providerId, props.initialSession.modelId]) : ""));
@@ -98,7 +101,10 @@ function applyEvent(event: AgentEvent) {
       });
       break;
     case "compaction": compacting.value = event.active; break;
-    case "session": emit("session", event.file); break;
+    case "session":
+      remoteRunId.value = event.runId;
+      emit("session", event.file);
+      break;
     case "stats": stats.value = event.stats; contextUsage.value = event.contextUsage; break;
     default: stream.receive(event);
   }
@@ -107,6 +113,7 @@ function applyEvent(event: AgentEvent) {
 function receiveEvent(event: AgentEvent) {
   if (event.type === "done" || event.type === "error") {
     remoteRunning.value = false;
+    if (!busy.value) remoteRunId.value = undefined;
     compacting.value = false;
   } else if (["userMessage", "text", "thinking", "tool"].includes(event.type)) remoteRunning.value = true;
   applyEvent(event);
@@ -154,8 +161,53 @@ async function deleteMessage(item: AgentMessage) {
   }
 }
 
-function stopMessage() {
-  controller?.abort();
+async function refreshSession(signal?: AbortSignal) {
+  const { data } = await axios.get<{ code: number; data: AgentConversation; message?: string }>("/api/agent/get", {
+    params: { directory, sessionFile: props.sessionFile }, headers: { "x-toonflow-workspace": "1" }, signal, timeout: 30000,
+  });
+  if (signal?.aborted) return;
+  if (data.code !== 200) throw new Error(data.message || "读取对话失败");
+  remoteRunId.value = data.data.runId;
+  remoteRunning.value = !!data.data.running;
+  if (!data.data.running) {
+    stream.finish();
+    messages.value = data.data.messages.map(message => ({ ...message }));
+    stats.value = data.data.stats;
+    contextUsage.value = data.data.contextUsage;
+  }
+}
+
+async function stopRun(runId: string) {
+  const response = await fetch("/api/agent/stop", {
+    method: "POST",
+    headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
+    body: JSON.stringify({ directory, runId }), keepalive: true, signal: AbortSignal.timeout(30000),
+  });
+  const result = await response.json().catch(() => null);
+  if (!response.ok || result?.code !== 200) throw new Error(result?.message || "停止失败，请重试");
+  if (remoteRunId.value === runId) {
+    if (!busy.value && props.sessionFile) await refreshSession();
+    else {
+      remoteRunId.value = undefined;
+      remoteRunning.value = false;
+    }
+  }
+}
+
+async function stopMessage() {
+  if (stopping.value) return;
+  stopping.value = true;
+  try {
+    if (cancelCurrent) await cancelCurrent();
+    else if (remoteRunId.value) {
+      await stopRun(remoteRunId.value);
+      stream.finish();
+    }
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "停止失败，请重试");
+  } finally {
+    stopping.value = false;
+  }
 }
 
 async function uploadAttachments(attachments: AgentAttachment[], directory: string, signal: AbortSignal) {
@@ -183,14 +235,16 @@ async function uploadAttachments(attachments: AgentAttachment[], directory: stri
 async function sendCanvasResult(event: Extract<AgentEvent, { type: "canvasCall" }>, canvasContext: CanvasContext | undefined, signal: AbortSignal) {
   let body: string;
   try {
-    if (!canvasContext) throw new Error("当前页面没有激活的画布");
+    signal.throwIfAborted();
+    if (!canvasContext) throw Object.assign(new Error("当前页面没有激活的画布"), { code: "CANVAS_UNAVAILABLE" });
     const result = await canvasContext.call(event, signal);
     body = JSON.stringify({ directory, callId: event.callId, result: result ?? null });
   } catch (error) {
-    body = JSON.stringify({ directory, callId: event.callId, error: (error instanceof Error && error.message ? error.message : translate("画布操作失败")).slice(0, 8000) });
+    body = JSON.stringify({ directory, callId: event.callId, error: (error instanceof Error && error.message ? error.message : translate("画布操作失败")).slice(0, 8000),
+      unavailable: (error as { code?: string })?.code === "CANVAS_UNAVAILABLE" });
   }
   const cancelled = signal.aborted;
-  if (cancelled) body = JSON.stringify({ directory, callId: event.callId, error: translate("画布操作已取消") });
+  if (cancelled) body = JSON.stringify({ directory, callId: event.callId, error: translate("画布操作已取消"), cancelled: true });
   const response = await fetch("/api/agent/canvasResult", {
     method: "POST",
     headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
@@ -225,8 +279,24 @@ async function sendMessage(source?: AgentMessage) {
   if (!model) return ElMessage.warning("请先选择模型");
 
   const requestController = new AbortController();
+  const transportController = new AbortController();
+  let responsePromise: Promise<Response> | undefined;
+  let cancellation: Promise<void> | undefined;
+  let completed = false;
+  const cancelRun = () => cancellation ??= (async () => {
+    requestController.abort();
+    try {
+      // 先取得服务端已注册的轮次 ID，避免停止早于会话初始化而遗漏后台请求。
+      const response = await responsePromise;
+      const runId = response?.headers.get("X-Toonflow-Agent-Run");
+      if (runId) await stopRun(runId);
+      else if (response?.ok) throw new Error("未收到后台取消通道，请刷新页面后重试");
+    } finally {
+      transportController.abort();
+    }
+  })();
   const canvasContext = createCanvasContext?.();
-  controller = requestController;
+  cancelCurrent = cancelRun;
   busy.value = true;
   compacting.value = false;
   const reply = reactive<AgentMessage>({ id: crypto.randomUUID(), role: "assistant", content: "", parts: [], streaming: true });
@@ -246,12 +316,18 @@ async function sendMessage(source?: AgentMessage) {
     if (!source) await instance.clearDraft();
     requestController.signal.throwIfAborted();
     await uploadAttachments(attachments, directory, requestController.signal);
-    const response = await fetch("/api/agent", {
+    requestController.signal.throwIfAborted();
+    responsePromise = fetch("/api/agent", {
       method: "POST",
       headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
       body: JSON.stringify({ prompt, mentions, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })), directory, providerId: model.providerId, modelId: model.modelId, thinkingLevel: reasoningEffort.value || undefined, sessionFile: props.sessionFile, resendFrom, canvas: canvasContext ? { id: canvasContext.id, tools: canvasContext.tools } : undefined }),
-      signal: requestController.signal,
+      signal: transportController.signal,
+    }).then(response => {
+      remoteRunId.value = response.headers.get("X-Toonflow-Agent-Run") ?? undefined;
+      return response;
     });
+    const response = await responsePromise;
+    requestController.signal.throwIfAborted();
     for await (const event of readAgentEvents(response, requestController.signal)) {
       // 子任务复用发起委派时的画布与取消通道，界面切换不改变工具执行目标。
       let toolEvent: AgentEvent = event;
@@ -302,6 +378,9 @@ async function sendMessage(source?: AgentMessage) {
         default: applyEvent(event);
       }
     }
+    completed = true;
+    remoteRunId.value = undefined;
+    if (!forwarded) remoteRunning.value = false;
     if (source && !accepted) throw new Error("服务端未确认重发，请重新打开对话后重试");
     emit("sent", mentionPlainText(prompt, mentions) || attachments[0]?.name || "新对话");
   } catch (error) {
@@ -313,6 +392,13 @@ async function sendMessage(source?: AgentMessage) {
       emit("event", { type: "subAgentEvent", file: props.sessionFile, event: { type: "error", message } });
     }
   } finally {
+    if (!completed && responsePromise) {
+      try { await cancelRun(); }
+      catch (error) {
+        remoteRunning.value = !!remoteRunId.value;
+        reply.error = `后台停止未确认：${error instanceof Error ? error.message : "请重试停止"}`;
+      }
+    }
     for (const file of activeChildFiles) emit("event", { type: "subAgentEvent", file, event: { type: "error", message: "委派连接已结束，请重新打开子会话查看结果" } });
     // ACT: Bun 的流断开事件可能不触发；主动结束仍在等待的提问，不依赖断开通知。
     for (const callId of pendingQuestions.values()) {
@@ -324,7 +410,7 @@ async function sendMessage(source?: AgentMessage) {
     if (ownsStream && !forwarded) stream.finish();
     compacting.value = false;
     busy.value = false;
-    controller = undefined;
+    cancelCurrent = undefined;
   }
 }
 
@@ -343,7 +429,28 @@ watch([() => workspaceStore.pendingAgentMessage, () => !props.initialSession?.pa
   }
 }, { flush: "post", immediate: true });
 
-onBeforeUnmount(() => controller?.abort());
+// 重开正在运行的对话时恢复停止入口，同步后台最终状态。
+watch(() => props.active && !busy.value && !stopping.value && remoteRunning.value, (running, _, onCleanup) => {
+  if (!running || !directory || !props.sessionFile) return;
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout>;
+  const refresh = async () => {
+    try { await refreshSession(controller.signal); }
+    catch { /* 网络不可用时保留停止入口，下次同步再确认状态。 */ }
+    if (!controller.signal.aborted && remoteRunning.value) timer = setTimeout(refresh, 3000);
+  };
+  void refresh();
+  onCleanup(() => { controller.abort(); clearTimeout(timer); });
+}, { immediate: true });
+
+function pageHide() {
+  void stopMessage();
+}
+window.addEventListener("pagehide", pageHide);
+onBeforeUnmount(() => {
+  window.removeEventListener("pagehide", pageHide);
+  void stopMessage();
+});
 </script>
 
 <style lang="scss">

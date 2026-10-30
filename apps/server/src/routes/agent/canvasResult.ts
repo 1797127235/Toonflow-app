@@ -9,6 +9,8 @@ const inputSchema = z.object({
   callId: z.uuid(),
   result: z.json().optional(),
   error: z.string().min(1).max(8000).optional(),
+  cancelled: z.boolean().optional(),
+  unavailable: z.boolean().optional(),
 });
 
 export default Router().post("/", validateFields(inputSchema.shape), async (req, res) => {

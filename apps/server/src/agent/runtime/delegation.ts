@@ -4,6 +4,7 @@ import type { CanvasContext } from "@toonflow/tools-scaffold/runtime";
 import type { AgentEvent } from "@/agent/runtime/types";
 import { run } from "@/agent/runtime";
 import { createAgentConversation, getToolResultText, trackAgentEvent, updateSubAgent } from "@/agent/runtime/sessions";
+import { registerAgentRun } from "@/agent/runtime/runs";
 import { addUsage, emptyUsage, type SubAgentResult } from "@/agent/runtime/subAgent";
 import { createCanvasContext } from "@/agent/bridge/canvas";
 import { createQuestionContext } from "@/agent/bridge/question";
@@ -27,11 +28,12 @@ export async function runDelegatedAgent(options: {
   };
   const controller = new AbortController();
   const childSignal = signal ? AbortSignal.any([signal, controller.signal]) : controller.signal;
-  const bridge = canvas ? createCanvasContext(cwd, canvas, send) : undefined;
+  const agentRun = registerAgentRun(cwd, () => controller.abort());
+  const bridge = canvas ? createCanvasContext(cwd, canvas, send, reason => controller.abort(reason)) : undefined;
   const questions = createQuestionContext(cwd, send, () => controller.abort());
   const result: SubAgentResult = { name, status: "running", result: "准备执行" };
   try {
-    await run({ prompt: task, cwd, sessionFile: child.file, providerId, modelId, thinkingLevel, canvas: bridge?.context, question: questions.context, signal: childSignal, onCancel: () => controller.abort() }, send);
+    await run({ prompt: task, cwd, runId: agentRun.id, sessionFile: child.file, providerId, modelId, thinkingLevel, canvas: bridge?.context, question: questions.context, signal: childSignal, onCancel: () => controller.abort() }, send);
     result.status = childSignal.aborted ? "cancelled" : "completed";
   } catch (error) {
     result.status = childSignal.aborted ? "cancelled" : (error as { code?: string })?.code === "AGENT_LENGTH" ? "limited" : "error";
@@ -42,6 +44,7 @@ export async function runDelegatedAgent(options: {
     bridge?.dispose();
     questions.dispose();
     send({ type: "done" });
+    agentRun.finish();
   }
   const { path } = await resolveWorkspacePath(cwd, `.agent/sessions/${child.file}`);
   const entries = parseSessionEntries(await readFile(path, "utf8"));
