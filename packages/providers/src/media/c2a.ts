@@ -34,8 +34,8 @@ const rules = [
  *   2. Grok 视频      POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   3. MiniMax-H3     POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *   4. MiniMax-H3-Max POST /v1/videos                    → GET /v1/videos/{id}(/content)
- *   5. 万相 3.0       POST /api/v1/services/aigc/...     → GET /api/v1/tasks/{id}
- *   6. Seedance 2.x   POST /api/v3/contents/generations/tasks → GET 同路径/{id}
+ *   5. 万相 3.0       POST /v1/videos                    → GET /v1/videos/{id}(/content)
+ *   6. Seedance 2.x   POST /v1/videos                    → GET /v1/videos/{id}(/content)
  *
  * Grok 视频的参考素材有两条路径：
  *   · 素材网关（对象存储）：内容寻址三段式上传，换 24 小时公网签名 URL，参考视频必须走这条。
@@ -874,13 +874,13 @@ async function generateH3Max(context: ProviderContext, request: VideoRequest): P
 }
 
 // ────────────────────────────── 6. Seedance 2.x ─────────────────────────────
-// 火山方舟原生协议：https://ark.volcengine.com/region:cn-beijing/docs/create-video-generation-task-api
+// Video 分组统一入口：POST/GET /v1/videos。旧方舟路径已下线，content[] 不再接受。
 
 async function generateSeedance(context: ProviderContext, request: VideoRequest): Promise<MediaAsset[]> {
   context.signal?.throwIfAborted();
   const apiKey = apiKeyOf(context);
   if (!apiKey) throw new Error("请填写 C2A API Key");
-  const baseUrl = gatewayRoot(context);
+  const baseUrl = gateway(context);
   const signal = AbortSignal.any([AbortSignal.timeout(30 * 60_000), ...(context.signal ? [context.signal] : [])]);
   const model = request.model.toLowerCase();
   const is25 = model === "doubao-seedance-2-5-260628";
@@ -918,15 +918,12 @@ async function generateSeedance(context: ProviderContext, request: VideoRequest)
   if (!["adaptive", "21:9", "16:9", "4:3", "1:1", "3:4", "9:16"].includes(ratio)) throw new Error(`Seedance 不支持输出比例 ${ratio}`);
   // 2.5 首帧/首尾帧比例由首帧决定；节点的通用比例不能原样传给上游。
   if (is25 && frameMode) ratio = "adaptive";
-  const content: Record<string, unknown>[] = [{ type: "text", text: prompt }];
+  const imageItems: { url: string; role: string }[] = [];
+  const videoItems: { url: string; role: string }[] = [];
   if (frameMode) {
     for (const [index, frame] of frames.entries()) {
       const prepared = await fitImage(context, frame, { minSide: 300, maxSide: 6000, capBytes: 20 * MB });
-      content.push({
-        type: "image_url",
-        image_url: { url: dataUri(prepared) },
-        role: index === 0 ? "first_frame" : "last_frame",
-      });
+      imageItems.push({ url: dataUri(prepared), role: index === 0 ? "first_frame" : "last_frame" });
     }
   } else {
     if (images.length > (is25 ? 30 : 9) || videos.length > (is25 ? 10 : 3) || audios.length > (is25 ? 10 : 3))
@@ -935,29 +932,32 @@ async function generateSeedance(context: ProviderContext, request: VideoRequest)
       throw new Error("Seedance 2.0 参考音频必须搭配至少一张参考图或一段参考视频");
     for (const image of images) {
       const prepared = await fitImage(context, image, { minSide: 300, maxSide: 6000, capBytes: 20 * MB });
-      content.push({ type: "image_url", image_url: { url: dataUri(prepared) }, role: "reference_image" });
+      imageItems.push({ url: dataUri(prepared), role: "reference_image" });
     }
     for (const video of videos) {
       const url = await uploadAsset(context, video, signal);
       if (!url) throw new Error("Seedance 参考视频必须是公网 URL，或配置素材网关上传本地视频");
-      content.push({ type: "video_url", video_url: { url }, role: "reference_video" });
+      videoItems.push({ url, role: "reference_video" });
     }
-    for (const audio of audios) content.push({ type: "audio_url", audio_url: { url: inlineMedia(audio, "参考音频", 15 * MB) }, role: "reference_audio" });
   }
 
   const body: Record<string, unknown> = {
     model: request.model,
-    content,
+    prompt,
     resolution,
     duration,
-    ratio,
+    aspect_ratio: ratio,
   };
+  if (imageItems.length) body.images = imageItems;
+  if (videoItems.length) body.videos = videoItems;
+  // shortcut: 统一入口只声明 images/videos，参考音频放 extra；上游拒绝时再改字段。
+  if (audios.length) body.extra = { audios: audios.map(input => ({ url: inlineMedia(input, "参考音频", 15 * MB), role: "reference_audio" })) };
   if (typeof request.generateAudio === "boolean") body.generate_audio = request.generateAudio;
   if (typeof request.watermark === "boolean") body.watermark = request.watermark;
   const payload = JSON.stringify(body);
   if (new TextEncoder().encode(payload).byteLength > 64 * MB) throw new Error("Seedance 请求体不能超过 64 MB");
 
-  const endpoint = `${baseUrl}/api/v3/contents/generations/tasks`;
+  const endpoint = `${baseUrl}/videos`;
   // 创建请求不重试：连接中断时上游仍可能已创建并计费。
   const response = await httpRequest(context, endpoint, {
     method: "POST",
@@ -975,11 +975,11 @@ async function generateSeedance(context: ProviderContext, request: VideoRequest)
     const status = String(task.status ?? "").toLowerCase();
     if (taskFailed(task))
       throw new Error(`Seedance 任务 ${taskId} ${status}：${readError(task) || task.message || task.code || "生成失败"}；请核对原任务，不要重复提交`);
-    if (status !== "succeeded") return null;
+    if (status !== "completed" && status !== "succeeded") return null;
     const output = task.content && typeof task.content === "object" && !Array.isArray(task.content) ? record(task.content) : {};
-    const videoUrl = output.video_url ?? task.video_url;
-    if (typeof videoUrl !== "string" || !videoUrl) throw new Error(`Seedance 任务 ${taskId} 已完成但没有视频地址`);
-    return videoUrl;
+    const videoUrl = output.video_url ?? task.video_url ?? task.url;
+    if (typeof videoUrl === "string" && videoUrl) return videoUrl;
+    return `${endpoint}/${encodeURIComponent(taskId)}/content`;
   });
   return finalizeVideo(context, url, apiKey, signal);
 }
@@ -995,7 +995,7 @@ async function generateWan3(context: ProviderContext, request: VideoRequest): Pr
   context.signal?.throwIfAborted();
   const apiKey = apiKeyOf(context);
   if (!apiKey) throw new Error("请填写 C2A API Key");
-  const root = gatewayRoot(context);
+  const baseUrl = gateway(context);
   // 单条视频最多等待 15 分钟。
   const signal = AbortSignal.any([AbortSignal.timeout(15 * 60_000), ...(context.signal ? [context.signal] : [])]);
 
@@ -1003,8 +1003,8 @@ async function generateWan3(context: ProviderContext, request: VideoRequest): Pr
   if (!prompt.trim()) throw new Error("提示词不能为空");
   if (Array.from(prompt).length > 20000) throw new Error("万相 3.0 提示词不能超过 20000 个字符");
 
-  const resolution = WAN_RESOLUTIONS[String(request.resolution ?? "720p").toLowerCase()];
-  if (!resolution) throw new Error("万相 3.0 只支持 480p / 720p / 1080p；未配置档位会按兜底价计费，已阻止提交");
+  const resolutionKey = String(request.resolution ?? "720p").toLowerCase();
+  if (!WAN_RESOLUTIONS[resolutionKey]) throw new Error("万相 3.0 只支持 480p / 720p / 1080p；未配置档位会按兜底价计费，已阻止提交");
 
   const requested = Math.round(Number(request.duration ?? 6));
   if (!Number.isInteger(requested) || requested < 2 || requested > 30) throw new Error("万相 3.0 时长须为 2–30 秒的整数");
@@ -1023,48 +1023,43 @@ async function generateWan3(context: ProviderContext, request: VideoRequest): Pr
   // 万相不接受透明通道，参考图统一转 JPEG 并压到 3 MB。
   const prepared = await Promise.all(ordered.map(input => fitImage(context, input, { minSide: 240, maxSide: 8000, capBytes: 3 * MB, forceJpeg: true })));
 
-  const media: Record<string, unknown>[] = [];
+  const imageItems: { url: string; role: string }[] = [];
+  const videoItems: { url: string; role: string }[] = [];
   if (frameMode) {
-    if (prepared[0]) media.push({ type: "first_frame", url: dataUri(prepared[0]) });
-    if (prepared[1]) media.push({ type: "last_frame", url: dataUri(prepared[1]) });
+    if (prepared[0]) imageItems.push({ url: dataUri(prepared[0]), role: "first_frame" });
+    if (prepared[1]) imageItems.push({ url: dataUri(prepared[1]), role: "last_frame" });
   } else {
-    for (const input of prepared) media.push({ type: "reference_image", url: dataUri(input) });
-    for (const video of videos) media.push({ type: "reference_video", url: inlineMedia(video, "参考视频", WAN_ITEM_CAP) });
-    for (const audio of audios) media.push({ type: "reference_audio", url: inlineMedia(audio, "参考音频", WAN_ITEM_CAP) });
+    for (const input of prepared) imageItems.push({ url: dataUri(input), role: "reference_image" });
+    for (const video of videos) videoItems.push({ url: inlineMedia(video, "参考视频", WAN_ITEM_CAP), role: "reference_video" });
   }
 
   // 首尾帧比例由图片决定；参考模式用请求比例，缺省 adaptive。
-  const ratio = frameMode ? (media.length ? "adaptive" : request.ratio || "16:9") : request.ratio || "adaptive";
+  const ratio = frameMode ? (imageItems.length ? "adaptive" : request.ratio || "16:9") : request.ratio || "adaptive";
   if (!WAN_RATIOS.includes(ratio)) throw new Error(`万相 3.0 不支持输出比例 ${ratio}`);
 
-  const parameters: Record<string, unknown> = { resolution, ratio, duration: requested };
-  if (typeof request.generateAudio === "boolean") parameters.audio = request.generateAudio;
-  if (typeof request.watermark === "boolean") parameters.watermark = request.watermark;
-
-  const body = { model: request.model, input: media.length ? { prompt, media } : { prompt }, parameters };
+  const body: Record<string, unknown> = { model: request.model, prompt, resolution: resolutionKey, duration: requested, aspect_ratio: ratio };
+  if (imageItems.length) body.images = imageItems;
+  if (videoItems.length) body.videos = videoItems;
+  // shortcut: 统一入口只声明 images/videos，参考音频放 extra；上游拒绝时再改字段。
+  if (audios.length) body.extra = { audios: audios.map(input => ({ url: inlineMedia(input, "参考音频", WAN_ITEM_CAP), role: "reference_audio" })) };
+  if (typeof request.generateAudio === "boolean") body.generate_audio = request.generateAudio;
+  if (typeof request.watermark === "boolean") body.watermark = request.watermark;
   if (new TextEncoder().encode(JSON.stringify(body)).byteLength > 64 * MB) throw new Error("请求 JSON（含 Base64）不能超过 64 MB，请减少素材或先压缩");
 
-  const created = await post(context, `${root}/api/v1/services/aigc/video-generation/video-synthesis`, body, signal);
-  const output = created.output && typeof created.output === "object" && !Array.isArray(created.output) ? record(created.output) : {};
-  const taskId = output.task_id;
-  if (typeof taskId !== "string" || !taskId) {
-    const failure = created.error && typeof created.error === "object" ? record(created.error) : created;
-    throw new Error(readError(failure) || "万相 3.0 创建响应缺少 task_id；请核对 C2A 任务记录，不要重复提交");
-  }
+  const endpoint = `${baseUrl}/videos`;
+  const created = await post(context, endpoint, body, signal);
+  const task = created.data && typeof created.data === "object" && !Array.isArray(created.data) ? record(created.data) : created;
+  const taskId = task.id ?? task.task_id ?? task.request_id;
+  if (typeof taskId !== "string" || !taskId) throw new Error(readError(created) || "万相 3.0 创建响应缺少任务 ID；请核对 C2A 任务记录，不要重复提交");
 
   const url = await pollUntil(signal, 10000, 900_000, async () => {
-    const task = record(await get(context, `${root}/api/v1/tasks/${encodeURIComponent(taskId)}`, signal));
-    const result = task.output && typeof task.output === "object" && !Array.isArray(task.output) ? record(task.output) : {};
-    const status = String(result.task_status ?? "").toUpperCase();
-    if (status === "SUCCEEDED") {
-      if (typeof result.video_url !== "string" || !result.video_url) throw new Error(`任务 ${taskId} 已完成但没有返回视频地址，请核对 C2A 任务记录`);
-      return result.video_url;
-    }
-    if (["FAILED", "CANCELED", "UNKNOWN"].includes(status)) {
-      const detail = readError(result) || result.message || result.code || (status === "UNKNOWN" ? "任务不存在或查询已过期（task_id 有效期 24 小时）" : status);
-      throw new Error(`任务 ${taskId} ${status}：${detail}；请核对原任务，不要重复提交`);
-    }
-    return null;
+    const value = await get(context, `${endpoint}/${encodeURIComponent(taskId)}`, signal);
+    const current = taskOf(value);
+    if (taskFailed(current)) throw new Error(`任务 ${taskId}：${readError(current) || current.message || current.status}；请核对原任务，不要重复提交`);
+    if (!taskDone(current)) return null;
+    const found = current.video_url ?? current.url ?? current.result_url;
+    if (typeof found === "string" && found) return found;
+    return `${endpoint}/${encodeURIComponent(taskId)}/content`;
   });
   return finalizeVideo(context, url, apiKey, signal);
 }
@@ -1161,8 +1156,8 @@ export default {
 - **Grok 视频**：\`/videos\` 建任务、\`/videos/{request_id}\` 轮询、\`/videos/{request_id}/content\` 下载；1–15 秒，480p/720p/1080p，比例为 xAI 枚举（1:1、16:9、9:16、4:3、3:4、3:2、2:3、21:9、5:2）。参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
 - **MiniMax-H3**：\`/videos\` 建任务并轮询，\`size\` 提交 1280×720 / 1792×1024；4–30 秒，只支持 768p 与 2k 两档、16:9 / 9:16 与单张参考图。
 - **MiniMax-H3-Max**：同样 \`/videos\`，参考素材按 \`images[{url,role}]\` / \`videos[{url}]\` 提交；5–15 秒，480p/768p/1080p/2k/4k（720p 上游拒绝），不接参考音频，成片只挂在 \`/content\` 上。
-- **万相 3.0**：DashScope 原生 \`/api/v1/services/aigc/video-generation/video-synthesis\`，首尾帧与参考素材互斥。
-- **Seedance 2.0 / Fast / Mini / 2.5**：火山方舟原生 \`/api/v3/contents/generations/tasks\`，使用 \`content[]\` + role 并轮询任务。支持文生视频、参考图生视频、视频生视频、音频生视频，以及图片/视频/音频混合参考；首帧/首尾帧与全模态参考互斥，2.5 首帧比例自动跟随图片。2.5 支持纯音频输入，2.0 系列的音频必须搭配图片或视频。本地参考视频复用素材网关转为公网 URL（当前网关单文件上限 20 MB），音频按公网 URL 或 Base64 发送。按实际 Token 用量结算，暂不提供按秒报价。
+- **万相 3.0**：与 Seedance 同一套 \`/v1/videos\`。分辨率仍只开放 480p/720p/1080p，首尾帧与参考素材互斥；参考音频放进 \`extra.audios\`。旧 DashScope \`/api/v1/services/aigc/...\` 已不再使用。
+- **Seedance 2.0 / Fast / Mini / 2.5**：Video 分组统一入口 \`/v1/videos\`，用 \`prompt\`、\`images[{url,role}]\`、\`videos[{url,role}]\`、\`duration\`、\`resolution\`、\`aspect_ratio\` 提交，轮询 \`/v1/videos/{id}\`，成片走 \`/content\`。旧方舟 \`/api/v3/contents/generations/tasks\` 已下线。支持文生视频、参考图生视频、视频生视频、音频生视频，以及图片/视频/音频混合参考；首帧/首尾帧与全模态参考互斥，2.5 首帧比例自动跟随图片。2.5 支持纯音频输入，2.0 系列的音频必须搭配图片或视频。本地参考视频复用素材网关转为公网 URL（当前网关单文件上限 20 MB），音频按公网 URL 或 Base64 放进 \`extra.audios\`。按实际 Token 用量结算，暂不提供按秒报价。
 
 **素材网关**填 C2A 官方素材网关（默认 \`https://assets.antest.cc.cd\`），用同一枚 C2A API Key 鉴权：本地素材经三段式上传换成 24 小时公网签名 URL，绕开上游对 base64 请求体的限制。留空则只用内联 Base64。
 
