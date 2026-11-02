@@ -12,6 +12,7 @@
     "./language/tfRouter": "./src/language/tfRouter.ts",
     "./language/deepSeek": "./src/language/deepSeek.ts",
     "./media/tfRouter": "./src/media/tfRouter.ts",
-    "./media/c2a": "./src/media/c2a.ts"
+    "./media/c2a": "./src/media/c2a.ts",
+    "./media/c2aYzh": "./src/media/c2aYzh.ts"
   }
 }

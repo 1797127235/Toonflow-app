@@ -1,4 +1,4 @@
-const version = "2.9.0";
+const version = "2.9.1";
 
 const rules = [
   {
@@ -722,26 +722,6 @@ const VIDEO_SPECS: Record<string, VideoSpec> = {
   "MiniMax-H3-open": { label: "MiniMax H3 Open", resolutions: ["720p", "1080p", "2k", "4k"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
   "wan3.0-video": { label: "万相 3.0", resolutions: ["480p", "720p", "1080p"], duration: [2, 30], images: 10, videos: 5, audios: 5 },
   "wan3.0-video-prime": { label: "万相 3.0 Prime", resolutions: ["480p", "720p", "1080p"], duration: [2, 30], images: 10, videos: 5, audios: 5 },  // ── yzh 分组（haishu-视频模型-yzh渠道-1.2x）：取自分组页模型定价 ──
-  "doubao-seedance-2.0": { label: "豆包 Seedance 2.0", resolutions: ["720p"], duration: [4, 15], images: 9, videos: 0, audios: 0 },
-  "doubao-seedance-2.0-fast": { label: "豆包 Seedance 2.0 Fast", resolutions: ["720p"], duration: [4, 15], images: 9, videos: 0, audios: 0 },
-  "doubao-seedance-2.0-mini": { label: "豆包 Seedance 2.0 Mini", resolutions: ["720p"], duration: [4, 15], images: 9, videos: 0, audios: 0 },
-  "doubao-seedance-2.5": { label: "豆包 Seedance 2.5", resolutions: ["720p"], duration: [4, 30], images: 9, videos: 0, audios: 0 },
-  "jimeng-seedance-2.5": { label: "即梦 Seedance 2.5", resolutions: ["480p", "720p"], duration: [4, 30], images: 30, videos: 0, audios: 10 },
-  "kling-omni-4.0": { label: "Kling Omni 4.0", resolutions: ["720p", "1080p"], duration: [4, 30], images: 10, videos: 0, audios: 3 },
-  "minimax-h3": { label: "MiniMax H3", resolutions: ["768p"], duration: [4, 15], images: 5, videos: 0, audios: 3 },
-  "minimax-h3-multi": { label: "MiniMax H3 Multi", resolutions: ["768p"], duration: [4, 15], images: 9, videos: 0, audios: 1 },
-  "seedance-2.0": { label: "Seedance 2.0", resolutions: ["480p", "720p"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
-  "seedance-2.0-916": { label: "Seedance 2.0 竖屏", resolutions: ["720p"], duration: [4, 15], images: 9, videos: 3, audios: 3, fixedRatio: "9:16" },
-  "seedance-2.0-deal": { label: "Seedance 2.0 Deal", resolutions: ["480p", "720p"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
-  "seedance-2.0-fast": { label: "Seedance 2.0 Fast", resolutions: ["480p", "720p"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
-  "seedance-2.0-fast-deal": { label: "Seedance 2.0 Fast Deal", resolutions: ["720p"], duration: [4, 12], images: 9, videos: 0, audios: 3 },
-  "seedance-2.0-mini": { label: "Seedance 2.0 Mini", resolutions: ["480p", "720p"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
-  "seedance-2.0-mini-deal": { label: "Seedance 2.0 Mini Deal", resolutions: ["720p"], duration: [4, 15], images: 9, videos: 0, audios: 3 },
-  "seedance-2.5": { label: "Seedance 2.5", resolutions: ["480p", "720p"], duration: [4, 15], images: 30, videos: 0, audios: 10 },
-  "seedance-2.5-deal": { label: "Seedance 2.5 Deal", resolutions: ["720p"], duration: [4, 30], images: 30, videos: 0, audios: 10 },
-  "seedance-2.5-pro": { label: "Seedance 2.5 Pro", resolutions: ["480p", "720p"], duration: [4, 30], images: 30, videos: 10, audios: 10 },
-  "vidu-q4": { label: "Vidu Q4", resolutions: ["720p", "1080p"], duration: [4, 16], images: 15, videos: 0, audios: 3 },
-  "wan3.0-vedio-deal": { label: "万相 3.0 Video Deal", resolutions: ["720p"], duration: [4, 30], images: 10, videos: 5, audios: 5 },
 };
 
 
@@ -913,26 +893,6 @@ const C2A_RATES: Record<string, C2aRate> = {
   "MiniMax-H3-open": { rates: { "720p": 0.33, "1080p": 0.429, "2k": 0.528, "4k": 0.6336 }, fallback: 0.33, extraImage: 0.17, unit: "秒" },
   "wan3.0-video": { rates: { "480p": 0.2088, "720p": 0.4176, "1080p": 0.8352 }, unit: "秒" },
   "wan3.0-video-prime": { rates: { "480p": 0.3672, "720p": 0.7344, "1080p": 1.4688 }, unit: "秒" },  // ── yzh 分组：按次或按秒 ──
-  "doubao-seedance-2.0": { rates: { "720p": 3.17 }, unit: "次" },
-  "doubao-seedance-2.0-fast": { rates: { "720p": 3.17 }, unit: "次" },
-  "doubao-seedance-2.0-mini": { rates: { "720p": 1.44 }, unit: "次" },
-  "doubao-seedance-2.5": { rates: { "720p": 9.36 }, unit: "次" },
-  "seedance-2.0-916": { rates: { "720p": 2.88 }, unit: "次" },
-  "seedance-2.0-deal": { rates: { "480p": 2.88, "720p": 4.68 }, fallback: 4.68, unit: "次" },
-  "seedance-2.0-fast-deal": { rates: { "720p": 3.6 }, unit: "次" },
-  "seedance-2.0-mini-deal": { rates: { "720p": 1.44 }, unit: "次" },
-  "vidu-q4": { rates: { "720p": 1.44, "1080p": 2.88 }, fallback: 2.88, unit: "次" },
-  "wan3.0-vedio-deal": { rates: { "720p": 4.32 }, unit: "次" },
-  "jimeng-seedance-2.5": { rates: { "480p": 0.936, "720p": 1.08 }, fallback: 1.08, unit: "秒" },
-  "kling-omni-4.0": { rates: { "720p": 0.2304, "1080p": 0.36 }, fallback: 0.36, unit: "秒" },
-  "minimax-h3": { rates: { "720p": 0.108, "768p": 0.108 }, fallback: 0.108, unit: "秒" },
-  "minimax-h3-multi": { rates: { "720p": 0.1152, "768p": 0.1152 }, fallback: 0.1152, unit: "秒" },
-  "seedance-2.0": { rates: { "480p": 0.72, "720p": 1.44 }, fallback: 1.44, unit: "秒" },
-  "seedance-2.0-fast": { rates: { "480p": 0.288, "720p": 0.576 }, fallback: 0.576, unit: "秒" },
-  "seedance-2.0-mini": { rates: { "480p": 0.144, "720p": 0.288 }, fallback: 0.288, unit: "秒" },
-  "seedance-2.5": { rates: { "480p": 1.01, "720p": 2.3 }, fallback: 2.3, unit: "秒" },
-  "seedance-2.5-deal": { rates: { "720p": 0.864 }, unit: "秒" },
-  "seedance-2.5-pro": { rates: { "480p": 0.504, "720p": 0.72 }, fallback: 0.72, unit: "秒" },
 };
 
 
@@ -970,7 +930,7 @@ function quoteMedia(model: string, tier: unknown, quantity: number, imageCount =
 
 export default {
   id: "c2a",
-  label: "C2A 中转",
+  label: "C2A 中转 · km",
   icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI4IiBmaWxsPSIjMjU2M0VCIi8+PHBhdGggZD0iTTEwIDIyVjEwaDUuNWEzLjUgMy41IDAgMCAxIDAgN0gxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMjIiIGN5PSIyMiIgcj0iMi42IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
   version,
   readme: `## C2A 中转（Codex2API）
@@ -982,7 +942,7 @@ export default {
 - **Grok 视频**仍走 xAI 参数（\`reference_images\` / \`image\` / \`last_frame\`），1–15 秒、480p/720p/1080p。参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
 - **分辨率**：分组页写 720p 的 MiniMax 实际只接受 768p，供应商会自动改名提交。
 
-两个分组都在内置列表里：\`[haishu-视频模型-km渠道]-1.2x\`（doubao-seedance-2-0-*-260128/260615/260628、Kling、MiniMax-H3、万相 video）与 \`[haishu-视频模型-yzh渠道]-1.2x\`（doubao-seedance-2.0/2.5、jimeng-seedance-2.5、seedance-2.0/2.5 系列、vidu-q4、kling-omni-4.0、wan3.0-vedio-deal）。两边同名但 ID 不同，报价按精确 ID 优先匹配；Key 只看得到其中一个分组时，用不到的模型在编辑供应商里删掉即可。
+分组：\`[haishu-视频模型-km渠道]-1.2x\`（doubao-seedance-2-0-*-260128/260615/260628、Kling 3.0/4.0、MiniMax-H3 系列、万相 3.0 video）。价卡按秒；Seedance 四个模型实际按输出 Token 结算，秒价是创建时的预扣估算；MiniMax-H3 系列另有「超出 5 张参考图 ¥0.17/张」的附加费。
 
 **素材网关**填 C2A 官方素材网关（默认 \`https://assets.antest.cc.cd\`），用同一枚 C2A API Key 鉴权：本地素材经三段式上传换成 24 小时公网签名 URL，绕开上游对 base64 请求体的限制。留空则只用内联 Base64。
 
@@ -1161,166 +1121,6 @@ export default {
       mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "videoReference:5", "audioReference:5"]],
       audio: "optional",
       durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p", "1080p"] }],
-    },
-    {
-      id: "doubao-seedance-2.0",
-      label: "豆包 Seedance 2.0",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p"] }],
-    },
-    {
-      id: "doubao-seedance-2.0-fast",
-      label: "豆包 Seedance 2.0 Fast",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p"] }],
-    },
-    {
-      id: "doubao-seedance-2.0-mini",
-      label: "豆包 Seedance 2.0 Mini",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p"] }],
-    },
-    {
-      id: "doubao-seedance-2.5",
-      label: "豆包 Seedance 2.5",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p"] }],
-    },
-    {
-      id: "jimeng-seedance-2.5",
-      label: "即梦 Seedance 2.5",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:30", "audioReference:10"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "kling-omni-4.0",
-      label: "Kling Omni 4.0",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p", "1080p"] }],
-    },
-    {
-      id: "minimax-h3",
-      label: "MiniMax H3",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:5", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["768p"] }],
-    },
-    {
-      id: "minimax-h3-multi",
-      label: "MiniMax H3 Multi",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "audioReference:1"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["768p"] }],
-    },
-    {
-      id: "seedance-2.0",
-      label: "Seedance 2.0",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "seedance-2.0-916",
-      label: "Seedance 2.0 竖屏",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p"] }],
-    },
-    {
-      id: "seedance-2.0-deal",
-      label: "Seedance 2.0 Deal",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "seedance-2.0-fast",
-      label: "Seedance 2.0 Fast",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "seedance-2.0-fast-deal",
-      label: "Seedance 2.0 Fast Deal",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["720p"] }],
-    },
-    {
-      id: "seedance-2.0-mini",
-      label: "Seedance 2.0 Mini",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "seedance-2.0-mini-deal",
-      label: "Seedance 2.0 Mini Deal",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p"] }],
-    },
-    {
-      id: "seedance-2.5",
-      label: "Seedance 2.5",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:30", "audioReference:10"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "seedance-2.5-deal",
-      label: "Seedance 2.5 Deal",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:30", "audioReference:10"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p"] }],
-    },
-    {
-      id: "seedance-2.5-pro",
-      label: "Seedance 2.5 Pro",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:30", "videoReference:10", "audioReference:10"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "vidu-q4",
-      label: "Vidu Q4",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:15", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], resolution: ["720p", "1080p"] }],
-    },
-    {
-      id: "wan3.0-vedio-deal",
-      label: "万相 3.0 Video Deal",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "videoReference:5", "audioReference:5"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p"] }],
     },
   ],
   async getPrice(request: ProviderPriceRequest): Promise<ProviderPrice | null> {
