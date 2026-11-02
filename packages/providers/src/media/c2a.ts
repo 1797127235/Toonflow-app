@@ -1,4 +1,4 @@
-const version = "2.7.1";
+const version = "2.7.2";
 
 const rules = [
   {
@@ -728,23 +728,6 @@ const VIDEO_SPECS: Record<string, VideoSpec> = {
   "vidu-q4": { label: "Vidu Q4", resolutions: ["720p", "1080p"], duration: [4, 16], images: 15, videos: 0, audios: 3 },
   // 上游模型 ID 就是拼错的 vedio，不能改。
   "wan3.0-vedio-deal": { label: "万相 3.0 Video Deal", resolutions: ["720p"], duration: [4, 30], images: 10, videos: 5, audios: 5 },
-  // ── km 分组（haishu-视频模型-km渠道-1.2x）：ID、档位与时长取自该组逐模型文档 ──
-  // 档位按「价卡匹配」原则只开放文档给了价格的档位，未报价档位不开放；
-  // audios 为 0 表示该模型文档写明参考音频未映射（Seedance 2.x、MiniMax-H3），不是漏填。
-  "doubao-seedance-2-0-260128": { label: "Seedance 2.0 · km", resolutions: ["480p", "720p", "1080p", "4k"], duration: [4, 15], images: 9, videos: 3, audios: 0 },
-  "doubao-seedance-2-0-fast-260128": { label: "Seedance 2.0 Fast · km", resolutions: ["480p", "720p"], duration: [4, 15], images: 9, videos: 3, audios: 0 },
-  "doubao-seedance-2-0-mini-260615": { label: "Seedance 2.0 Mini · km", resolutions: ["480p", "720p"], duration: [4, 10], images: 9, videos: 3, audios: 0 },
-  "doubao-seedance-2-5-260628": { label: "Seedance 2.5 · km", resolutions: ["480p", "720p", "1080p"], duration: [4, 30], images: 30, videos: 10, audios: 0 },
-  "kling-3.0": { label: "Kling 3.0 · km", resolutions: ["720p", "1080p", "4k"], duration: [3, 15], images: 1, videos: 0, audios: 0 },
-  "Kling-3.0-omni": { label: "Kling 3.0 Omni · km", resolutions: ["720p", "1080p", "2k", "4k"], duration: [3, 15], images: 7, videos: 1, audios: 0 },
-  "kling-3.0-turbo": { label: "Kling 3.0 Turbo · km", resolutions: ["720p", "1080p"], duration: [3, 15], images: 5, videos: 0, audios: 0 },
-  "kling-4.0": { label: "Kling 4.0 · km", resolutions: ["720p", "1080p", "2k", "4k"], duration: [3, 30], images: 10, videos: 0, audios: 0 },
-  "kling-4.0-Omni": { label: "Kling 4.0 Omni · km", resolutions: ["720p", "1080p", "2k", "4k"], duration: [3, 30], images: 10, videos: 5, audios: 3 },
-  "MiniMax-H3": { label: "MiniMax H3 · km", resolutions: ["768p", "1080p", "2k", "4k"], duration: [4, 15], images: 9, videos: 3, audios: 0 },
-  "MiniMax-H3-Max": { label: "MiniMax H3 Max · km", resolutions: ["768p", "1080p"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
-  "MiniMax-H3-open": { label: "MiniMax H3 Open · km", resolutions: ["720p", "1080p", "2k", "4k"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
-  "wan3.0-video": { label: "万相 3.0 · km", resolutions: ["480p", "720p", "1080p"], duration: [2, 30], images: 10, videos: 5, audios: 5 },
-  "wan3.0-video-prime": { label: "万相 3.0 Prime · km", resolutions: ["480p", "720p", "1080p"], duration: [2, 30], images: 10, videos: 5, audios: 5 },
 };
 
 function videoSpecOf(model: string): VideoSpec | undefined {
@@ -773,7 +756,7 @@ async function generateVideoById(context: ProviderContext, request: VideoRequest
   context.signal?.throwIfAborted();
   const apiKey = apiKeyOf(context);
   if (!apiKey) throw new Error("请填写 C2A API Key");
-  // km 分组有 Kling-3.0-omni / MiniMax-H3 这类大小写混排 ID，精确匹配不到再按小写兜底。
+  // 精确匹配不到时按小写兜底，兼容手工填入的大小写变体。
   const spec = VIDEO_SPECS[String(request.model)] ?? videoSpecOf(String(request.model));
   if (!spec) throw new Error(`C2A 未适配该模型：${request.model}`);
   const endpoint = `${gateway(context)}/videos`;
@@ -920,22 +903,6 @@ const C2A_RATES: Record<string, C2aRate> = {
   // ── Grok 视频：老分组仍在售，按秒 ──
   "grok-imagine-video-1.5": { rates: { "480p": 0.15, "720p": 0.198, "1080p": 0.3 }, unit: "秒" },
   "grok-imagine-video-1.5-preview": { rates: { "480p": 0.15, "720p": 0.198, "1080p": 0.3 }, unit: "秒" },
-  // ── km 分组：按秒 ──
-  // Seedance 实际按输出 Token 结算，秒价是创建时冻结的预扣价，只能当估算。
-  "doubao-seedance-2-0-260128": { rates: { "480p": 0.8, "720p": 0.8, "1080p": 0.8, "4k": 0.8 }, unit: "秒", note: "按输出 Token 结算，此处为创建时的秒价预扣" },
-  "doubao-seedance-2-0-fast-260128": { rates: { "480p": 0.4, "720p": 0.4 }, unit: "秒", note: "按输出 Token 结算，此处为创建时的秒价预扣" },
-  "doubao-seedance-2-0-mini-260615": { rates: { "480p": 0.3, "720p": 0.3 }, unit: "秒", note: "按输出 Token 结算，此处为创建时的秒价预扣" },
-  "doubao-seedance-2-5-260628": { rates: { "480p": 1, "720p": 1, "1080p": 1 }, unit: "秒", note: "按输出 Token 结算，此处为创建时的秒价预扣" },
-  "kling-3.0": { rates: { "720p": 0.81, "1080p": 1.08, "4k": 2.7 }, unit: "秒" },
-  "Kling-3.0-omni": { rates: { "720p": 0.99, "1080p": 1.26, "2k": 1.62, "4k": 2.7 }, unit: "秒" },
-  "kling-3.0-turbo": { rates: { "720p": 0.72, "1080p": 0.9 }, unit: "秒" },
-  "kling-4.0": { rates: { "720p": 0.54, "1080p": 1.35, "2k": 1.944, "4k": 2.7 }, unit: "秒" },
-  "kling-4.0-Omni": { rates: { "720p": 0.648, "1080p": 1.62, "2k": 1.944, "4k": 3.24 }, unit: "秒" },
-  "MiniMax-H3": { rates: { "768p": 0.51, "1080p": 0.663, "2k": 0.816, "4k": 0.9792 }, fallback: 0.51, extraImage: 0.17, unit: "秒" },
-  "MiniMax-H3-Max": { rates: { "768p": 0.51, "1080p": 0.663 }, fallback: 0.663, extraImage: 0.17, unit: "秒" },
-  "MiniMax-H3-open": { rates: { "720p": 0.33, "1080p": 0.429, "2k": 0.528, "4k": 0.6336 }, fallback: 0.33, extraImage: 0.17, unit: "秒" },
-  "wan3.0-video": { rates: { "480p": 0.2088, "720p": 0.4176, "1080p": 0.8352 }, unit: "秒" },
-  "wan3.0-video-prime": { rates: { "480p": 0.3672, "720p": 0.7344, "1080p": 1.4688 }, unit: "秒" },
 };
 
 /** 报价 = 档位单价 × 数量。视频按秒（按次模型固定算一次），图片按张。 */
@@ -984,14 +951,7 @@ export default {
 - **Grok 视频**仍走 xAI 参数（\`reference_images\` / \`image\` / \`last_frame\`），1–15 秒、480p/720p/1080p。参考素材优先经素材网关换成公网 URL，网关不可用时参考图降级内联 Base64，参考视频无法降级会直接报错。
 - **分辨率**：分组页写 720p 的 MiniMax 实际只接受 768p，供应商会自动改名提交。
 
-## 两个分组都列在这里
-
-| 分组 | 模型 ID 特征 | 计费 |
-| --- | --- | --- |
-| \`[haishu-视频模型-yzh渠道]-1.2x\` | \`doubao-seedance-2.0\`、\`seedance-2.5-pro\`、\`vidu-q4\`、\`wan3.0-vedio-deal\` | 按次（\`*-deal\`、doubao、vidu、wan）或按秒 |
-| \`[haishu-视频模型-km渠道]-1.2x\` | 标签带 \`· km\`，如 \`doubao-seedance-2-0-260128\`、\`kling-4.0\`、\`MiniMax-H3\`、\`wan3.0-video\` | 按秒；Seedance 系列按输出 Token 结算，秒价是创建时的预扣估算 |
-
-km 分组有 \`MiniMax-H3\` 这类大小写混排 ID，与 yzh 的 \`minimax-h3\` 仅大小写不同，报价按精确 ID 优先匹配。只看得到其中一个分组的 Key，用不到的模型在编辑供应商里删掉即可。
+当前只保留 \`[haishu-视频模型-yzh渠道]-1.2x\` 分组：\`*-deal\`、\`doubao-seedance-*\`、\`vidu-q4\`、\`wan3.0-vedio-deal\` 按次计费（与时长无关），其余按秒。\`km\` 分组已下线，对应模型不再内置。
 
 **素材网关**填 C2A 官方素材网关（默认 \`https://assets.antest.cc.cd\`），用同一枚 C2A API Key 鉴权：本地素材经三段式上传换成 24 小时公网签名 URL，绕开上游对 base64 请求体的限制。留空则只用内联 Base64。
 
@@ -1223,113 +1183,6 @@ km 分组有 \`MiniMax-H3\` 这类大小写混排 ID，与 yzh 的 \`minimax-h3\
       mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "videoReference:5", "audioReference:5"]],
       audio: "optional",
       durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p"] }],
-    },
-    {
-      id: "doubao-seedance-2-0-260128",
-      label: "Seedance 2.0 · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p", "1080p", "4k"] }],
-    },
-    {
-      id: "doubao-seedance-2-0-fast-260128",
-      label: "Seedance 2.0 Fast · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "doubao-seedance-2-0-mini-260615",
-      label: "Seedance 2.0 Mini · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10], resolution: ["480p", "720p"] }],
-    },
-    {
-      id: "doubao-seedance-2-5-260628",
-      label: "Seedance 2.5 · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:30", "videoReference:10"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p", "1080p"] }],
-    },
-    {
-      id: "kling-3.0",
-      label: "Kling 3.0 · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:1"]],
-      durationResolutionMap: [{ duration: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p", "1080p", "4k"] }],
-    },
-    {
-      id: "Kling-3.0-omni",
-      label: "Kling 3.0 Omni · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:7", "videoReference:1"]],
-      durationResolutionMap: [{ duration: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p", "1080p", "2k", "4k"] }],
-    },
-    {
-      id: "kling-3.0-turbo",
-      label: "Kling 3.0 Turbo · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:5"]],
-      durationResolutionMap: [{ duration: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p", "1080p"] }],
-    },
-    {
-      id: "kling-4.0",
-      label: "Kling 4.0 · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10"]],
-      durationResolutionMap: [{ duration: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p", "1080p", "2k", "4k"] }],
-    },
-    {
-      id: "kling-4.0-Omni",
-      label: "Kling 4.0 Omni · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "videoReference:5", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["720p", "1080p", "2k", "4k"] }],
-    },
-    {
-      id: "MiniMax-H3",
-      label: "MiniMax H3 · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3"]],
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["768p", "1080p", "2k", "4k"] }],
-    },
-    {
-      id: "MiniMax-H3-Max",
-      label: "MiniMax H3 Max · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["768p", "1080p"] }],
-    },
-    {
-      id: "MiniMax-H3-open",
-      label: "MiniMax H3 Open · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p", "1080p", "2k", "4k"] }],
-    },
-    {
-      id: "wan3.0-video",
-      label: "万相 3.0 · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "videoReference:5", "audioReference:5"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p", "1080p"] }],
-    },
-    {
-      id: "wan3.0-video-prime",
-      label: "万相 3.0 Prime · km",
-      type: "video",
-      mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:10", "videoReference:5", "audioReference:5"]],
-      audio: "optional",
-      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30], resolution: ["480p", "720p", "1080p"] }],
     },
   ],
   async getPrice(request: ProviderPriceRequest): Promise<ProviderPrice | null> {
