@@ -10,14 +10,15 @@ if (process.argv.length !== 3 || !["build", "dev", "typecheck", "package"].inclu
   throw new Error("用法：bun apps/desktop/scripts/build.ts <build|dev|typecheck|package>");
 }
 const isMac = process.platform === "darwin";
+const isLinux = process.platform === "linux" && ["x64", "arm64"].includes(process.arch);
 const isIntelMac = isMac && process.arch === "x64";
 // ACT: typecheck 只读取当前源码和已有 SDK 文件，不安装依赖或生成文件。
 if (mode === "typecheck") {
   await $`${process.execPath} run tsc --project ${isIntelMac ? "compat/macIntel/tsconfig.json" : "apps/desktop/tsconfig.json"}`.cwd(projectDir);
   process.exit(0);
 }
-if (!(isMac && ["x64", "arm64"].includes(process.arch)) && !(process.platform === "win32" && process.arch === "x64")) {
-  throw new Error("桌面构建需要 Windows x64 或 macOS x64/arm64 环境。");
+if (!(isMac && ["x64", "arm64"].includes(process.arch)) && !(process.platform === "win32" && process.arch === "x64") && !isLinux) {
+  throw new Error("桌面构建需要 Windows x64、macOS x64/arm64 或 Linux x64/arm64 环境。");
 }
 if (mode === "dev") process.env.TOONFLOW_DATA_DIR = resolve(projectDir, "data");
 if (isMac) {
@@ -28,7 +29,7 @@ if (isMac) {
     }
   }
 }
-if (!isMac) {
+if (process.platform === "win32") {
   const startupBuild = await Bun.build({
     entrypoints: [resolve(projectDir, "packages/startup/src/windowsSplashWorker.ts")],
     outdir: resolve(projectDir, "build/desktop/startup"),
@@ -69,6 +70,9 @@ if (isIntelMac) {
 const cli = resolve(projectDir, "apps/desktop/node_modules/electrobun/bin/electrobun.cjs");
 if (isMac && mode !== "dev") await prepareMacDmg();
 await $`${process.execPath} ${cli} ${mode === "dev" ? "dev" : "build"} ${mode === "dev" ? [] : ["--env=stable"]}`.cwd(projectDir);
-if (mode === "package" && !isMac) {
+if (mode === "package" && isLinux) {
+  await $`${process.execPath} ${resolve(import.meta.dir, "packageLinux.ts")}`.cwd(projectDir);
+}
+if (mode === "package" && process.platform === "win32") {
   await $`${process.execPath} ${resolve(import.meta.dir, "packageWindows.ts")}`.cwd(projectDir);
 }

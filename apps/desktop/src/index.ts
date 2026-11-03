@@ -2,9 +2,10 @@ import { setLocaleFallback, t, translateMessage } from "@toonflow/server/i18n";
 import { setRuntimeHost } from "@toonflow/server/platform";
 import { detectLocale, normalizeLocale } from "@toonflow/i18n";
 import { execFile } from "node:child_process";
-import { existsSync, writeAtomicSync } from "@toonflow/file";
+import { accessSync, constants, existsSync, mkdirSync, writeAtomicSync } from "@toonflow/file";
 import { file } from "@toonflow/file/bun";
-import { resolve } from "node:path";
+import { homedir } from "node:os";
+import { join, resolve } from "node:path";
 import { promisify } from "node:util";
 import { dlopen, ptr } from "bun:ffi";
 import type { DesktopRuntime, PluginInstallRequest } from "@toonflow/server/desktop";
@@ -16,6 +17,25 @@ import createWindowsUpdater, { confirmWindowsUpdateStartup } from "./update/wind
 import prepareWebviewRuntime from "./webviewRuntime";
 
 const execFileAsync = promisify(execFile);
+
+function createLinuxPackageUpdater(): DesktopRuntime["updater"] {
+  return {
+    async getLocalInfo() {
+      const info = await file(resolve(PATHS.RESOURCES_FOLDER, "version.json")).json();
+      const version = typeof info?.version === "string" ? info.version : "";
+      const hash = typeof info?.hash === "string" ? info.hash : "";
+      if (!version || !hash) throw new Error(t`应用构建标识缺失，无法读取当前版本`);
+      return {
+        version,
+        channel: typeof info?.channel === "string" ? info.channel : "",
+        hash,
+        baseUrl: typeof info?.baseUrl === "string" ? info.baseUrl : "",
+      };
+    },
+    updateInfo: () => ({ updateAvailable: false, updateReady: false }),
+    checkForUpdate: async () => ({}),
+  };
+}
 const pendingInstalls: PluginInstallRequest[] = [];
 let deliverInstall: ((request: PluginInstallRequest) => void) | undefined;
 function openUrl(url: string) {
@@ -76,9 +96,17 @@ async function start() {
   let isClosing = false;
 
   try {
-    // Windows 的 data 与 app 同级；macOS 的 data 与 .app 同级，避免随程序更新被替换。
+    // Windows 的 data 与 app 同级；macOS 的 data 与 .app 同级。Linux 安装包只读，数据放在用户目录。
     const installDirectory = resolve(PATHS.RESOURCES_FOLDER, process.platform === "darwin" ? "../../.." : "../..");
-    const dataDirectory = process.env.TOONFLOW_DATA_DIR ?? resolve(installDirectory, "data");
+    const dataDirectory = process.env.TOONFLOW_DATA_DIR ?? (process.platform === "linux"
+      ? join(process.env.XDG_DATA_HOME || join(homedir(), ".local", "share"), "toonflow")
+      : resolve(installDirectory, "data"));
+    if (process.platform === "linux") mkdirSync(dataDirectory, { recursive: true });
+    let linuxPackage = process.platform === "linux" && (Boolean(process.env.APPIMAGE) || process.env.TOONFLOW_LINUX_PACKAGE === "1");
+    if (process.platform === "linux" && !linuxPackage) {
+      try { accessSync(PATHS.RESOURCES_FOLDER, constants.W_OK); }
+      catch { linuxPackage = true; }
+    }
     // ACT: 先显示原生动画，再加载服务，避免初始化期间没有反馈。
     const startupSettings = await file(resolve(dataDirectory, "settings.json")).json().catch((error) => {
       if (error.code !== "ENOENT") console.error("读取启动设置失败，使用默认启动动画：", error);
@@ -110,7 +138,8 @@ async function start() {
       ]);
     }
     try {
-      if (startupSettings?.settings?.ui?.startupAnimation !== false) {
+      // ACT: Linux 暂无原生启动画面，直接显示主窗口。
+      if (process.platform !== "linux" && startupSettings?.settings?.ui?.startupAnimation !== false) {
         splash = await showNativeSplash(resolve(PATHS.VIEWS_FOLDER, "../startup"), () => {
           isClosing = true;
           splash = undefined;
@@ -298,7 +327,8 @@ async function start() {
       },
       openDevTools() { mainWindow.webview.openDevTools(); },
       // ACT: Windows 使用两阶段退出；Intel Mac 由兼容入口适配 1.18.1 更新器。
-      updater: process.platform === "win32" ? createWindowsUpdater(PATHS.RESOURCES_FOLDER, Utils as unknown as Parameters<typeof createWindowsUpdater>[1]) : Updater,
+      updater: process.platform === "win32" ? createWindowsUpdater(PATHS.RESOURCES_FOLDER, Utils as unknown as Parameters<typeof createWindowsUpdater>[1])
+        : linuxPackage ? createLinuxPackageUpdater() : Updater,
     } satisfies DesktopRuntime;
     if (process.platform === "win32") {
       // ACT: Electrobun 2.0.1 未设置 Windows 窗口图标，复用构建产物中的应用 ICO。
@@ -341,10 +371,10 @@ async function start() {
       splash = undefined;
     });
     function saveRuntime(port: number) {
-      if (process.platform === "win32") {
-        // ACT: 切换连接也更新端口；启动器通过 PID 忽略已退出进程留下的记录。
-        writeAtomicSync(resolve(PATHS.RESOURCES_FOLDER, "desktopRuntime.json"), JSON.stringify({ pid: process.pid, port }));
-      }
+      // ACT: 切换连接也更新端口；启动器通过 PID 忽略已退出进程留下的记录。
+      const record = JSON.stringify({ pid: process.pid, port });
+      if (process.platform === "win32") writeAtomicSync(resolve(PATHS.RESOURCES_FOLDER, "desktopRuntime.json"), record);
+      else if (process.platform === "linux") writeAtomicSync(resolve(dataDirectory, "desktopRuntime.json"), record);
     }
     saveRuntime(connection.port);
     function getNavigationRules(port: number) {

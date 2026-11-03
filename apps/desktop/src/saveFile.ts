@@ -1,6 +1,7 @@
 import { t } from "@toonflow/server/i18n";
 import { execFile } from "node:child_process";
 import { writeAtomic } from "@toonflow/file";
+import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
 import { promisify } from "node:util";
 import { PATHS } from "electrobun/main";
@@ -15,6 +16,27 @@ const tokenTtlMs = 5 * 60 * 1000;
 function cleanupExpiredTokens() {
   const now = Date.now();
   for (const [token, entry] of pendingSaves) if (entry.expiresAt <= now) pendingSaves.delete(token);
+}
+
+async function selectLinuxSaveFile(fileName: string) {
+  const suggested = join(homedir(), fileName);
+  const dialogs = [
+    ["zenity", "--file-selection", "--save", "--confirm-overwrite", "--filename", suggested, "--title", t`另存为`],
+    ["kdialog", "--getsavefilename", suggested, "--title", t`另存为`],
+  ];
+  let missing = 0;
+  for (const [command, ...args] of dialogs) {
+    try {
+      return await execFileAsync(command!, args, { encoding: "utf8" });
+    } catch (error) {
+      const failure = error as { code?: string | number };
+      if (failure.code === "ENOENT") { missing += 1; continue; }
+      if (failure.code === 1) return { stdout: "" };
+      throw error;
+    }
+  }
+  if (missing === dialogs.length) throw new Error(t`当前系统不支持桌面另存为`);
+  throw new Error(t`选择保存位置失败`);
 }
 
 const macDialog = `
@@ -33,7 +55,7 @@ export async function selectSaveFile(fileName: string): Promise<string | null> {
     throw new Error(t`保存文件名无效，不能包含路径或控制字符`);
   }
   if (dialogOpen) throw new Error(t`已有保存窗口正在操作，请先完成或取消`);
-  if (process.platform !== "win32" && process.platform !== "darwin") throw new Error(t`当前系统不支持桌面另存为`);
+  if (process.platform !== "win32" && process.platform !== "darwin" && process.platform !== "linux") throw new Error(t`当前系统不支持桌面另存为`);
   dialogOpen = true;
   try {
     const { stdout } = process.platform === "win32"
@@ -41,7 +63,9 @@ export async function selectSaveFile(fileName: string): Promise<string | null> {
         windowsHide: true,
         encoding: "utf8",
       })
-      : await execFileAsync("/usr/bin/osascript", ["-e", macDialog, "--", fileName, t`另存为`], { encoding: "utf8" });
+      : process.platform === "darwin"
+        ? await execFileAsync("/usr/bin/osascript", ["-e", macDialog, "--", fileName, t`另存为`], { encoding: "utf8" })
+        : await selectLinuxSaveFile(fileName);
     const selected = stdout.replace(/\r?\n$/, "");
     if (!selected) return null;
     if (!isAbsolute(selected) || /[\u0000-\u001f\u007f-\u009f]/.test(selected)) throw new Error(t`另存为窗口返回了无效的文件路径`);

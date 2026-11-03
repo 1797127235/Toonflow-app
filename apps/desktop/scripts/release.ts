@@ -15,13 +15,14 @@ if (positionals.length !== 1 || !/^\d+\.\d+\.\d+$/.test(version)) {
 }
 if (values.initial && values.auto) throw new Error("--initial 与 --auto 不能同时使用。");
 const isMac = process.platform === "darwin";
-if ((!isMac || !["x64", "arm64"].includes(process.arch)) && (process.platform !== "win32" || process.arch !== "x64")) {
-  throw new Error("增量发布需在 Windows x64 或 macOS x64/arm64 本机执行。");
+const isLinux = process.platform === "linux" && ["x64", "arm64"].includes(process.arch);
+if ((!isMac || !["x64", "arm64"].includes(process.arch)) && (process.platform !== "win32" || process.arch !== "x64") && !isLinux) {
+  throw new Error("增量发布需在 Windows x64、macOS x64/arm64 或 Linux x64/arm64 本机执行。");
 }
 
 const projectDir = resolve(import.meta.dirname, "../../..");
-const platform = isMac ? "macos" : "win";
-const targetFolder = isMac ? process.arch === "x64" ? "macX64" : "macArm64" : "";
+const platform = isMac ? "macos" : isLinux ? "linux" : "win";
+const targetFolder = isMac ? process.arch === "x64" ? "macX64" : "macArm64" : isLinux ? process.arch === "x64" ? "linuxX64" : "linuxArm64" : "";
 const releasesDir = join(projectDir, "build/desktop/releases", targetFolder);
 const releaseDir = join(releasesDir, version);
 const artifactDir = resolve(projectDir, desktopConfig.build.artifactFolder);
@@ -94,6 +95,10 @@ if (isMac) {
   const installers = readdirSync(artifactDir).filter((name) => name.endsWith(".dmg"));
   if (installers.length !== 1) throw new Error("Mac 发布必须包含且仅包含一个 DMG 安装包。");
   names.push(installers[0]!);
+} else if (isLinux) {
+  const debArch = process.arch === "x64" ? "amd64" : "arm64";
+  const appArch = process.arch === "x64" ? "x86_64" : "aarch64";
+  names.push(`laywork_${version}_${debArch}.deb`, `Laywork-${version}-${appArch}.AppImage`);
 } else names.push(`toonflow-${version}-Setup.exe`);
 if (previousHash) names.push(`${prefix}-${previousHash}.patch`);
 for (const name of names) {

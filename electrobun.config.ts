@@ -1,6 +1,7 @@
 import type { ElectrobunConfig } from "./.hutch/devkit/api/config/ElectrobunConfig";
 
-const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? "macX64" : "macArm64") : "windowsX64";
+const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? "macX64" : "macArm64")
+  : process.platform === "win32" ? "windowsX64" : undefined;
 
 export default {
   app: {
@@ -34,7 +35,7 @@ export default {
       "packages/skills": "skills",
       "packages/startup/assets/startup.json": "startup/startup.json",
       "packages/startup/assets/license.txt": "startup/license.txt",
-      [`packages/startup/assets/${startupTarget}`]: `startup/${startupTarget}`,
+      ...(startupTarget ? { [`packages/startup/assets/${startupTarget}`]: `startup/${startupTarget}` } : {}),
     },
     buildFolder: "build/desktop/app",
     artifactFolder: process.platform === "darwin" ? `build/desktop/artifacts/${process.arch === "x64" ? "macX64" : "macArm64"}` : "build/desktop/artifacts",
