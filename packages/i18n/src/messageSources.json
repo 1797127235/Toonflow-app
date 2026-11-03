@@ -56,7 +56,7 @@
   "开始新对话": [
     "apps/web/src/components/agent/conversation.vue"
   ],
-  "你好，我是 Toonflow 助手": [
+  "你好，我是 Laywork 助手": [
     "apps/web/src/components/agent/conversation.vue"
   ],
   "从一个想法开始": [
@@ -726,7 +726,7 @@
   "设备互联说明": [
     "apps/web/src/components/mobileConnect.vue"
   ],
-  "请使用 Toonflow 桌面端或 Android 客户端连接其他设备。": [
+  "请使用 Laywork 桌面端或 Android 客户端连接其他设备。": [
     "apps/web/src/components/mobileConnect.vue"
   ],
   "本机共享可在“设置 → 设备互联”中管理。": [
@@ -832,7 +832,7 @@
   "手动输入": [
     "apps/web/src/components/mobileConnect.vue"
   ],
-  "请扫描 Toonflow 的设备互联二维码": [
+  "请扫描 Laywork 的设备互联二维码": [
     "apps/web/src/components/mobileConnect.vue"
   ],
   "请输入局域网地址或公网 HTTPS 地址，不能包含路径、账号或参数": [
@@ -1001,7 +1001,7 @@
   "上次更新未成功": [
     "apps/web/src/components/settings/panels/about.vue"
   ],
-  "GitHub 仓库：HBAI-Ltd/Toonflow-app": [
+  "GitHub 仓库：1797127235/Toonflow-app": [
     "apps/web/src/components/settings/panels/about.vue"
   ],
   "GitHub 仓库": [
@@ -1019,10 +1019,10 @@
   "展示二维码": [
     "apps/web/src/components/settings/panels/about.vue"
   ],
-  "Toonflow 交流群二维码": [
+  "Laywork 交流群二维码": [
     "apps/web/src/components/settings/panels/about.vue"
   ],
-  "Toonflow 是为爱发电的开源项目。欢迎文明交流、友善反馈；回复可能需要一些时间，请避免责问或命令式沟通，感谢你的理解与尊重。": [
+  "Laywork 是为爱发电的开源项目。欢迎文明交流、友善反馈；回复可能需要一些时间，请避免责问或命令式沟通，感谢你的理解与尊重。": [
     "apps/web/src/components/settings/panels/about.vue",
     "apps/web/src/pages/workspace/panels/canvas/components/canvasControls.vue"
   ],
@@ -1038,7 +1038,7 @@
   "成为赞助商": [
     "apps/web/src/components/settings/panels/about.vue"
   ],
-  "Toonflow 商务合作二维码": [
+  "Laywork 商务合作二维码": [
     "apps/web/src/components/settings/panels/about.vue"
   ],
   "查看 {0} 详情": [
@@ -1560,7 +1560,7 @@
   "允许其他设备连接": [
     "apps/web/src/components/settings/panels/deviceLink.vue"
   ],
-  "其他电脑、安卓设备可使用这里的项目与配置。连接时请保持 Toonflow 运行。": [
+  "其他电脑、安卓设备可使用这里的项目与配置。连接时请保持 Laywork 运行。": [
     "apps/web/src/components/settings/panels/deviceLink.vue"
   ],
   "连接新设备": [
@@ -1653,7 +1653,7 @@
   "局域网地址": [
     "apps/web/src/components/settings/panels/deviceLink.vue"
   ],
-  "无法连接时可尝试其他地址，并检查电脑防火墙是否允许 Toonflow 联网。": [
+  "无法连接时可尝试其他地址，并检查电脑防火墙是否允许 Laywork 联网。": [
     "apps/web/src/components/settings/panels/deviceLink.vue"
   ],
   "公网 HTTPS 地址": [
@@ -1714,7 +1714,7 @@
   "生成二维码失败": [
     "apps/web/src/components/settings/panels/deviceLink.vue"
   ],
-  "撤销后，这个设备将无法继续访问当前 Toonflow。": [
+  "撤销后，这个设备将无法继续访问当前 Laywork。": [
     "apps/web/src/components/settings/panels/deviceLink.vue"
   ],
   "撤销设备授权": [
@@ -2044,7 +2044,7 @@
   "开启 MCP": [
     "apps/web/src/components/settings/panels/mcp/index.vue"
   ],
-  "允许外部 Coding 工具和 Agent 操作 Toonflow。开启后，将客户端配置添加到对应工具中。": [
+  "允许外部 Coding 工具和 Agent 操作 Laywork。开启后，将客户端配置添加到对应工具中。": [
     "apps/web/src/components/settings/panels/mcp/index.vue"
   ],
   "连接状态": [
@@ -2066,7 +2066,7 @@
     "apps/web/src/components/settings/panels/mcp/index.vue",
     "apps/web/src/pages/workspace/index.vue"
   ],
-  "画布与节点操作需要 Toonflow 界面保持打开。": [
+  "画布与节点操作需要 Laywork 界面保持打开。": [
     "apps/web/src/components/settings/panels/mcp/index.vue"
   ],
   "服务地址": [
@@ -2097,7 +2097,7 @@
   "HTTP 配置包含访问凭证，请仅提供给可信的客户端。": [
     "apps/web/src/components/settings/panels/mcp/index.vue"
   ],
-  "教外部 Agent 组合使用 Toonflow 工具。将 SKILL.md 安装到对应 Coding 工具的技能目录。": [
+  "教外部 Agent 组合使用 Laywork 工具。将 SKILL.md 安装到对应 Coding 工具的技能目录。": [
     "apps/web/src/components/settings/panels/mcp/index.vue"
   ],
   "查看 Skill": [
@@ -2511,22 +2511,22 @@
     "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue",
     "apps/web/src/components/singleAgentDialog.vue"
   ],
-  "Toonflow 说明": [
+  "Laywork 说明": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
   "为所有聊天提供额外说明和上下文。支持 Markdown，保存后下一次发送消息时生效。": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
-  "Toonflow 说明内容": [
+  "Laywork 说明内容": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
   "有未保存的修改": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
-  "重新加载 Toonflow 说明": [
+  "重新加载 Laywork 说明": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
-  "保存 Toonflow 说明": [
+  "保存 Laywork 说明": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
   "启用本地记忆": [
@@ -2544,7 +2544,7 @@
   "查看": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
-  "Toonflow 记忆": [
+  "Laywork 记忆": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
   "本地记忆内容": [
@@ -2599,7 +2599,7 @@
   "读取本地记忆失败，请重试": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
-  "将删除所有工作区共用的本地记忆及未保存的记忆修改，此操作无法撤销。Toonflow 说明会保留。": [
+  "将删除所有工作区共用的本地记忆及未保存的记忆修改，此操作无法撤销。Laywork 说明会保留。": [
     "apps/web/src/components/settings/panels/personalization.vue"
   ],
   "本地记忆已更新，未删除任何内容。请重新查看后重试。": [
@@ -2832,7 +2832,7 @@
   "下载版本：{0} · {1}": [
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue"
   ],
-  "保存在当前 Toonflow 服务的数据目录，下载后自动复用。": [
+  "保存在当前 Laywork 服务的数据目录，下载后自动复用。": [
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue"
   ],
   "下载版": [
@@ -2844,13 +2844,13 @@
   "不可用": [
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue"
   ],
-  "优先使用已下载的版本；未下载时，从当前 Toonflow 服务的系统 PATH 查找。": [
+  "优先使用已下载的版本；未下载时，从当前 Laywork 服务的系统 PATH 查找。": [
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue"
   ],
   "仅使用此页面下载的版本。": [
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue"
   ],
-  "仅从当前 Toonflow 服务的系统 PATH 查找 FFmpeg 与 ffprobe。": [
+  "仅从当前 Laywork 服务的系统 PATH 查找 FFmpeg 与 ffprobe。": [
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue"
   ],
   "等待下载": [
@@ -3274,7 +3274,7 @@
   "圆润": [
     "apps/web/src/components/settings/panels/ui.vue"
   ],
-  "Toonflow 每一个灵感，都值得被看见": [
+  "Laywork 每一个灵感，都值得被看见": [
     "apps/web/src/components/settings/panels/ui.vue"
   ],
   "这是当前颜色、字体与圆角的实际效果。": [
@@ -3613,7 +3613,7 @@
   "正在安装插件…": [
     "apps/web/src/lib/desktopProtocol.ts"
   ],
-  "安装接口返回了无效响应，请重启或更新 Toonflow 后重试": [
+  "安装接口返回了无效响应，请重启或更新 Laywork 后重试": [
     "apps/web/src/lib/desktopProtocol.ts"
   ],
   "安装接口未返回有效的插件名称，请先检查插件列表，再重试": [
@@ -3625,10 +3625,10 @@
   "安装请求等待超时，请先查看插件是否已安装，再重试": [
     "apps/web/src/lib/desktopProtocol.ts"
   ],
-  "无法连接 Toonflow 本机服务，请确认应用正常运行后重试": [
+  "无法连接 Laywork 本机服务，请确认应用正常运行后重试": [
     "apps/web/src/lib/desktopProtocol.ts"
   ],
-  "安装接口返回异常（HTTP {0}），请重启或更新 Toonflow 后重试": [
+  "安装接口返回异常（HTTP {0}），请重启或更新 Laywork 后重试": [
     "apps/web/src/lib/desktopProtocol.ts"
   ],
   "{0}“{1}”安装失败：{2}": [
@@ -3830,7 +3830,7 @@
     "apps/web/src/lib/mobile.ts",
     "apps/desktop/src/connection.ts"
   ],
-  "请使用 Toonflow 桌面端或 Android 客户端连接其他设备": [
+  "请使用 Laywork 桌面端或 Android 客户端连接其他设备": [
     "apps/web/src/lib/mobile.ts"
   ],
   "设备未返回有效的切换方式，请重试": [
@@ -3911,10 +3911,10 @@
   "通知桌面就绪失败（{0}）": [
     "apps/web/src/main.ts"
   ],
-  "当前 Microsoft Edge WebView2 Runtime 版本过旧。请以管理员身份运行微软最新版安装器；若仍提示已安装，请修复 WebView2 或联系管理员检查更新服务。更新完成后，请完全退出 Toonflow 再重新打开。": [
+  "当前 Microsoft Edge WebView2 Runtime 版本过旧。请以管理员身份运行微软最新版安装器；若仍提示已安装，请修复 WebView2 或联系管理员检查更新服务。更新完成后，请完全退出 Laywork 再重新打开。": [
     "apps/web/src/main.ts"
   ],
-  "系统当前使用的 Android System WebView 缺少 Toonflow 所需能力。请更新系统实际使用的 Android System WebView；部分厂商系统需要通过系统更新升级。更新完成后，请完全退出并重新打开 Toonflow。": [
+  "系统当前使用的 Android System WebView 缺少 Laywork 所需能力。请更新系统实际使用的 Android System WebView；部分厂商系统需要通过系统更新升级。更新完成后，请完全退出并重新打开 Laywork。": [
     "apps/web/src/main.ts"
   ],
   "切回本机失败，请重试": [
@@ -3968,7 +3968,7 @@
   "稍后配置": [
     "apps/web/src/pages/hello/index.vue"
   ],
-  "© {0} Toonflow · 保留所有权利。": [
+  "© {0} Laywork · 保留所有权利。": [
     "apps/web/src/pages/hello/index.vue"
   ],
   "保存引导状态失败，请重试": [
@@ -4523,7 +4523,7 @@
   "使用教程": [
     "apps/web/src/pages/workspace/panels/canvas/components/canvasControls.vue"
   ],
-  "Toonflow 需求/BUG反馈表": [
+  "Laywork 需求/BUG反馈表": [
     "apps/web/src/pages/workspace/panels/canvas/components/canvasControls.vue"
   ],
   "汇报 BUG": [
@@ -5832,7 +5832,7 @@
   "正在切换连接，请稍候": [
     "apps/server/src/remoteConnection.ts"
   ],
-  "请扫描 Toonflow 的互联二维码": [
+  "请扫描 Laywork 的互联二维码": [
     "apps/server/src/remoteConnection.ts"
   ],
   "请输入 12 位数字配对码": [
@@ -6337,7 +6337,7 @@
     "apps/server/src/utils/ffmpeg/index.ts",
     "packages/ffmpeg/src/index.ts"
   ],
-  "只允许 Toonflow 页面访问控制连接": [
+  "只允许 Laywork 页面访问控制连接": [
     "apps/server/src/utils/mcp/control.ts"
   ],
   "页面来源无效": [
@@ -6350,16 +6350,16 @@
     "apps/server/src/utils/mcp/control.ts",
     "packages/mcp/src/index.ts"
   ],
-  "Toonflow 页面已断开，请重新调用 getAppState": [
+  "Laywork 页面已断开，请重新调用 getAppState": [
     "apps/server/src/utils/mcp/control.ts"
   ],
-  "存在多个 Toonflow 页面，请用 target.connectionId 指定操作目标": [
+  "存在多个 Laywork 页面，请用 target.connectionId 指定操作目标": [
     "apps/server/src/utils/mcp/control.ts"
   ],
   "控制连接已存在": [
     "apps/server/src/utils/mcp/control.ts"
   ],
-  "Toonflow 页面已断开，操作已取消": [
+  "Laywork 页面已断开，操作已取消": [
     "apps/server/src/utils/mcp/control.ts"
   ],
   "控制命令已取消或不存在": [
@@ -6479,7 +6479,7 @@
   "未知应用操作：{0}": [
     "apps/server/src/utils/mcp/operations.ts"
   ],
-  "Toonflow 服务尚未就绪": [
+  "Laywork 服务尚未就绪": [
     "apps/server/src/utils/mcp/operations.ts"
   ],
   "素材文件不能超过 20 MB": [
@@ -6530,7 +6530,7 @@
   "不能通过 MCP 修改连接凭证或项目列表": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
-  "在目标 Toonflow 页面打开已有工作目录，并等待工作区就绪；操作前获取 getAppState 的 connectionId。": [
+  "在目标 Laywork 页面打开已有工作目录，并等待工作区就绪；操作前获取 getAppState 的 connectionId。": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
   "切换工作区的 canvas 画布或 document 文档面板，先保存当前编辑。": [
@@ -6551,13 +6551,13 @@
   "合并保存指定顶层设置项，同时更新页面；不修改 mcp 凭证与 stores 项目列表，嵌套设置应先读取再合并。": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
-  "文件正在 Toonflow 中打开，请使用画布或文档工具修改，关闭后再执行文件操作": [
+  "文件正在 Laywork 中打开，请使用画布或文档工具修改，关闭后再执行文件操作": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
-  "列出连接的 Toonflow 页面及其 connectionId、工作目录、画布、项目列表和节点能力。多个页面时必须用 target.connectionId 明确操作对象；无页面连接时只有显式 target.directory 的服务端工具可用。": [
+  "列出连接的 Laywork 页面及其 connectionId、工作目录、画布、项目列表和节点能力。多个页面时必须用 target.connectionId 明确操作对象；无页面连接时只有显式 target.directory 的服务端工具可用。": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
-  "请先打开 Toonflow 桌面或网页": [
+  "请先打开 Laywork 桌面或网页": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
   "尚未绑定画布": [
@@ -6566,7 +6566,7 @@
   "MCP 工具名称重复：{0}": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
-  "工具已禁用，或所需 Toonflow 页面未连接，请重新读取工具列表": [
+  "工具已禁用，或所需 Laywork 页面未连接，请重新读取工具列表": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
   "MCP 不提供内置 Agent 会话能力：{0}": [
@@ -6602,7 +6602,7 @@
   "应用操作不存在，请查询 listAppOperations": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
-  "按用户请求调用 Toonflow 内置 Agent，等待本轮完成并返回对话文件与回复；会使用配置的模型。外部 Agent 可直接操作其他工具，仅需要委托内置 Agent 时调用。支持 MCP 取消，历史保存到工作区。": [
+  "按用户请求调用 Laywork 内置 Agent，等待本轮完成并返回对话文件与回复；会使用配置的模型。外部 Agent 可直接操作其他工具，仅需要委托内置 Agent 时调用。支持 MCP 取消，历史保存到工作区。": [
     "apps/server/src/utils/mcp/tools.ts"
   ],
   "音频输入必须是 Uint8Array": [
@@ -6767,7 +6767,7 @@
   "供应商 TypeScript 语法错误：{0}": [
     "apps/server/src/utils/media/provider.ts"
   ],
-  "检测到旧版 Toonflow 供应商 TS，无法在 Toonflow 2.0 中使用。请在「添加自定义媒体供应商」中点击「一键复制提示词」，结合旧代码和接口资料重新生成新版代码后再导入。": [
+  "检测到旧版 Laywork 供应商 TS，无法在 Laywork 2.0 中使用。请在「添加自定义媒体供应商」中点击「一键复制提示词」，结合旧代码和接口资料重新生成新版代码后再导入。": [
     "apps/server/src/utils/media/provider.ts"
   ],
   "供应商须通过 export default 导出对象": [
@@ -6860,7 +6860,7 @@
   "设备互联尚未初始化": [
     "apps/server/src/utils/mobileLink/index.ts"
   ],
-  "只允许本机 Toonflow 页面管理设备互联": [
+  "只允许本机 Laywork 页面管理设备互联": [
     "apps/server/src/utils/mobileLink/index.ts"
   ],
   "当前运行环境不支持共享后端": [
@@ -7033,7 +7033,7 @@
   "节点文件实际是 HTML 网页，不是节点脚本，请重新上传构建生成的 .umd.js 文件": [
     "apps/server/src/utils/plugins/install.ts"
   ],
-  "文件不是兼容的 Toonflow 节点，请使用节点脚手架构建生成的 .umd.js 文件": [
+  "文件不是兼容的 Laywork 节点，请使用节点脚手架构建生成的 .umd.js 文件": [
     "apps/server/src/utils/plugins/install.ts"
   ],
   "文件名与节点导出名不一致：{0} 需要导出 toonflowNodes.{1}，请按实际节点名修改文件名": [
@@ -7054,7 +7054,7 @@
   "文件扩展内容为空，请重新上传扩展脚本": [
     "apps/server/src/utils/plugins/install.ts"
   ],
-  "文件不是兼容的 Toonflow 文件扩展，请使用扩展脚手架构建并保留原文件名": [
+  "文件不是兼容的 Laywork 文件扩展，请使用扩展脚手架构建并保留原文件名": [
     "apps/server/src/utils/plugins/install.ts"
   ],
   "文件扩展脚本语法无效，请重新构建完整的 .umd.js 文件": [
@@ -7779,7 +7779,7 @@
   "远程 MCP 必须使用 HTTPS；本机连接允许 HTTP": [
     "packages/mcp/src/stdio.ts"
   ],
-  "运行信息文件只允许指向本机 Toonflow": [
+  "运行信息文件只允许指向本机 Laywork": [
     "packages/mcp/src/stdio.ts"
   ],
   "MCP URL 不允许包含账号或密码": [

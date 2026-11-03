@@ -1,7 +1,7 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Toonflow&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Toonflow" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Laywork&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Laywork" width="100%" />
 
 <p>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app">
+  <a href="https://github.com/1797127235/Toonflow-app">
     <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
   </a>
  | 
@@ -45,30 +45,30 @@
 <div align="center">
 
 <p align="center">
-  <img src="../images/logo.png" alt="Toonflow லோகோ" width="120" height="120" />
+  <img src="../images/logo.png" alt="Laywork லோகோ" width="120" height="120" />
 </p>
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Toonflow · AI குறுநாடக ஸ்டுடியோ · யோசனைகளை கதைகளாக மாற்றவும்" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI குறுநாடக ஸ்டுடியோ · யோசனைகளை கதைகளாக மாற்றவும்" width="600" />
   </picture>
 </a>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/stargazers">
-    <img src="https://img.shields.io/github/stars/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github" alt="நட்சத்திரங்கள் பேட்ஜ்" />
+  <a href="https://github.com/1797127235/Toonflow-app/stargazers">
+    <img src="https://img.shields.io/github/stars/1797127235/Toonflow-app?style=for-the-badge&logo=github" alt="நட்சத்திரங்கள் பேட்ஜ்" />
   </a>
   <a href="../../LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License பேட்ஜ்" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">
-    <img src="https://img.shields.io/github/v/release/HBAI-Ltd/Toonflow-app?style=for-the-badge" alt="வெளியீடு" />
+  <a href="https://github.com/1797127235/Toonflow-app/releases">
+    <img src="https://img.shields.io/github/v/release/1797127235/Toonflow-app?style=for-the-badge" alt="வெளியீடு" />
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/network/members">
-    <img src="https://img.shields.io/github/forks/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="ஃபோர்க்ஸ் பேட்ஜ்" />
+  <a href="https://github.com/1797127235/Toonflow-app/network/members">
+    <img src="https://img.shields.io/github/forks/1797127235/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="ஃபோர்க்ஸ் பேட்ஜ்" />
   </a>
   <a href="https://atomgit.com/HBAI-Ltd/Toonflow-app">
     <img src="https://img.shields.io/badge/AtomGit-G--Star%20No.540-FF6B35?style=for-the-badge&logo=git&logoColor=white" alt="AtomGit ஜி-ஸ்டார் எண்.540" />
@@ -78,14 +78,14 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/issues">
-    <img src="https://img.shields.io/github/issues/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=F48D73" alt="சிக்கல்கள்" />
+  <a href="https://github.com/1797127235/Toonflow-app/issues">
+    <img src="https://img.shields.io/github/issues/1797127235/Toonflow-app?style=for-the-badge&color=F48D73" alt="சிக்கல்கள்" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=2088FF" alt="பங்களிப்பாளர்கள்" />
+  <a href="https://github.com/1797127235/Toonflow-app/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/1797127235/Toonflow-app?style=for-the-badge&color=2088FF" alt="பங்களிப்பாளர்கள்" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/commits">
-    <img src="https://img.shields.io/github/last-commit/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=blueviolet" alt="சமீபத்திய கமிட்" />
+  <a href="https://github.com/1797127235/Toonflow-app/commits">
+    <img src="https://img.shields.io/github/last-commit/1797127235/Toonflow-app?style=for-the-badge&color=blueviolet" alt="சமீபத்திய கமிட்" />
   </a>
 </p>
 <p align="center">
@@ -134,12 +134,12 @@
     <tr>
       <td width="50%" align="center">
         <a href="../images/gStar.png">
-          <img src="../images/gStar.png" alt="Toonflow AtomGit ஜி-ஸ்டார் சான்றிதழ் எண்.540" width="100%" />
+          <img src="../images/gStar.png" alt="Laywork AtomGit ஜி-ஸ்டார் சான்றிதழ் எண்.540" width="100%" />
         </a>
       </td>
       <td width="50%" align="center">
         <a href="../images/gvp.jpg">
-          <img src="../images/gvp.jpg" alt="Toonflow Gitee GVP சான்றிதழ்" width="100%" />
+          <img src="../images/gvp.jpg" alt="Laywork Gitee GVP சான்றிதழ்" width="100%" />
         </a>
       </td>
     </tr>
@@ -147,7 +147,7 @@
 </div>
 
 <p align="center">
-<a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">பதிவிறக்கம்</a> ·
+<a href="https://github.com/1797127235/Toonflow-app/releases">பதிவிறக்கம்</a> ·
 <a href="https://qcn7xdsqgc4z.feishu.cn/docx/RXFqdgR2Xo0dXZxGfd0cZCGgnwf">பயனர் வழிகாட்டி</a> ·
 <a href="https://api.toonflow.net/console/plugIn">செருகுநிரல் சந்தை</a> ·
 <a href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd"> டெவலப்பர் ஆவணம்</a> ·
@@ -158,7 +158,7 @@
 
 ## 1. 💛 ஆதரவாளர்களும் பங்களிப்பும்
 
-Toonflow திறந்த மூல திட்டத்திற்கு ஆதரவளித்த பின்வரும் கூட்டாளர்களுக்கு நன்றி.
+Laywork திறந்த மூல திட்டத்திற்கு ஆதரவளித்த பின்வரும் கூட்டாளர்களுக்கு நன்றி.
 
 <table>
   <tr>
@@ -200,7 +200,7 @@ Toonflow திறந்த மூல திட்டத்திற்கு �
 
 ## 2. 🌟 சிறப்பம்சங்கள்
 
-Toonflow என்பது குறுநாடகங்கள், அனிமேஷன் காமிக்ஸ் மற்றும் குறுகிய வீடியோக்களை உருவாக்குவதற்கான திறந்த மூல AI தளம். திரைக்கதைகள், படைப்பு வளங்கள் மற்றும் வீடியோ கிளிப்புகள் அனைத்தையும் ஒரே எல்லையற்ற கேன்வாஸில் ஒருங்கிணைக்கிறது.
+Laywork என்பது குறுநாடகங்கள், அனிமேஷன் காமிக்ஸ் மற்றும் குறுகிய வீடியோக்களை உருவாக்குவதற்கான திறந்த மூல AI தளம். திரைக்கதைகள், படைப்பு வளங்கள் மற்றும் வீடியோ கிளிப்புகள் அனைத்தையும் ஒரே எல்லையற்ற கேன்வாஸில் ஒருங்கிணைக்கிறது.
 
 | திறன் | விளக்கம் |
 | --- | --- |
@@ -224,25 +224,25 @@ Toonflow என்பது குறுநாடகங்கள், அனி�
 
 <div align="center">
 
-<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Toonflow · திட்ட முகப்பும் யோசனை உருவாக்கமும்" width="80%" /></a><br /><sub>திட்ட முகப்பும் யோசனை உருவாக்கமும்</sub>
+<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Laywork · திட்ட முகப்பும் யோசனை உருவாக்கமும்" width="80%" /></a><br /><sub>திட்ட முகப்பும் யோசனை உருவாக்கமும்</sub>
 
-<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Toonflow · முதல் தொடக்கமும் விரைவு அமைப்பும்" width="80%" /></a><br /><sub>முதல் தொடக்கமும் விரைவு அமைப்பும்</sub>
+<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Laywork · முதல் தொடக்கமும் விரைவு அமைப்பும்" width="80%" /></a><br /><sub>முதல் தொடக்கமும் விரைவு அமைப்பும்</sub>
 
-<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Toonflow · படைப்புக் கேன்வாஸ் · இருண்ட தோற்றம்" width="80%" /></a><br /><sub>படைப்புக் கேன்வாஸ் · இருண்ட தோற்றம்</sub>
+<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Laywork · படைப்புக் கேன்வாஸ் · இருண்ட தோற்றம்" width="80%" /></a><br /><sub>படைப்புக் கேன்வாஸ் · இருண்ட தோற்றம்</sub>
 
-<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Toonflow · படைப்புக் கேன்வாஸ் · வெளிர் தோற்றம்" width="80%" /></a><br /><sub>படைப்புக் கேன்வாஸ் · வெளிர் தோற்றம்</sub>
+<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Laywork · படைப்புக் கேன்வாஸ் · வெளிர் தோற்றம்" width="80%" /></a><br /><sub>படைப்புக் கேன்வாஸ் · வெளிர் தோற்றம்</sub>
 
-<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Toonflow · கதாபாத்திரங்கள், காட்சிகள் மற்றும் பொருட்களுக்கான வளங்கள்" width="80%" /></a><br /><sub>கதாபாத்திரங்கள், காட்சிகள் மற்றும் பொருட்களுக்கான வளங்கள்</sub>
+<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Laywork · கதாபாத்திரங்கள், காட்சிகள் மற்றும் பொருட்களுக்கான வளங்கள்" width="80%" /></a><br /><sub>கதாபாத்திரங்கள், காட்சிகள் மற்றும் பொருட்களுக்கான வளங்கள்</sub>
 
-<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Toonflow · 3D இயக்குநர் அரங்கமும் காட்சிப் பதிவு முன்னோட்டமும்" width="80%" /></a><br /><sub>3D இயக்குநர் அரங்கமும் காட்சிப் பதிவு முன்னோட்டமும்</sub>
+<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Laywork · 3D இயக்குநர் அரங்கமும் காட்சிப் பதிவு முன்னோட்டமும்" width="80%" /></a><br /><sub>3D இயக்குநர் அரங்கமும் காட்சிப் பதிவு முன்னோட்டமும்</sub>
 
-<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Toonflow · கதாபாத்திரத்தின் மூன்று கோணத் தோற்றங்களும் பட உருவாக்கமும்" width="80%" /></a><br /><sub>கதாபாத்திரத்தின் மூன்று கோணத் தோற்றங்களும் பட உருவாக்கமும்</sub>
+<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Laywork · கதாபாத்திரத்தின் மூன்று கோணத் தோற்றங்களும் பட உருவாக்கமும்" width="80%" /></a><br /><sub>கதாபாத்திரத்தின் மூன்று கோணத் தோற்றங்களும் பட உருவாக்கமும்</sub>
 
-<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Toonflow · பல குறிப்புப் படங்களுடன் வீடியோ உருவாக்கம்" width="80%" /></a><br /><sub>பல குறிப்புப் படங்களுடன் வீடியோ உருவாக்கம்</sub>
+<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Laywork · பல குறிப்புப் படங்களுடன் வீடியோ உருவாக்கம்" width="80%" /></a><br /><sub>பல குறிப்புப் படங்களுடன் வீடியோ உருவாக்கம்</sub>
 
-<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Toonflow · முனை மெனுவும் குழுவாக்கச் செயல்களும்" width="80%" /></a><br /><sub>முனை மெனுவும் குழுவாக்கச் செயல்களும்</sub>
+<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Laywork · முனை மெனுவும் குழுவாக்கச் செயல்களும்" width="80%" /></a><br /><sub>முனை மெனுவும் குழுவாக்கச் செயல்களும்</sub>
 
-<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Toonflow · செருகுநிரல் சந்தை" width="80%" /></a><br /><sub>செருகுநிரல் சந்தை</sub>
+<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Laywork · செருகுநிரல் சந்தை" width="80%" /></a><br /><sub>செருகுநிரல் சந்தை</sub>
 
 </div>
 
@@ -254,9 +254,9 @@ Toonflow என்பது குறுநாடகங்கள், அனி�
 
 | இயக்க முறைமை | GitHub |
 | --- | --- |
-| Windows | [வெளியீடு](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| macOS | [வெளியீடு](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| Android ARM64 | [APK பதிவிறக்கம்](https://github.com/HBAI-Ltd/Toonflow-app/releases/latest) |
+| Windows | [வெளியீடு](https://github.com/1797127235/Toonflow-app/releases) |
+| macOS | [வெளியீடு](https://github.com/1797127235/Toonflow-app/releases) |
+| Android ARM64 | [APK பதிவிறக்கம்](https://github.com/1797127235/Toonflow-app/releases/latest) |
 
 Android செயலி ARM64 சாதனங்களை மட்டுமே ஆதரிக்கிறது. வெளியீட்டுப் பக்கத்திலிருந்து `toonflow-VERSION-android-arm64.apk` கோப்பைப் பதிவிறக்கி நிறுவவும். உள்ளூர் Bun பின்தளம் உள்ளடங்கியுள்ளதால் தனியாக இயங்க முடியும். முகப்புப் பக்கத்தில் உள்ள «சாதன இணைப்பு» மூலம் QR குறியீட்டை ஸ்கேன் செய்தோ இணைப்பு விவரங்களை உள்ளீடு செய்தோ உள்ளூர் வலையமைப்பு அல்லது இணையத்தில் பகிர்வு இயக்கப்பட்டுள்ள கணினி அல்லது பின்தளத்துடன் இணைக்கலாம்.
 
@@ -267,9 +267,9 @@ macOS (Apple Silicon)-இல் Toonflow-ஐ Applications கோப்புற�
 <details>
 <summary><strong>macOS-இல் Toonflow-ஐ நிறுவவோ திறக்கவோ முடியாவிட்டால்</strong></summary>
 
-**1. தனியுரிமை மற்றும் பாதுகாப்பில் Toonflow ஐ அனுமதிக்கவும்**
+**1. தனியுரிமை மற்றும் பாதுகாப்பில் Laywork ஐ அனுமதிக்கவும்**
 
-டெவலப்பரைச் சரிபார்க்க முடியவில்லை அல்லது Apple தீங்கிழைக்கும் மென்பொருளுக்கான பயன்பாட்டைச் சரிபார்க்க முடியாது என்ற எச்சரிக்கையை நீங்கள் கண்டால், முதலில் Toonflow ஐத் திறக்க முயற்சிக்கவும். பின்னர் கணினி அமைப்புகள் → தனியுரிமை & பாதுகாப்பு என்பதற்குச் சென்று, Toonflow தடுக்கப்பட்ட செய்தியைக் கண்டறிந்து, எப்படியும் திற என்பதைக் கிளிக் செய்து, கேட்கப்பட்டதை உறுதிப்படுத்தவும். [Apple இன் அதிகாரப்பூர்வ வழிமுறைகளைப் பார்க்கவும்](https://support.apple.com/zh-cn/102445).
+டெவலப்பரைச் சரிபார்க்க முடியவில்லை அல்லது Apple தீங்கிழைக்கும் மென்பொருளுக்கான பயன்பாட்டைச் சரிபார்க்க முடியாது என்ற எச்சரிக்கையை நீங்கள் கண்டால், முதலில் Laywork ஐத் திறக்க முயற்சிக்கவும். பின்னர் கணினி அமைப்புகள் → தனியுரிமை & பாதுகாப்பு என்பதற்குச் சென்று, Laywork தடுக்கப்பட்ட செய்தியைக் கண்டறிந்து, எப்படியும் திற என்பதைக் கிளிக் செய்து, கேட்கப்பட்டதை உறுதிப்படுத்தவும். [Apple இன் அதிகாரப்பூர்வ வழிமுறைகளைப் பார்க்கவும்](https://support.apple.com/zh-cn/102445).
 
 **2. தனிமைப்படுத்தப்பட்ட கட்டுப்பாடுகள் இன்னும் திறப்பதைத் தடுக்கிறது என்றால், தனிமைப்படுத்தப்பட்ட பண்புக்கூறை அகற்ற முயற்சிக்கவும்**
 
@@ -307,7 +307,7 @@ sudo spctl --master-disable
 மூலத்தை குளோன் செய்து பின்வருவனவற்றை களஞ்சிய மூலத்தில் இயக்கவும்:
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 docker compose up -d --build
 ```
@@ -361,7 +361,7 @@ bun --version
 மூலத்தை குளோன் செய்து சேவையைத் தொடங்கவும்:
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 bun install --frozen-lockfile
 
@@ -388,7 +388,7 @@ bun run start:server
 
 ### 4.5 கிளவுட் வரிசைப்படுத்தல்
 
-எங்கள் கூட்டாளர் [AI Galaxy (智星云)](https://www.ai-galaxy.com/) அதிகாரப்பூர்வமாக அனுமதிக்கப்பட்ட வணிக Toonflow இமேஜை வழங்குகிறது; அதில் பயன்படுத்தத் தயாரான சூழல் உள்ளது. செயல்முறைக்கு [படங்களுடன் கூடிய இமேஜ் நிறுவல் வழிகாட்டியைப்](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1) பார்க்கவும்.
+எங்கள் கூட்டாளர் [AI Galaxy (智星云)](https://www.ai-galaxy.com/) அதிகாரப்பூர்வமாக அனுமதிக்கப்பட்ட வணிக Laywork இமேஜை வழங்குகிறது; அதில் பயன்படுத்தத் தயாரான சூழல் உள்ளது. செயல்முறைக்கு [படங்களுடன் கூடிய இமேஜ் நிறுவல் வழிகாட்டியைப்](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1) பார்க்கவும்.
 
 ---
 
@@ -418,19 +418,19 @@ https://github.com/user-attachments/assets/2d9fddac-dfdf-4640-b030-b09d7f7287e9
   </a>
 </p>
 
-TF-Router என்பது Toonflow இன் அதிகாரப்பூர்வ, சுயமாக இயக்கப்படும் மாதிரி நுழைவாயில் ஆகும். அதைப் பயன்படுத்த நீங்கள் வரவேற்கப்படுகிறீர்கள். அதன் முழு மூலக் குறியீடும் ஓப்பன் சோர்ஸ் மற்றும் சுய ஹோஸ்டிங் மற்றும் தணிக்கைக்குக் கிடைக்கிறது: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router).
+TF-Router என்பது Laywork இன் அதிகாரப்பூர்வ, சுயமாக இயக்கப்படும் மாதிரி நுழைவாயில் ஆகும். அதைப் பயன்படுத்த நீங்கள் வரவேற்கப்படுகிறீர்கள். அதன் முழு மூலக் குறியீடும் ஓப்பன் சோர்ஸ் மற்றும் சுய ஹோஸ்டிங் மற்றும் தணிக்கைக்குக் கிடைக்கிறது: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router).
 
 <details>
-<summary><strong>Toonflow சமூகத்திற்கான கடிதம் (வெளியீடு: 2026-06-08)</strong></summary>
+<summary><strong>Laywork சமூகத்திற்கான கடிதம் (வெளியீடு: 2026-06-08)</strong></summary>
 
-> ### Toonflow சமூகத்திற்கு ஒரு கடிதம்
+> ### Laywork சமூகத்திற்கு ஒரு கடிதம்
 > 130 நாட்கள்.
 > நீண்ட நேரம் இல்லை, ஆனால் சில விஷயங்களைத் தெளிவாகப் பார்க்க நமக்கு போதுமானது.
 > எங்களின் முதல் வரிசைக் குறியீட்டிலிருந்து இன்று வரை, 130 நாட்கள் கடந்துவிட்டன. நாங்கள் 20 பதிப்புகளை வெளியிட்டு, 800+ கமிட்களை உருவாக்கி, 640,810 எழுத்துகளைக் கொண்ட 213,765 குறியீடு வரிகளை எழுதியுள்ளோம்.
 > இருமுறை புதிதாக எழுதப்பட்ட நிரல், ஒரு வழங்குநர் அமைப்பு, நாங்கள் பெருமைப்படும் ஒரு பணிப்பாய்வு.
 > அது போதும் என்று நினைத்தோம்.
 > ஆனால் அது இல்லை.
-> சிலர் Toonflow இல் தங்களுடைய சொந்த மாட்யூலைச் சேர்க்க விரும்புவதாக எங்களிடம் சொன்னார்கள், ஆனால் அதை எப்படி மாற்றுவது என்பதைப் புரிந்துகொள்ள பல மணிநேரம் செலவழித்துள்ளனர்.
+> சிலர் Laywork இல் தங்களுடைய சொந்த மாட்யூலைச் சேர்க்க விரும்புவதாக எங்களிடம் சொன்னார்கள், ஆனால் அதை எப்படி மாற்றுவது என்பதைப் புரிந்துகொள்ள பல மணிநேரம் செலவழித்துள்ளனர்.
 > சிலர் எங்களிடம் சமூகம் மிகவும் சிறியதாக இருப்பதாகவும், பிரச்சனைகளில் சிக்கியபோது அவர்களால் உதவி கிடைக்கவில்லை என்றும் கூறினார்கள்.
 > வணிக விதிமுறைகள் காரணமாகத் தங்கள் திட்டங்களை நடைமுறைப் பயன்பாட்டிற்குக் கொண்டுவர முடியவில்லை என்றும் சிலர் கூறினார்கள்.
 > உங்கள் கருத்துகளைக் கேட்டோம்.
@@ -438,7 +438,7 @@ TF-Router என்பது Toonflow இன் அதிகாரப்பூ�
 > நம்மிடம் நிறைய பணம் இருப்பதால் அல்ல.
 > ஆனால் இதைச் செய்வது மதிப்புக்குரியது என்று நாங்கள் நம்புவதால்.
 > எனவே மூன்றாவது முறையாக நிரலைப் புதிதாக எழுத முடிவு செய்துள்ளோம்.
-> ஒவ்வொரு Toonflow மீண்டும் எழுதுவதும் அதிக திறந்த தன்மை மற்றும் திறந்த மூலத்தை நோக்கி நகர்ந்துள்ளது.
+> ஒவ்வொரு Laywork மீண்டும் எழுதுவதும் அதிக திறந்த தன்மை மற்றும் திறந்த மூலத்தை நோக்கி நகர்ந்துள்ளது.
 > இம்முறை அனைத்தையும் முழுமையாகத் திறக்க முடிவு செய்துள்ளோம்.
 >
 > 1. MIT License
@@ -473,9 +473,9 @@ TF-Router என்பது Toonflow இன் அதிகாரப்பூ�
 > மீண்டும் எழுத நேரம் எடுக்கும். அந்த நேரத்தில், சேவையகங்கள் தொடர்ந்து இயங்கும், டொமைன்கள் புதுப்பிக்கப்பட வேண்டும், குழு தாமதமாக வேலை செய்கிறது, மேலும் காபி விலை அதிகமாகிறது.
 > எங்களிடம் முதலீட்டு நிதி இல்லை, விளம்பரம் இல்லை, மறைக்கப்பட்ட வணிகத் திட்டங்கள் எதுவும் இல்லை.
 > ஆனால் தொடங்கியதை முடிக்க, எங்கள் பணியைத் தொடர்ந்து நடத்துவதற்கான வசதி தேவை.
-> அதனால்தான் நாங்கள் அதிகாரப்பூர்வமான Toonflow மாதிரி நுழைவாயிலான TF-Router ஐ அறிமுகப்படுத்தினோம்.
+> அதனால்தான் நாங்கள் அதிகாரப்பூர்வமான Laywork மாதிரி நுழைவாயிலான TF-Router ஐ அறிமுகப்படுத்தினோம்.
 > உண்மையைச் சொன்னால், இந்தத் தளத்தைப் பற்றி நீண்ட காலம் தயங்கினோம்.
-> நாங்கள் உருவாக்க விரும்பிய ஒன்றல்ல. Toonflow "பணமாக்கல்" தொடங்கிவிட்டது என்று மக்கள் உணர ஒரு நுழைவாயிலை நாங்கள் விரும்பவில்லை.
+> நாங்கள் உருவாக்க விரும்பிய ஒன்றல்ல. Laywork "பணமாக்கல்" தொடங்கிவிட்டது என்று மக்கள் உணர ஒரு நுழைவாயிலை நாங்கள் விரும்பவில்லை.
 > அந்தச் சுமையை நீண்ட காலம் சுமந்தோம்.
 > ஆனால் பல பயனர்கள் Seedance 2.0 க்கு அங்கீகரிக்கப்பட்ட அணுகலைப் பெற முடியவில்லை, மேலும் அதைப் பயன்படுத்த வழி இருக்கிறதா என்று எங்களிடம் தொடர்ந்து கேட்கிறார்கள்.
 > நீண்ட யோசனைக்குப் பிறகு, நாமே ஒன்றை உருவாக்க முடிவு செய்து, Volcengine உடன் வருடாந்திர Seedance கட்டமைப்பு ஒப்பந்தத்தில் கையெழுத்திட்டோம்.
@@ -485,11 +485,11 @@ TF-Router என்பது Toonflow இன் அதிகாரப்பூ�
 > எங்களை நம்பவில்லையா? அதிலும் தவறில்லை. குறியீட்டைப் படித்து, நீங்களே நிறுவி, நீங்களே இயக்கலாம்.
 > அங்கேதான் நிற்கிறோம்.
 > முயற்சி செய்ய நீங்கள் தேர்வுசெய்தால், இந்த வேலையைத் தொடர நாங்கள் தற்போது வைத்திருக்கும் ஒரே வழியில் உங்கள் நம்பிக்கையை வைக்கிறீர்கள்.
-> செய்யாவிட்டால் அதுவும் பரவாயில்லை. Toonflow ஐத் தொடர்ந்து பயன்படுத்துங்கள், எங்களை விமர்சித்துக்கொண்டே இருங்கள் மற்றும் அம்சங்களைக் கேட்டுக்கொண்டே இருங்கள்.
+> செய்யாவிட்டால் அதுவும் பரவாயில்லை. Laywork ஐத் தொடர்ந்து பயன்படுத்துங்கள், எங்களை விமர்சித்துக்கொண்டே இருங்கள் மற்றும் அம்சங்களைக் கேட்டுக்கொண்டே இருங்கள்.
 > நாங்கள் இங்கே இருக்கிறோம்.
 > கடைசியாக ஒரு விஷயம், இதயத்திலிருந்து:
 > படைப்பாற்றல் கருவிகள் அனைவருக்கும் சொந்தமானதாக இருக்க வேண்டும் என்று நம்பும் சாதாரண மக்களின் ஒரு குழுவாக நாங்கள் இருக்கிறோம்.
-> Toonflow ஒருபோதும் எங்களுக்கு மட்டுமே உரிய தயாரிப்பாக இருந்ததில்லை.
+> Laywork ஒருபோதும் எங்களுக்கு மட்டுமே உரிய தயாரிப்பாக இருந்ததில்லை.
 > நாங்கள் சேர்ந்து எழுதும் கதை இது.
 > மூன்றாவது மறுஎழுத்தாக்கம் முடிவல்ல.
 > இங்குதான் மீண்டும் தொடங்குகிறோம்.
@@ -505,7 +505,7 @@ TF-Router என்பது Toonflow இன் அதிகாரப்பூ�
 
 குழு அழைப்பிதழ் உதவியாளரைத் தொடர்புகொள்ள QR குறியீட்டை ஸ்கேன் செய்யவும்:
 
-<img src="../images/qr.png" alt="Toonflow சமூக QR குறியீடு" height="400"/>
+<img src="../images/qr.png" alt="Laywork சமூக QR குறியீடு" height="400"/>
 
 Discord இல் சேர ஐகானையும் கிளிக் செய்யலாம்:
 
@@ -517,15 +517,15 @@ Discord இல் சேர ஐகானையும் கிளிக் ச�
 
 ## 8. 💌 எங்களை தொடர்பு கொள்ளவும்
 
-📧 மின்னஞ்சல்: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Toonflow咨询)
+📧 மின்னஞ்சல்: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Laywork咨询)
 
 ---
 
 ## 9. 📜 திறந்த மூல உரிமம்
 
-Toonflow ஆனது [MIT License](../../LICENSE) இன் கீழ் உரிமம் பெற்றது. மூன்றாம் தரப்பு சார்புகள் மற்றும் சொத்துக்கள் அந்தந்த உரிமங்கள் மற்றும் பதிப்புரிமை அறிவிப்புகளுக்கு உட்பட்டவை.
+Laywork ஆனது [MIT License](../../LICENSE) இன் கீழ் உரிமம் பெற்றது. மூன்றாம் தரப்பு சார்புகள் மற்றும் சொத்துக்கள் அந்தந்த உரிமங்கள் மற்றும் பதிப்புரிமை அறிவிப்புகளுக்கு உட்பட்டவை.
 
-[![Toonflow நட்சத்திர வரலாறு](https://api.star-history.com/svg?repos=HBAI-Ltd/Toonflow-app&type=Date)](https://www.star-history.com/#HBAI-Ltd/Toonflow-app&Date)
+[![Laywork நட்சத்திர வரலாறு](https://api.star-history.com/svg?repos=1797127235/Toonflow-app&type=Date)](https://www.star-history.com/#1797127235/Toonflow-app&Date)
 
 > **முந்தைய பதிப்புகளுக்குப் பொருந்தாத மாற்றம்**: v1.0.8-க்கு முந்தைய பதிப்புகளை AGPL-3.0-இன் கீழ் பயன்படுத்தியவர்களுக்கு AGPL-3.0 தொடர்ந்து பொருந்தும். v1.0.8 முதல் v1.1.8 வரையிலான பதிப்புகளுக்கு Apache-2.0 மற்றும் அதன் கூடுதல் ஒப்பந்தம் தொடர்ந்து பொருந்தும். இந்த உரிம மாற்றம் அவர்களைப் பாதிக்காது.
 
@@ -546,4 +546,4 @@ Xi'an Zhongxing Digital Intelligence Technology Co., Ltd. (西安中星数字智
 
 </div>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="Toonflow அடிக்குறிப்பு" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="Laywork அடிக்குறிப்பு" width="100%" />

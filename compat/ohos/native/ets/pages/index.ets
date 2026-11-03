@@ -26,7 +26,7 @@ let payloadPreparation: Promise<void> = Promise.resolve();
 @Entry
 @Component
 struct mobilePage {
-  @State private message: string = "正在准备 Toonflow…";
+  @State private message: string = "正在准备 Laywork…";
   @State private failed: boolean = false;
   @State private ready: boolean = false;
   @State private browserEnabled: boolean = false;
@@ -185,7 +185,7 @@ struct mobilePage {
     this.stage = "starting";
     this.origin = "";
     this.token = "";
-    this.message = "正在准备 Toonflow…";
+    this.message = "正在准备 Laywork…";
     runtime.stop();
     try {
       const preparation = payloadPreparation.then(() => this.preparePayload());
@@ -193,7 +193,7 @@ struct mobilePage {
       await preparation;
       if (this.disposed || this.startupId !== startupId) return;
       this.message = "正在启动本地服务…";
-      this.setTimeout("本地服务启动超时，请退出后重新打开 Toonflow。", 60000);
+      this.setTimeout("本地服务启动超时，请退出后重新打开 Laywork。", 60000);
       const files = this.context.filesDir;
       const address: string = await runtime.start(`${files}/app`, `${files}/data`, this.context.cacheDir);
       if (this.disposed || this.startupId !== startupId || this.failed) return;
@@ -211,11 +211,11 @@ struct mobilePage {
       this.stage = "probe";
       this.message = "正在检查鸿蒙浏览器能力…";
       this.browserUrl = `${address}&probe=1`;
-      this.setTimeout("鸿蒙浏览器启动超时，请退出后重新打开 Toonflow。", 30000);
+      this.setTimeout("鸿蒙浏览器启动超时，请退出后重新打开 Laywork。", 30000);
       this.controller = new webview.WebviewController();
       this.browserEnabled = true;
     } catch (error) {
-      if (startupId === this.startupId) this.showError(`无法启动 Toonflow：${(error as Error).message}`);
+      if (startupId === this.startupId) this.showError(`无法启动 Laywork：${(error as Error).message}`);
     } finally {
       this.starting = false;
     }
@@ -253,13 +253,13 @@ struct mobilePage {
           throw new Error("鸿蒙浏览器未返回有效的能力检测结果");
         }
         if (probe.missing.length > 0) {
-          throw new Error(`当前鸿蒙浏览器缺少所需能力：${probe.missing.join("、")}。请更新系统后重新打开 Toonflow。`);
+          throw new Error(`当前鸿蒙浏览器缺少所需能力：${probe.missing.join("、")}。请更新系统后重新打开 Laywork。`);
         }
         if (this.disposed || this.failed) return;
         console.info(`ArkWeb 能力检测通过：${probe.userAgent}`);
         this.stage = "page";
-        this.message = "正在加载 Toonflow…";
-        this.setTimeout("Toonflow 页面加载超时，请退出后重新打开。", 30000);
+        this.message = "正在加载 Laywork…";
+        this.setTimeout("Laywork 页面加载超时，请退出后重新打开。", 30000);
         this.controller.loadUrl(`${this.origin}/?mobile=1`);
       } catch (error) {
         this.showError((error as Error).message);
@@ -379,7 +379,7 @@ struct mobilePage {
               this.showError(`本地页面返回 HTTP ${event.response.getResponseCode()}`);
             }
           })
-          .onRenderExited(() => this.showError("鸿蒙浏览器进程已退出，请重新打开 Toonflow。"))
+          .onRenderExited(() => this.showError("鸿蒙浏览器进程已退出，请重新打开 Laywork。"))
         }
         if (!this.ready) {
           Column({ space: 20 }) {

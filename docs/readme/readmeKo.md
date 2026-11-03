@@ -1,7 +1,7 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Toonflow&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Toonflow" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Laywork&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Laywork" width="100%" />
 
 <p>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app">
+  <a href="https://github.com/1797127235/Toonflow-app">
     <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
   </a>
   &nbsp;|&nbsp;
@@ -45,30 +45,30 @@
 <div align="center">
 
 <p align="center">
-  <img src="../images/logo.png" alt="Toonflow 로고" width="120" height="120" />
+  <img src="../images/logo.png" alt="Laywork 로고" width="120" height="120" />
 </p>
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Toonflow · AI 숏드라마 스튜디오 · 아이디어를 이야기로" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI 숏드라마 스튜디오 · 아이디어를 이야기로" width="600" />
   </picture>
 </a>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/stargazers">
-    <img src="https://img.shields.io/github/stars/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github" alt="스타 배지" />
+  <a href="https://github.com/1797127235/Toonflow-app/stargazers">
+    <img src="https://img.shields.io/github/stars/1797127235/Toonflow-app?style=for-the-badge&logo=github" alt="스타 배지" />
   </a>
   <a href="../../LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License 배지" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">
-    <img src="https://img.shields.io/github/v/release/HBAI-Ltd/Toonflow-app?style=for-the-badge" alt="릴리스" />
+  <a href="https://github.com/1797127235/Toonflow-app/releases">
+    <img src="https://img.shields.io/github/v/release/1797127235/Toonflow-app?style=for-the-badge" alt="릴리스" />
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/network/members">
-    <img src="https://img.shields.io/github/forks/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="포크 배지" />
+  <a href="https://github.com/1797127235/Toonflow-app/network/members">
+    <img src="https://img.shields.io/github/forks/1797127235/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="포크 배지" />
   </a>
   <a href="https://atomgit.com/HBAI-Ltd/Toonflow-app">
     <img src="https://img.shields.io/badge/AtomGit-G--Star%20No.540-FF6B35?style=for-the-badge&logo=git&logoColor=white" alt="AtomGit G-Star No.540" />
@@ -78,14 +78,14 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/issues">
-    <img src="https://img.shields.io/github/issues/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=F48D73" alt="이슈" />
+  <a href="https://github.com/1797127235/Toonflow-app/issues">
+    <img src="https://img.shields.io/github/issues/1797127235/Toonflow-app?style=for-the-badge&color=F48D73" alt="이슈" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=2088FF" alt="기여자" />
+  <a href="https://github.com/1797127235/Toonflow-app/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/1797127235/Toonflow-app?style=for-the-badge&color=2088FF" alt="기여자" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/commits">
-    <img src="https://img.shields.io/github/last-commit/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=blueviolet" alt="최근 커밋" />
+  <a href="https://github.com/1797127235/Toonflow-app/commits">
+    <img src="https://img.shields.io/github/last-commit/1797127235/Toonflow-app?style=for-the-badge&color=blueviolet" alt="최근 커밋" />
   </a>
 </p>
 <p align="center">
@@ -134,12 +134,12 @@
     <tr>
       <td width="50%" align="center">
         <a href="../images/gStar.png">
-          <img src="../images/gStar.png" alt="Toonflow AtomGit G-Star 인증서 No.540" width="100%" />
+          <img src="../images/gStar.png" alt="Laywork AtomGit G-Star 인증서 No.540" width="100%" />
         </a>
       </td>
       <td width="50%" align="center">
         <a href="../images/gvp.jpg">
-          <img src="../images/gvp.jpg" alt="Toonflow Gitee GVP 인증서" width="100%" />
+          <img src="../images/gvp.jpg" alt="Laywork Gitee GVP 인증서" width="100%" />
         </a>
       </td>
     </tr>
@@ -147,7 +147,7 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">다운로드</a> ·
+  <a href="https://github.com/1797127235/Toonflow-app/releases">다운로드</a> ·
   <a href="https://qcn7xdsqgc4z.feishu.cn/docx/RXFqdgR2Xo0dXZxGfd0cZCGgnwf">사용 가이드</a> ·
   <a href="https://api.toonflow.net/console/plugIn">플러그인 마켓</a> ·
   <a href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd">개발자 문서</a> ·
@@ -158,7 +158,7 @@
 
 ## 1. 💛 후원과 지원
 
-Toonflow 오픈 소스 프로젝트를 지원해 주시는 다음 파트너 여러분께 감사드립니다.
+Laywork 오픈 소스 프로젝트를 지원해 주시는 다음 파트너 여러분께 감사드립니다.
 
 <table>
   <tr>
@@ -200,7 +200,7 @@ Toonflow 오픈 소스 프로젝트를 지원해 주시는 다음 파트너 여�
 
 ## 2. 🌟 주요 기능
 
-Toonflow는 숏드라마, 모션 코믹스, 짧은 영상 제작을 위한 오픈 소스 AI 창작 플랫폼입니다. 대본, 자산, 영상 클립을 하나의 무한 캔버스에 모을 수 있습니다.
+Laywork는 숏드라마, 모션 코믹스, 짧은 영상 제작을 위한 오픈 소스 AI 창작 플랫폼입니다. 대본, 자산, 영상 클립을 하나의 무한 캔버스에 모을 수 있습니다.
 
 | 기능 | 설명 |
 | --- | --- |
@@ -224,25 +224,25 @@ Toonflow는 숏드라마, 모션 코믹스, 짧은 영상 제작을 위한 오�
 
 <div align="center">
 
-<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Toonflow 프로젝트 홈과 아이디어 창작" width="80%" /></a><br /><sub>프로젝트 홈과 아이디어 기반 창작</sub>
+<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Laywork 프로젝트 홈과 아이디어 창작" width="80%" /></a><br /><sub>프로젝트 홈과 아이디어 기반 창작</sub>
 
-<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Toonflow 첫 실행과 빠른 설정" width="80%" /></a><br /><sub>첫 실행과 빠른 설정</sub>
+<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Laywork 첫 실행과 빠른 설정" width="80%" /></a><br /><sub>첫 실행과 빠른 설정</sub>
 
-<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Toonflow 어두운 캔버스와 AI 도우미" width="80%" /></a><br /><sub>창작 캔버스 · 어두운 테마</sub>
+<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Laywork 어두운 캔버스와 AI 도우미" width="80%" /></a><br /><sub>창작 캔버스 · 어두운 테마</sub>
 
-<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Toonflow 밝은 캔버스와 AI 도우미" width="80%" /></a><br /><sub>창작 캔버스 · 밝은 테마</sub>
+<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Laywork 밝은 캔버스와 AI 도우미" width="80%" /></a><br /><sub>창작 캔버스 · 밝은 테마</sub>
 
-<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Toonflow 캐릭터·장면·소품 자산 캔버스" width="80%" /></a><br /><sub>캐릭터, 장면, 소품 자산</sub>
+<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Laywork 캐릭터·장면·소품 자산 캔버스" width="80%" /></a><br /><sub>캐릭터, 장면, 소품 자산</sub>
 
-<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Toonflow 3D 연출 스튜디오와 샷 사전 시각화" width="80%" /></a><br /><sub>3D 연출 스튜디오와 샷 사전 시각화</sub>
+<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Laywork 3D 연출 스튜디오와 샷 사전 시각화" width="80%" /></a><br /><sub>3D 연출 스튜디오와 샷 사전 시각화</sub>
 
-<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Toonflow 캐릭터 삼면도와 이미지 생성" width="80%" /></a><br /><sub>캐릭터 삼면도와 이미지 생성</sub>
+<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Laywork 캐릭터 삼면도와 이미지 생성" width="80%" /></a><br /><sub>캐릭터 삼면도와 이미지 생성</sub>
 
-<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Toonflow 다중 참조 자산 영상 생성" width="80%" /></a><br /><sub>여러 참조 자산을 활용한 영상 생성</sub>
+<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Laywork 다중 참조 자산 영상 생성" width="80%" /></a><br /><sub>여러 참조 자산을 활용한 영상 생성</sub>
 
-<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Toonflow 노드 메뉴와 그룹 작업" width="80%" /></a><br /><sub>노드 메뉴와 그룹 작업</sub>
+<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Laywork 노드 메뉴와 그룹 작업" width="80%" /></a><br /><sub>노드 메뉴와 그룹 작업</sub>
 
-<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Toonflow 플러그인 마켓" width="80%" /></a><br /><sub>플러그인 마켓</sub>
+<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Laywork 플러그인 마켓" width="80%" /></a><br /><sub>플러그인 마켓</sub>
 
 </div>
 
@@ -254,22 +254,22 @@ Toonflow는 숏드라마, 모션 코믹스, 짧은 영상 제작을 위한 오�
 
 | 운영 체제 | GitHub |
 | --- | --- |
-| Windows | [릴리스](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| macOS | [릴리스](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| Android ARM64 | [APK 다운로드](https://github.com/HBAI-Ltd/Toonflow-app/releases/latest) |
+| Windows | [릴리스](https://github.com/1797127235/Toonflow-app/releases) |
+| macOS | [릴리스](https://github.com/1797127235/Toonflow-app/releases) |
+| Android ARM64 | [APK 다운로드](https://github.com/1797127235/Toonflow-app/releases/latest) |
 
 Android 앱은 ARM64 기기만 지원합니다. 릴리스 페이지에서 `toonflow-VERSION-android-arm64.apk`를 다운로드하여 설치하세요. 로컬 Bun 백엔드가 포함되어 독립적으로 실행할 수 있습니다. 홈 화면의 ‘기기 연결’에서 QR 코드를 스캔하거나 연결 정보를 직접 입력하여 공유가 켜진 컴퓨터나 원격 백엔드에 LAN 또는 인터넷을 통해 연결할 수 있습니다.
 
 Windows 설치 프로그램은 WebView2를 자동으로 감지하고 설치합니다. 설치 후 앱이 바로 종료되면 [WebView2 다운로드 페이지](https://developer.microsoft.com/microsoft-edge/webview2/)에서 런타임을 직접 다운로드하여 설치하세요.
 
-macOS(Apple Silicon)에서는 Toonflow를 응용 프로그램 폴더로 끌어다 놓고 바로 실행하세요. 미리 터미널 명령을 실행할 필요는 없습니다. macOS에서 보안 경고가 표시되면 아래 순서대로 진행하세요.
+macOS(Apple Silicon)에서는 Laywork를 응용 프로그램 폴더로 끌어다 놓고 바로 실행하세요. 미리 터미널 명령을 실행할 필요는 없습니다. macOS에서 보안 경고가 표시되면 아래 순서대로 진행하세요.
 
 <details>
-<summary><strong>macOS에서 Toonflow를 설치하거나 실행할 수 없는 경우</strong></summary>
+<summary><strong>macOS에서 Laywork를 설치하거나 실행할 수 없는 경우</strong></summary>
 
-**1. 개인정보 보호 및 보안에서 Toonflow 허용**
+**1. 개인정보 보호 및 보안에서 Laywork 허용**
 
-개발자를 확인할 수 없거나 Apple이 악성 소프트웨어 여부를 확인할 수 없다는 경고가 나오면 먼저 Toonflow 실행을 시도하세요. 그런 다음 시스템 설정 → 개인정보 보호 및 보안에서 Toonflow가 차단되었다는 메시지를 찾아 ‘확인 없이 열기’를 누르고 안내에 따라 확인하세요. [Apple 공식 안내](https://support.apple.com/zh-cn/102445)를 참고하세요.
+개발자를 확인할 수 없거나 Apple이 악성 소프트웨어 여부를 확인할 수 없다는 경고가 나오면 먼저 Laywork 실행을 시도하세요. 그런 다음 시스템 설정 → 개인정보 보호 및 보안에서 Laywork가 차단되었다는 메시지를 찾아 ‘확인 없이 열기’를 누르고 안내에 따라 확인하세요. [Apple 공식 안내](https://support.apple.com/zh-cn/102445)를 참고하세요.
 
 **2. 격리 제한 때문에 여전히 실행되지 않으면 격리 속성 제거 시도**
 
@@ -307,7 +307,7 @@ sudo spctl --master-disable
 소스를 복제한 뒤 저장소 루트에서 다음 명령을 실행하세요.
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 docker compose up -d --build
 ```
@@ -361,7 +361,7 @@ bun --version
 소스를 복제하고 서비스를 시작하세요.
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 bun install --frozen-lockfile
 
@@ -388,7 +388,7 @@ bun run start:server
 
 ### 4.5 클라우드 배포
 
-파트너 [AI Galaxy(智星云)](https://www.ai-galaxy.com/)는 실행 환경이 준비된 공식 승인 Toonflow 상용 이미지를 제공합니다. 사용법은 [이미지 배포 그림 가이드](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1)를 참고하세요.
+파트너 [AI Galaxy(智星云)](https://www.ai-galaxy.com/)는 실행 환경이 준비된 공식 승인 Laywork 상용 이미지를 제공합니다. 사용법은 [이미지 배포 그림 가이드](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1)를 참고하세요.
 
 ---
 
@@ -418,19 +418,19 @@ https://github.com/user-attachments/assets/2d9fddac-dfdf-4640-b030-b09d7f7287e9
   </a>
 </p>
 
-TF-Router는 Toonflow가 직접 운영하는 공식 모델 게이트웨이입니다. 자유롭게 이용해 보세요. 전체 소스 코드는 공개되어 있으며 직접 배포하거나 검토할 수 있습니다: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router).
+TF-Router는 Laywork가 직접 운영하는 공식 모델 게이트웨이입니다. 자유롭게 이용해 보세요. 전체 소스 코드는 공개되어 있으며 직접 배포하거나 검토할 수 있습니다: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router).
 
 <details>
-<summary><strong>Toonflow 커뮤니티에 보내는 편지(2026-06-08 공개)</strong></summary>
+<summary><strong>Laywork 커뮤니티에 보내는 편지(2026-06-08 공개)</strong></summary>
 
-> ### Toonflow 커뮤니티에 보내는 편지
+> ### Laywork 커뮤니티에 보내는 편지
 > 130일.
 > 길지는 않지만, 몇 가지를 분명히 알기에는 충분한 시간이었습니다.
 > 첫 코드를 커밋한 날부터 오늘까지 130일이 지났습니다. 20개 버전을 배포하고 800회 이상 커밋했으며, 640,810자로 이루어진 코드 213,765줄을 작성했습니다.
 > 두 번의 재작성, 공급자 시스템, 그리고 우리가 자부하는 워크플로.
 > 이 정도면 충분하리라 생각했습니다.
 > 하지만 그렇지 않았습니다.
-> 어떤 분은 Toonflow에 자신의 모듈을 추가하고 싶었지만 몇 시간을 들여도 수정 방법을 이해하지 못했다고 했습니다.
+> 어떤 분은 Laywork에 자신의 모듈을 추가하고 싶었지만 몇 시간을 들여도 수정 방법을 이해하지 못했다고 했습니다.
 > 어떤 분은 커뮤니티가 너무 작아 문제가 생겨도 도움을 구할 곳이 없다고 했습니다.
 > 어떤 분은 상업적 이용 조건 때문에 프로젝트를 실제로 활용할 수 없다고 했습니다.
 > 여러분의 목소리를 들었습니다.
@@ -438,7 +438,7 @@ TF-Router는 Toonflow가 직접 운영하는 공식 모델 게이트웨이입니
 > 돈이 많아서가 아닙니다.
 > 그만한 가치가 있다고 믿기 때문입니다.
 > 그래서 세 번째 재작성을 하기로 했습니다.
-> Toonflow의 재작성은 언제나 더 큰 개방성과 오픈 소스를 향해 왔습니다.
+> Laywork의 재작성은 언제나 더 큰 개방성과 오픈 소스를 향해 왔습니다.
 > 이번에는 모든 것을 개방하기로 했습니다.
 >
 > 1. MIT License
@@ -473,9 +473,9 @@ TF-Router는 Toonflow가 직접 운영하는 공식 모델 게이트웨이입니
 > 재작성에는 시간이 걸립니다. 그동안 서버는 계속 돌아가고, 도메인을 갱신해야 하며, 팀은 늦게까지 일하고 커피값도 오릅니다.
 > 투자금도, 광고도, 숨겨진 사업 계획도 없습니다.
 > 하지만 시작한 일을 마치려면 계속 버틸 수 있어야 합니다.
-> 그래서 Toonflow 공식 모델 게이트웨이인 TF-Router를 출시했습니다.
+> 그래서 Laywork 공식 모델 게이트웨이인 TF-Router를 출시했습니다.
 > 솔직히 이 플랫폼을 두고 오랫동안 망설였습니다.
-> 원래 만들고 싶었던 것은 아니었습니다. 게이트웨이 때문에 Toonflow가 ‘돈벌이를 시작했다’고 느끼게 하고 싶지 않았습니다.
+> 원래 만들고 싶었던 것은 아니었습니다. 게이트웨이 때문에 Laywork가 ‘돈벌이를 시작했다’고 느끼게 하고 싶지 않았습니다.
 > 그 부담을 오랫동안 안고 있었습니다.
 > 그런데 많은 사용자가 Seedance 2.0 사용 승인을 받지 못해, 이용할 방법이 없는지 계속 물었습니다.
 > 오랜 고민 끝에 직접 만들기로 했고, Volcengine과 Seedance 연간 기본 계약을 체결했습니다.
@@ -485,11 +485,11 @@ TF-Router는 Toonflow가 직접 운영하는 공식 모델 게이트웨이입니
 > 믿기 어려우셔도 괜찮습니다. 코드를 읽고 직접 배포하고 운영해 보세요.
 > 이것이 우리의 입장입니다.
 > 한번 이용해 주신다면, 이 작업을 이어 갈 수 있는 현재의 유일한 방법을 믿어 주시는 것입니다.
-> 이용하지 않으셔도 괜찮습니다. Toonflow를 계속 사용하고, 비판하고, 필요한 기능을 요청해 주세요.
+> 이용하지 않으셔도 괜찮습니다. Laywork를 계속 사용하고, 비판하고, 필요한 기능을 요청해 주세요.
 > 우리는 여기 있습니다.
 > 마지막으로 진심을 전합니다.
 > 우리는 창작 도구가 모두의 것이어야 한다고 믿는 평범한 사람들입니다.
-> Toonflow는 한 번도 우리만의 제품이었던 적이 없습니다.
+> Laywork는 한 번도 우리만의 제품이었던 적이 없습니다.
 > 함께 써 내려가는 이야기입니다.
 > 세 번째 재작성은 결승선이 아닙니다.
 > 다시 시작하는 지점입니다.
@@ -505,7 +505,7 @@ TF-Router는 Toonflow가 직접 운영하는 공식 모델 게이트웨이입니
 
 QR 코드를 스캔하여 그룹 초대 도우미에게 연락하세요.
 
-<img src="../images/qr.png" alt="Toonflow 커뮤니티 QR 코드" height="400"/>
+<img src="../images/qr.png" alt="Laywork 커뮤니티 QR 코드" height="400"/>
 
 아래 아이콘을 눌러 Discord에 참여할 수도 있습니다.
 
@@ -517,15 +517,15 @@ QR 코드를 스캔하여 그룹 초대 도우미에게 연락하세요.
 
 ## 8. 💌 문의
 
-📧 이메일: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Toonflow咨询)
+📧 이메일: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Laywork咨询)
 
 ---
 
 ## 9. 📜 오픈 소스 라이선스
 
-Toonflow는 [MIT License](../../LICENSE)로 배포됩니다. 타사 의존성과 자산에는 각각의 라이선스와 저작권 고지가 적용됩니다.
+Laywork는 [MIT License](../../LICENSE)로 배포됩니다. 타사 의존성과 자산에는 각각의 라이선스와 저작권 고지가 적용됩니다.
 
-[![Toonflow 스타 기록](https://api.star-history.com/svg?repos=HBAI-Ltd/Toonflow-app&type=Date)](https://www.star-history.com/#HBAI-Ltd/Toonflow-app&Date)
+[![Laywork 스타 기록](https://api.star-history.com/svg?repos=1797127235/Toonflow-app&type=Date)](https://www.star-history.com/#1797127235/Toonflow-app&Date)
 
 > **소급 적용 제외 조항**: v1.0.8 이전 버전을 AGPL-3.0으로 사용한 이용자에게는 계속 AGPL-3.0이 적용됩니다. v1.0.8부터 v1.1.8까지의 버전에는 Apache-2.0 및 추가 약정이 계속 적용됩니다. 이 이용자들에게 이번 라이선스 변경은 적용되지 않습니다.
 
@@ -546,4 +546,4 @@ Xi'an Zhongxing Digital Intelligence Technology Co., Ltd.(西安中星数字智�
 
 </div>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="Toonflow 바닥글" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="Laywork 바닥글" width="100%" />

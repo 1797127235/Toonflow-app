@@ -1,7 +1,7 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Toonflow&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Toonflow" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Laywork&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Laywork" width="100%" />
 
 <p>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app">
+  <a href="https://github.com/1797127235/Toonflow-app">
     <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
   </a>
  | 
@@ -45,30 +45,30 @@
 <div align="center">
 
 <p align="center">
-  <img src="../images/logo.png" alt="Toonflow ਲੋਗੋ" width="120" height="120" />
+  <img src="../images/logo.png" alt="Laywork ਲੋਗੋ" width="120" height="120" />
 </p>
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Toonflow · AI ਛੋਟਾ ਡਰਾਮਾ ਸਟੂਡੀਓ · ਵਿਚਾਰਾਂ ਨੂੰ ਕਹਾਣੀਆਂ ਵਿੱਚ ਬਦਲੋ" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI ਛੋਟਾ ਡਰਾਮਾ ਸਟੂਡੀਓ · ਵਿਚਾਰਾਂ ਨੂੰ ਕਹਾਣੀਆਂ ਵਿੱਚ ਬਦਲੋ" width="600" />
   </picture>
 </a>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/stargazers">
-    <img src="https://img.shields.io/github/stars/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github" alt="ਸਟਾਰ ਬੈਜ" />
+  <a href="https://github.com/1797127235/Toonflow-app/stargazers">
+    <img src="https://img.shields.io/github/stars/1797127235/Toonflow-app?style=for-the-badge&logo=github" alt="ਸਟਾਰ ਬੈਜ" />
   </a>
   <a href="../../LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License ਬੈਜ" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">
-    <img src="https://img.shields.io/github/v/release/HBAI-Ltd/Toonflow-app?style=for-the-badge" alt="ਨਵਾਂ ਰਿਲੀਜ਼" />
+  <a href="https://github.com/1797127235/Toonflow-app/releases">
+    <img src="https://img.shields.io/github/v/release/1797127235/Toonflow-app?style=for-the-badge" alt="ਨਵਾਂ ਰਿਲੀਜ਼" />
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/network/members">
-    <img src="https://img.shields.io/github/forks/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="ਫੋਰਕ ਬੈਜ" />
+  <a href="https://github.com/1797127235/Toonflow-app/network/members">
+    <img src="https://img.shields.io/github/forks/1797127235/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="ਫੋਰਕ ਬੈਜ" />
   </a>
   <a href="https://atomgit.com/HBAI-Ltd/Toonflow-app">
     <img src="https://img.shields.io/badge/AtomGit-G--Star%20No.540-FF6B35?style=for-the-badge&logo=git&logoColor=white" alt="AtomGit ਜੀ-ਸਟਾਰ ਨੰ.540" />
@@ -78,14 +78,14 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/issues">
-    <img src="https://img.shields.io/github/issues/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=F48D73" alt="ਮੁੱਦੇ" />
+  <a href="https://github.com/1797127235/Toonflow-app/issues">
+    <img src="https://img.shields.io/github/issues/1797127235/Toonflow-app?style=for-the-badge&color=F48D73" alt="ਮੁੱਦੇ" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=2088FF" alt="ਯੋਗਦਾਨ ਪਾਉਣ ਵਾਲੇ" />
+  <a href="https://github.com/1797127235/Toonflow-app/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/1797127235/Toonflow-app?style=for-the-badge&color=2088FF" alt="ਯੋਗਦਾਨ ਪਾਉਣ ਵਾਲੇ" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/commits">
-    <img src="https://img.shields.io/github/last-commit/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=blueviolet" alt="ਆਖਰੀ ਕੋਡ ਕਮਿਟ" />
+  <a href="https://github.com/1797127235/Toonflow-app/commits">
+    <img src="https://img.shields.io/github/last-commit/1797127235/Toonflow-app?style=for-the-badge&color=blueviolet" alt="ਆਖਰੀ ਕੋਡ ਕਮਿਟ" />
   </a>
 </p>
 <p align="center">
@@ -134,12 +134,12 @@
     <tr>
       <td width="50%" align="center">
         <a href="../images/gStar.png">
-          <img src="../images/gStar.png" alt="Toonflow AtomGit ਜੀ-ਸਟਾਰ ਸਰਟੀਫਿਕੇਟ ਨੰ.540" width="100%" />
+          <img src="../images/gStar.png" alt="Laywork AtomGit ਜੀ-ਸਟਾਰ ਸਰਟੀਫਿਕੇਟ ਨੰ.540" width="100%" />
         </a>
       </td>
       <td width="50%" align="center">
         <a href="../images/gvp.jpg">
-          <img src="../images/gvp.jpg" alt="Toonflow Gitee GVP ਸਰਟੀਫਿਕੇਟ" width="100%" />
+          <img src="../images/gvp.jpg" alt="Laywork Gitee GVP ਸਰਟੀਫਿਕੇਟ" width="100%" />
         </a>
       </td>
     </tr>
@@ -147,7 +147,7 @@
 </div>
 
 <p align="center">
-<a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">ਡਾਊਨਲੋਡ</a> ·
+<a href="https://github.com/1797127235/Toonflow-app/releases">ਡਾਊਨਲੋਡ</a> ·
 <a href="https://qcn7xdsqgc4z.feishu.cn/docx/RXFqdgR2Xo0dXZxGfd0cZCGgnwf">ਵਰਤੋਂ ਗਾਈਡ</a> ·
 <a href="https://api.toonflow.net/console/plugIn">ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ</a> ·
 <a href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd">ਡਿਵੈਲਪਰ ਦਸਤਾਵੇਜ਼</a> ·
@@ -158,7 +158,7 @@
 
 ## 1. 💛 ਸਪਾਂਸਰ ਅਤੇ ਸਹਾਇਤਾ
 
-Toonflow ਓਪਨ-ਸੋਰਸ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ ਹੇਠਾਂ ਦਿੱਤੇ ਭਾਈਵਾਲਾਂ ਦਾ ਧੰਨਵਾਦ।
+Laywork ਓਪਨ-ਸੋਰਸ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ ਕਰਨ ਲਈ ਹੇਠਾਂ ਦਿੱਤੇ ਭਾਈਵਾਲਾਂ ਦਾ ਧੰਨਵਾਦ।
 
 <table>
   <tr>
@@ -200,7 +200,7 @@ Toonflow ਓਪਨ-ਸੋਰਸ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ 
 
 ## 2. 🌟 ਖ਼ਾਸ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ
 
-Toonflow ਛੋਟੇ ਨਾਟਕਾਂ, ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ ਅਤੇ ਛੋਟੇ ਵੀਡੀਓ ਬਣਾਉਣ ਲਈ ਇੱਕ ਓਪਨ-ਸੋਰਸ AI ਪਲੇਟਫਾਰਮ ਹੈ। ਇਹ ਪਟਕਥਾਵਾਂ, ਰਚਨਾਤਮਕ ਸਮੱਗਰੀ ਅਤੇ ਵੀਡੀਓ ਕਲਿੱਪਾਂ ਨੂੰ ਇੱਕੋ ਬੇਅੰਤ ਕੈਨਵਸ ਉੱਤੇ ਇਕੱਠਾ ਕਰਦਾ ਹੈ।
+Laywork ਛੋਟੇ ਨਾਟਕਾਂ, ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ ਅਤੇ ਛੋਟੇ ਵੀਡੀਓ ਬਣਾਉਣ ਲਈ ਇੱਕ ਓਪਨ-ਸੋਰਸ AI ਪਲੇਟਫਾਰਮ ਹੈ। ਇਹ ਪਟਕਥਾਵਾਂ, ਰਚਨਾਤਮਕ ਸਮੱਗਰੀ ਅਤੇ ਵੀਡੀਓ ਕਲਿੱਪਾਂ ਨੂੰ ਇੱਕੋ ਬੇਅੰਤ ਕੈਨਵਸ ਉੱਤੇ ਇਕੱਠਾ ਕਰਦਾ ਹੈ।
 
 | ਸਮਰੱਥਾ | ਵਰਣਨ |
 | --- | --- |
@@ -224,25 +224,25 @@ Toonflow ਛੋਟੇ ਨਾਟਕਾਂ, ਐਨੀਮੇਟਡ ਕਾਮਿਕ�
 
 <div align="center">
 
-<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Toonflow · ਪ੍ਰੋਜੈਕਟ ਦਾ ਮੁੱਖ ਪੰਨਾ ਅਤੇ ਵਿਚਾਰ ਬਣਾਉਣਾ" width="80%" /></a><br /><sub>ਪ੍ਰੋਜੈਕਟ ਦਾ ਮੁੱਖ ਪੰਨਾ ਅਤੇ ਵਿਚਾਰ ਬਣਾਉਣਾ</sub>
+<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Laywork · ਪ੍ਰੋਜੈਕਟ ਦਾ ਮੁੱਖ ਪੰਨਾ ਅਤੇ ਵਿਚਾਰ ਬਣਾਉਣਾ" width="80%" /></a><br /><sub>ਪ੍ਰੋਜੈਕਟ ਦਾ ਮੁੱਖ ਪੰਨਾ ਅਤੇ ਵਿਚਾਰ ਬਣਾਉਣਾ</sub>
 
-<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Toonflow · ਪਹਿਲੀ ਸ਼ੁਰੂਆਤ ਅਤੇ ਤੁਰੰਤ ਸੈੱਟਅੱਪ" width="80%" /></a><br /><sub>ਪਹਿਲੀ ਸ਼ੁਰੂਆਤ ਅਤੇ ਤੁਰੰਤ ਸੈੱਟਅੱਪ</sub>
+<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Laywork · ਪਹਿਲੀ ਸ਼ੁਰੂਆਤ ਅਤੇ ਤੁਰੰਤ ਸੈੱਟਅੱਪ" width="80%" /></a><br /><sub>ਪਹਿਲੀ ਸ਼ੁਰੂਆਤ ਅਤੇ ਤੁਰੰਤ ਸੈੱਟਅੱਪ</sub>
 
-<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Toonflow · ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਗੂੜ੍ਹਾ ਥੀਮ" width="80%" /></a><br /><sub>ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਗੂੜ੍ਹਾ ਥੀਮ</sub>
+<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Laywork · ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਗੂੜ੍ਹਾ ਥੀਮ" width="80%" /></a><br /><sub>ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਗੂੜ੍ਹਾ ਥੀਮ</sub>
 
-<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Toonflow · ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਹਲਕਾ ਥੀਮ" width="80%" /></a><br /><sub>ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਹਲਕਾ ਥੀਮ</sub>
+<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Laywork · ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਹਲਕਾ ਥੀਮ" width="80%" /></a><br /><sub>ਰਚਨਾਤਮਕ ਕੈਨਵਸ · ਹਲਕਾ ਥੀਮ</sub>
 
-<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Toonflow · ਪਾਤਰਾਂ, ਦ੍ਰਿਸ਼ਾਂ ਅਤੇ ਵਸਤੂਆਂ ਦੀ ਸਮੱਗਰੀ" width="80%" /></a><br /><sub>ਪਾਤਰਾਂ, ਦ੍ਰਿਸ਼ਾਂ ਅਤੇ ਵਸਤੂਆਂ ਦੀ ਸਮੱਗਰੀ</sub>
+<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Laywork · ਪਾਤਰਾਂ, ਦ੍ਰਿਸ਼ਾਂ ਅਤੇ ਵਸਤੂਆਂ ਦੀ ਸਮੱਗਰੀ" width="80%" /></a><br /><sub>ਪਾਤਰਾਂ, ਦ੍ਰਿਸ਼ਾਂ ਅਤੇ ਵਸਤੂਆਂ ਦੀ ਸਮੱਗਰੀ</sub>
 
-<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Toonflow · 3D ਨਿਰਦੇਸ਼ਕ ਸਟੂਡੀਓ ਅਤੇ ਸ਼ਾਟ ਦੀ ਪਹਿਲਾਂ ਝਲਕ" width="80%" /></a><br /><sub>3D ਨਿਰਦੇਸ਼ਕ ਸਟੂਡੀਓ ਅਤੇ ਸ਼ਾਟ ਦੀ ਪਹਿਲਾਂ ਝਲਕ</sub>
+<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Laywork · 3D ਨਿਰਦੇਸ਼ਕ ਸਟੂਡੀਓ ਅਤੇ ਸ਼ਾਟ ਦੀ ਪਹਿਲਾਂ ਝਲਕ" width="80%" /></a><br /><sub>3D ਨਿਰਦੇਸ਼ਕ ਸਟੂਡੀਓ ਅਤੇ ਸ਼ਾਟ ਦੀ ਪਹਿਲਾਂ ਝਲਕ</sub>
 
-<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Toonflow · ਪਾਤਰਾਂ ਦੇ ਤਿੰਨ ਪਾਸਿਆਂ ਦੇ ਦ੍ਰਿਸ਼ ਅਤੇ ਤਸਵੀਰਾਂ ਬਣਾਉਣਾ" width="80%" /></a><br /><sub>ਪਾਤਰਾਂ ਦੇ ਤਿੰਨ ਪਾਸਿਆਂ ਦੇ ਦ੍ਰਿਸ਼ ਅਤੇ ਤਸਵੀਰਾਂ ਬਣਾਉਣਾ</sub>
+<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Laywork · ਪਾਤਰਾਂ ਦੇ ਤਿੰਨ ਪਾਸਿਆਂ ਦੇ ਦ੍ਰਿਸ਼ ਅਤੇ ਤਸਵੀਰਾਂ ਬਣਾਉਣਾ" width="80%" /></a><br /><sub>ਪਾਤਰਾਂ ਦੇ ਤਿੰਨ ਪਾਸਿਆਂ ਦੇ ਦ੍ਰਿਸ਼ ਅਤੇ ਤਸਵੀਰਾਂ ਬਣਾਉਣਾ</sub>
 
-<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Toonflow · ਕਈ ਹਵਾਲਾ ਸਮੱਗਰੀਆਂ ਨਾਲ ਵੀਡੀਓ ਬਣਾਉਣਾ" width="80%" /></a><br /><sub>ਕਈ ਹਵਾਲਾ ਸਮੱਗਰੀਆਂ ਨਾਲ ਵੀਡੀਓ ਬਣਾਉਣਾ</sub>
+<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Laywork · ਕਈ ਹਵਾਲਾ ਸਮੱਗਰੀਆਂ ਨਾਲ ਵੀਡੀਓ ਬਣਾਉਣਾ" width="80%" /></a><br /><sub>ਕਈ ਹਵਾਲਾ ਸਮੱਗਰੀਆਂ ਨਾਲ ਵੀਡੀਓ ਬਣਾਉਣਾ</sub>
 
-<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Toonflow · ਨੋਡ ਮੀਨੂ ਅਤੇ ਗਰੁੱਪ ਕਾਰਵਾਈਆਂ" width="80%" /></a><br /><sub>ਨੋਡ ਮੀਨੂ ਅਤੇ ਗਰੁੱਪ ਕਾਰਵਾਈਆਂ</sub>
+<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Laywork · ਨੋਡ ਮੀਨੂ ਅਤੇ ਗਰੁੱਪ ਕਾਰਵਾਈਆਂ" width="80%" /></a><br /><sub>ਨੋਡ ਮੀਨੂ ਅਤੇ ਗਰੁੱਪ ਕਾਰਵਾਈਆਂ</sub>
 
-<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Toonflow · ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ" width="80%" /></a><br /><sub>ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ</sub>
+<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Laywork · ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ" width="80%" /></a><br /><sub>ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ</sub>
 
 </div>
 
@@ -254,22 +254,22 @@ Toonflow ਛੋਟੇ ਨਾਟਕਾਂ, ਐਨੀਮੇਟਡ ਕਾਮਿਕ�
 
 | ਓਪਰੇਟਿੰਗ ਸਿਸਟਮ | GitHub |
 | --- | --- |
-| Windows | [ਰਿਲੀਜ਼](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| macOS | [ਰਿਲੀਜ਼](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| Android ARM64 | [APK ਡਾਊਨਲੋਡ](https://github.com/HBAI-Ltd/Toonflow-app/releases/latest) |
+| Windows | [ਰਿਲੀਜ਼](https://github.com/1797127235/Toonflow-app/releases) |
+| macOS | [ਰਿਲੀਜ਼](https://github.com/1797127235/Toonflow-app/releases) |
+| Android ARM64 | [APK ਡਾਊਨਲੋਡ](https://github.com/1797127235/Toonflow-app/releases/latest) |
 
 Android ਐਪ ਸਿਰਫ਼ ARM64 ਡਿਵਾਈਸਾਂ ਦਾ ਸਮਰਥਨ ਕਰਦੀ ਹੈ। ਰਿਲੀਜ਼ ਪੰਨੇ ਤੋਂ `toonflow-VERSION-android-arm64.apk` ਡਾਊਨਲੋਡ ਕਰਕੇ ਇੰਸਟਾਲ ਕਰੋ। ਇਸ ਵਿੱਚ ਸਥਾਨਕ Bun ਬੈਕਐਂਡ ਸ਼ਾਮਲ ਹੈ ਅਤੇ ਇਹ ਸੁਤੰਤਰ ਤੌਰ 'ਤੇ ਚੱਲ ਸਕਦੀ ਹੈ। ਹੋਮ ਪੰਨੇ ਉੱਤੇ «ਡਿਵਾਈਸ ਕਨੈਕਸ਼ਨ» ਰਾਹੀਂ QR ਕੋਡ ਸਕੈਨ ਕਰਕੇ ਜਾਂ ਜਾਣਕਾਰੀ ਭਰ ਕੇ ਸਥਾਨਕ ਨੈੱਟਵਰਕ ਜਾਂ ਇੰਟਰਨੈੱਟ ਉੱਤੇ ਸ਼ੇਅਰਿੰਗ ਚਾਲੂ ਵਾਲੇ ਕੰਪਿਊਟਰ ਜਾਂ ਬੈਕਐਂਡ ਨਾਲ ਵੀ ਜੁੜ ਸਕਦੇ ਹੋ।
 
 Windows ਸਥਾਪਕ ਸਵੈਚਲਿਤ ਤੌਰ 'ਤੇ WebView2 ਨੂੰ ਖੋਜਦਾ ਅਤੇ ਸਥਾਪਿਤ ਕਰਦਾ ਹੈ। ਜੇਕਰ ਐਪ ਇੰਸਟਾਲੇਸ਼ਨ ਤੋਂ ਤੁਰੰਤ ਬਾਅਦ ਬੰਦ ਹੋ ਜਾਂਦੀ ਹੈ, ਤਾਂ [WebView2 ਡਾਉਨਲੋਡ ਪੇਜ](https://developer.microsoft.com/microsoft-edge/webview2/) ਤੋਂ ਰਨਟਾਈਮ ਨੂੰ ਹੱਥੀਂ ਡਾਊਨਲੋਡ ਅਤੇ ਸਥਾਪਿਤ ਕਰੋ।
 
-macOS (Apple Silicon) ਉੱਤੇ Toonflow ਨੂੰ Applications ਫੋਲਡਰ ਵਿੱਚ ਖਿੱਚ ਕੇ ਰੱਖੋ ਅਤੇ ਸਿੱਧਾ ਖੋਲ੍ਹੋ। ਪਹਿਲਾਂ Terminal ਵਿੱਚ ਕੋਈ ਕਮਾਂਡ ਚਲਾਉਣ ਦੀ ਲੋੜ ਨਹੀਂ। macOS ਸੁਰੱਖਿਆ ਚੇਤਾਵਨੀ ਦਿਖਾਏ ਤਾਂ ਹੇਠਲੇ ਕਦਮ ਕ੍ਰਮਵਾਰ ਪੂਰੇ ਕਰੋ।
+macOS (Apple Silicon) ਉੱਤੇ Laywork ਨੂੰ Applications ਫੋਲਡਰ ਵਿੱਚ ਖਿੱਚ ਕੇ ਰੱਖੋ ਅਤੇ ਸਿੱਧਾ ਖੋਲ੍ਹੋ। ਪਹਿਲਾਂ Terminal ਵਿੱਚ ਕੋਈ ਕਮਾਂਡ ਚਲਾਉਣ ਦੀ ਲੋੜ ਨਹੀਂ। macOS ਸੁਰੱਖਿਆ ਚੇਤਾਵਨੀ ਦਿਖਾਏ ਤਾਂ ਹੇਠਲੇ ਕਦਮ ਕ੍ਰਮਵਾਰ ਪੂਰੇ ਕਰੋ।
 
 <details>
-<summary><strong>ਜੇ macOS ਉੱਤੇ Toonflow ਸਥਾਪਿਤ ਜਾਂ ਖੋਲ੍ਹਿਆ ਨਾ ਜਾ ਸਕੇ</strong></summary>
+<summary><strong>ਜੇ macOS ਉੱਤੇ Laywork ਸਥਾਪਿਤ ਜਾਂ ਖੋਲ੍ਹਿਆ ਨਾ ਜਾ ਸਕੇ</strong></summary>
 
-**1. ਗੋਪਨੀਯਤਾ ਅਤੇ ਸੁਰੱਖਿਆ ਵਿੱਚ Toonflow ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ**
+**1. ਗੋਪਨੀਯਤਾ ਅਤੇ ਸੁਰੱਖਿਆ ਵਿੱਚ Laywork ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ**
 
-ਜੇਕਰ ਤੁਸੀਂ ਇੱਕ ਚੇਤਾਵਨੀ ਦੇਖਦੇ ਹੋ ਕਿ ਡਿਵੈਲਪਰ ਦੀ ਪੁਸ਼ਟੀ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ ਜਾਂ Apple ਐਪ ਨੂੰ ਖਤਰਨਾਕ ਸੌਫਟਵੇਅਰ ਲਈ ਨਹੀਂ ਚੈੱਕ ਕਰ ਸਕਦਾ ਹੈ, ਤਾਂ ਪਹਿਲਾਂ Toonflow ਨੂੰ ਖੋਲ੍ਹਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਫਿਰ ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ → ਗੋਪਨੀਯਤਾ ਅਤੇ ਸੁਰੱਖਿਆ 'ਤੇ ਜਾਓ, Toonflow ਨੂੰ ਬਲੌਕ ਕੀਤਾ ਗਿਆ ਸੀ, ਇਹ ਦੱਸਣ ਵਾਲਾ ਸੁਨੇਹਾ ਲੱਭੋ, ਕਿਸੇ ਵੀ ਤਰ੍ਹਾਂ ਖੋਲ੍ਹੋ 'ਤੇ ਕਲਿੱਕ ਕਰੋ, ਅਤੇ ਪੁੱਛੇ ਜਾਣ 'ਤੇ ਪੁਸ਼ਟੀ ਕਰੋ। ਵੇਖੋ [Apple ਦੇ ਅਧਿਕਾਰਤ ਨਿਰਦੇਸ਼](https://support.apple.com/zh-cn/102445)।
+ਜੇਕਰ ਤੁਸੀਂ ਇੱਕ ਚੇਤਾਵਨੀ ਦੇਖਦੇ ਹੋ ਕਿ ਡਿਵੈਲਪਰ ਦੀ ਪੁਸ਼ਟੀ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ ਜਾਂ Apple ਐਪ ਨੂੰ ਖਤਰਨਾਕ ਸੌਫਟਵੇਅਰ ਲਈ ਨਹੀਂ ਚੈੱਕ ਕਰ ਸਕਦਾ ਹੈ, ਤਾਂ ਪਹਿਲਾਂ Laywork ਨੂੰ ਖੋਲ੍ਹਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਫਿਰ ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ → ਗੋਪਨੀਯਤਾ ਅਤੇ ਸੁਰੱਖਿਆ 'ਤੇ ਜਾਓ, Laywork ਨੂੰ ਬਲੌਕ ਕੀਤਾ ਗਿਆ ਸੀ, ਇਹ ਦੱਸਣ ਵਾਲਾ ਸੁਨੇਹਾ ਲੱਭੋ, ਕਿਸੇ ਵੀ ਤਰ੍ਹਾਂ ਖੋਲ੍ਹੋ 'ਤੇ ਕਲਿੱਕ ਕਰੋ, ਅਤੇ ਪੁੱਛੇ ਜਾਣ 'ਤੇ ਪੁਸ਼ਟੀ ਕਰੋ। ਵੇਖੋ [Apple ਦੇ ਅਧਿਕਾਰਤ ਨਿਰਦੇਸ਼](https://support.apple.com/zh-cn/102445)।
 
 **2. ਜੇਕਰ ਕੁਆਰੰਟੀਨ ਪਾਬੰਦੀਆਂ ਅਜੇ ਵੀ ਖੁੱਲ੍ਹਣ ਤੋਂ ਰੋਕਦੀਆਂ ਹਨ, ਤਾਂ ਕੁਆਰੰਟੀਨ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਹਟਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ**
 
@@ -307,7 +307,7 @@ sudo spctl --master-disable
 ਸਰੋਤ ਨੂੰ ਕਲੋਨ ਕਰੋ ਅਤੇ ਰਿਪੋਜ਼ਟਰੀ ਰੂਟ ਵਿੱਚ ਹੇਠਾਂ ਚਲਾਓ:
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 docker compose up -d --build
 ```
@@ -361,7 +361,7 @@ bun --version
 ਸਰੋਤ ਨੂੰ ਕਲੋਨ ਕਰੋ ਅਤੇ ਸੇਵਾ ਸ਼ੁਰੂ ਕਰੋ:
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 bun install --frozen-lockfile
 
@@ -388,7 +388,7 @@ bun run start:server
 
 ### 4.5 ਕਲਾਉਡ ਤੈਨਾਤੀ
 
-ਸਾਡਾ ਭਾਈਵਾਲ [AI Galaxy (智星云)](https://www.ai-galaxy.com/) ਅਧਿਕਾਰਤ ਮਨਜ਼ੂਰੀ ਵਾਲੀ ਵਪਾਰਕ Toonflow ਇਮੇਜ ਦਿੰਦਾ ਹੈ, ਜਿਸ ਵਿੱਚ ਵਰਤਣ ਲਈ ਤਿਆਰ ਵਾਤਾਵਰਣ ਹੁੰਦਾ ਹੈ। ਕਦਮਾਂ ਲਈ [ਤਸਵੀਰਾਂ ਸਮੇਤ ਇਮੇਜ ਸਥਾਪਨਾ ਗਾਈਡ](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1) ਵੇਖੋ।
+ਸਾਡਾ ਭਾਈਵਾਲ [AI Galaxy (智星云)](https://www.ai-galaxy.com/) ਅਧਿਕਾਰਤ ਮਨਜ਼ੂਰੀ ਵਾਲੀ ਵਪਾਰਕ Laywork ਇਮੇਜ ਦਿੰਦਾ ਹੈ, ਜਿਸ ਵਿੱਚ ਵਰਤਣ ਲਈ ਤਿਆਰ ਵਾਤਾਵਰਣ ਹੁੰਦਾ ਹੈ। ਕਦਮਾਂ ਲਈ [ਤਸਵੀਰਾਂ ਸਮੇਤ ਇਮੇਜ ਸਥਾਪਨਾ ਗਾਈਡ](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1) ਵੇਖੋ।
 
 ---
 
@@ -418,19 +418,19 @@ https://github.com/user-attachments/assets/2d9fddac-dfdf-4640-b030-b09d7f7287e9
   </a>
 </p>
 
-TF-Router Toonflow ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ ਮਾਡਲ ਗੇਟਵੇ ਹੈ। ਇਸ ਨੂੰ ਵਰਤਣ ਲਈ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਇਸਦਾ ਪੂਰਾ ਸਰੋਤ ਕੋਡ ਓਪਨ ਸੋਰਸ ਹੈ ਅਤੇ ਸਵੈ-ਹੋਸਟਿੰਗ ਅਤੇ ਆਡਿਟਿੰਗ ਲਈ ਉਪਲਬਧ ਹੈ: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router)।
+TF-Router Laywork ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ ਮਾਡਲ ਗੇਟਵੇ ਹੈ। ਇਸ ਨੂੰ ਵਰਤਣ ਲਈ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ। ਇਸਦਾ ਪੂਰਾ ਸਰੋਤ ਕੋਡ ਓਪਨ ਸੋਰਸ ਹੈ ਅਤੇ ਸਵੈ-ਹੋਸਟਿੰਗ ਅਤੇ ਆਡਿਟਿੰਗ ਲਈ ਉਪਲਬਧ ਹੈ: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router)।
 
 <details>
-<summary><strong>Toonflow ਭਾਈਚਾਰੇ ਨੂੰ ਪੱਤਰ (ਪ੍ਰਕਾਸ਼ਨ: 2026-06-08)</strong></summary>
+<summary><strong>Laywork ਭਾਈਚਾਰੇ ਨੂੰ ਪੱਤਰ (ਪ੍ਰਕਾਸ਼ਨ: 2026-06-08)</strong></summary>
 
-> ### Toonflow ਭਾਈਚਾਰੇ ਨੂੰ ਇੱਕ ਪੱਤਰ
+> ### Laywork ਭਾਈਚਾਰੇ ਨੂੰ ਇੱਕ ਪੱਤਰ
 > 130 ਦਿਨ।
 > ਲੰਬਾ ਨਹੀਂ, ਪਰ ਸਾਡੇ ਲਈ ਕੁਝ ਚੀਜ਼ਾਂ ਨੂੰ ਸਪਸ਼ਟ ਰੂਪ ਵਿੱਚ ਵੇਖਣ ਲਈ ਕਾਫ਼ੀ ਸਮਾਂ ਹੈ।
 > ਕੋਡ ਦੀ ਪਹਿਲੀ ਲਾਈਨ ਕਮਿਟ ਕਰਨ ਤੋਂ ਅੱਜ ਤੱਕ 130 ਦਿਨ ਲੰਘ ਗਏ ਹਨ। ਅਸੀਂ 20 ਸੰਸਕਰਣ ਜਾਰੀ ਕੀਤੇ, 800+ ਕਮਿਟ ਕੀਤੇ ਅਤੇ 640,810 ਅੱਖਰਾਂ ਵਾਲੀਆਂ ਕੋਡ ਦੀਆਂ 213,765 ਲਾਈਨਾਂ ਲਿਖੀਆਂ ਹਨ।
 > ਦੋ ਰੀਰਾਈਟਸ, ਇੱਕ ਪ੍ਰਦਾਤਾ ਸਿਸਟਮ, ਅਤੇ ਇੱਕ ਵਰਕਫਲੋ ਜਿਸ 'ਤੇ ਸਾਨੂੰ ਮਾਣ ਹੈ।
 > ਅਸੀਂ ਸੋਚਿਆ ਕਿ ਇਹ ਕਾਫ਼ੀ ਹੋਵੇਗਾ।
 > ਪਰ ਅਜਿਹਾ ਨਹੀਂ ਸੀ।
-> ਕੁਝ ਲੋਕਾਂ ਨੇ ਸਾਨੂੰ ਦੱਸਿਆ ਕਿ ਉਹ ਆਪਣੇ ਮੋਡੀਊਲ Toonflow ਵਿੱਚ ਜੋੜਨਾ ਚਾਹੁੰਦੇ ਸਨ, ਪਰ ਘੰਟੇ ਲਗਾਉਣ ਤੋਂ ਬਾਅਦ ਵੀ ਨਹੀਂ ਸਮਝ ਸਕੇ ਕਿ ਤਬਦੀਲੀ ਕਿਵੇਂ ਕਰਨੀ ਹੈ।
+> ਕੁਝ ਲੋਕਾਂ ਨੇ ਸਾਨੂੰ ਦੱਸਿਆ ਕਿ ਉਹ ਆਪਣੇ ਮੋਡੀਊਲ Laywork ਵਿੱਚ ਜੋੜਨਾ ਚਾਹੁੰਦੇ ਸਨ, ਪਰ ਘੰਟੇ ਲਗਾਉਣ ਤੋਂ ਬਾਅਦ ਵੀ ਨਹੀਂ ਸਮਝ ਸਕੇ ਕਿ ਤਬਦੀਲੀ ਕਿਵੇਂ ਕਰਨੀ ਹੈ।
 > ਕਈਆਂ ਨੇ ਸਾਨੂੰ ਦੱਸਿਆ ਕਿ ਭਾਈਚਾਰਾ ਬਹੁਤ ਛੋਟਾ ਸੀ ਅਤੇ ਜਦੋਂ ਉਹ ਸਮੱਸਿਆਵਾਂ ਦਾ ਸਾਹਮਣਾ ਕਰਦੇ ਸਨ ਤਾਂ ਉਹਨਾਂ ਨੂੰ ਮਦਦ ਨਹੀਂ ਮਿਲਦੀ ਸੀ।
 > ਕਈਆਂ ਨੇ ਸਾਨੂੰ ਦੱਸਿਆ ਕਿ ਵਪਾਰਕ ਸ਼ਰਤਾਂ ਨੇ ਉਹਨਾਂ ਨੂੰ ਆਪਣੇ ਪ੍ਰੋਜੈਕਟਾਂ ਦੀ ਵਰਤੋਂ ਕਰਨ ਤੋਂ ਰੋਕਿਆ।
 > ਅਸੀਂ ਤੁਹਾਡੀ ਗੱਲ ਸੁਣੀ।
@@ -438,7 +438,7 @@ TF-Router Toonflow ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ
 > ਇਸ ਲਈ ਨਹੀਂ ਕਿ ਸਾਡੇ ਕੋਲ ਬਹੁਤ ਸਾਰਾ ਪੈਸਾ ਹੈ।
 > ਪਰ ਕਿਉਂਕਿ ਅਸੀਂ ਵਿਸ਼ਵਾਸ ਕਰਦੇ ਹਾਂ ਕਿ ਇਹ ਕਰਨ ਯੋਗ ਹੈ।
 > ਇਸ ਲਈ ਅਸੀਂ ਤੀਜੀ ਵਾਰ ਕੋਡ ਨਵੇਂ ਸਿਰੇ ਤੋਂ ਲਿਖਣ ਦਾ ਫ਼ੈਸਲਾ ਕੀਤਾ ਹੈ।
-> ਹਰ Toonflow ਮੁੜ-ਲਿਖਤ ਵਧੇਰੇ ਖੁੱਲ੍ਹੇਪਣ ਅਤੇ ਖੁੱਲ੍ਹੇ ਸਰੋਤ ਵੱਲ ਵਧਿਆ ਹੈ।
+> ਹਰ Laywork ਮੁੜ-ਲਿਖਤ ਵਧੇਰੇ ਖੁੱਲ੍ਹੇਪਣ ਅਤੇ ਖੁੱਲ੍ਹੇ ਸਰੋਤ ਵੱਲ ਵਧਿਆ ਹੈ।
 > ਇਸ ਵਾਰ, ਅਸੀਂ ਸਭ ਕੁਝ ਖੋਲ੍ਹਣ ਦੀ ਚੋਣ ਕੀਤੀ ਹੈ।
 >
 > 1. MIT License
@@ -473,9 +473,9 @@ TF-Router Toonflow ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ
 > ਮੁੜ ਲਿਖਣ ਵਿੱਚ ਸਮਾਂ ਲੱਗਦਾ ਹੈ। ਉਸ ਸਮੇਂ ਦੌਰਾਨ, ਸਰਵਰ ਚੱਲਦੇ ਰਹਿੰਦੇ ਹਨ, ਡੋਮੇਨਾਂ ਨੂੰ ਨਵਿਆਉਣ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ, ਟੀਮ ਦੇਰ ਨਾਲ ਕੰਮ ਕਰਦੀ ਹੈ, ਅਤੇ ਕੌਫੀ ਵਧੇਰੇ ਮਹਿੰਗੀ ਹੋ ਜਾਂਦੀ ਹੈ।
 > ਸਾਡੇ ਕੋਲ ਕੋਈ ਨਿਵੇਸ਼ ਫੰਡਿੰਗ ਨਹੀਂ ਹੈ, ਕੋਈ ਇਸ਼ਤਿਹਾਰਬਾਜ਼ੀ ਨਹੀਂ ਹੈ, ਅਤੇ ਕੋਈ ਲੁਕਵੀਂ ਵਪਾਰਕ ਯੋਜਨਾਵਾਂ ਨਹੀਂ ਹਨ।
 > ਪਰ ਸ਼ੁਰੂ ਕੀਤਾ ਕੰਮ ਪੂਰਾ ਕਰਨ ਲਈ ਸਾਨੂੰ ਇਸ ਪ੍ਰੋਜੈਕਟ ਨੂੰ ਚਲਾਉਂਦੇ ਰਹਿਣ ਦਾ ਸਹਾਰਾ ਚਾਹੀਦਾ ਹੈ।
-> ਇਸ ਲਈ ਅਸੀਂ TF-Router, ਅਧਿਕਾਰਤ Toonflow ਮਾਡਲ ਗੇਟਵੇ ਲਾਂਚ ਕੀਤਾ ਹੈ।
+> ਇਸ ਲਈ ਅਸੀਂ TF-Router, ਅਧਿਕਾਰਤ Laywork ਮਾਡਲ ਗੇਟਵੇ ਲਾਂਚ ਕੀਤਾ ਹੈ।
 > ਇਮਾਨਦਾਰੀ ਨਾਲ, ਅਸੀਂ ਲੰਬੇ ਸਮੇਂ ਤੋਂ ਇਸ ਪਲੇਟਫਾਰਮ 'ਤੇ ਝਿਜਕਦੇ ਹਾਂ।
-> ਅਸੀਂ ਇਹ ਗੇਟਵੇ ਬਣਾਉਣਾ ਨਹੀਂ ਚਾਹੁੰਦੇ ਸੀ। ਸਿਰਫ਼ ਇਸ ਕਾਰਨ ਲੋਕਾਂ ਨੂੰ ਇਹ ਨਾ ਲੱਗੇ ਕਿ Toonflow ਹੁਣ “ਪੈਸੇ ਕਮਾਉਣ ਪਿੱਛੇ ਲੱਗ ਪਿਆ ਹੈ”—ਸਾਡੀ ਇਹੀ ਚਿੰਤਾ ਸੀ।
+> ਅਸੀਂ ਇਹ ਗੇਟਵੇ ਬਣਾਉਣਾ ਨਹੀਂ ਚਾਹੁੰਦੇ ਸੀ। ਸਿਰਫ਼ ਇਸ ਕਾਰਨ ਲੋਕਾਂ ਨੂੰ ਇਹ ਨਾ ਲੱਗੇ ਕਿ Laywork ਹੁਣ “ਪੈਸੇ ਕਮਾਉਣ ਪਿੱਛੇ ਲੱਗ ਪਿਆ ਹੈ”—ਸਾਡੀ ਇਹੀ ਚਿੰਤਾ ਸੀ।
 > ਅਸੀਂ ਲੰਬੇ ਸਮੇਂ ਤੱਕ ਇਹ ਬੋਝ ਚੁੱਕਿਆ।
 > ਪਰ ਬਹੁਤ ਸਾਰੇ ਉਪਭੋਗਤਾ Seedance 2.0 ਤੱਕ ਪ੍ਰਵਾਨਿਤ ਪਹੁੰਚ ਪ੍ਰਾਪਤ ਨਹੀਂ ਕਰ ਸਕੇ ਅਤੇ ਸਾਨੂੰ ਪੁੱਛਦੇ ਰਹੇ ਕਿ ਕੀ ਇਸਦੀ ਵਰਤੋਂ ਕਰਨ ਦਾ ਕੋਈ ਤਰੀਕਾ ਸੀ।
 > ਬਹੁਤ ਸੋਚਣ ਤੋਂ ਬਾਅਦ, ਅਸੀਂ ਅੰਤ ਵਿੱਚ ਇੱਕ ਖੁਦ ਬਣਾਉਣ ਦਾ ਫੈਸਲਾ ਕੀਤਾ ਅਤੇ Volcengine ਨਾਲ ਇੱਕ ਸਾਲਾਨਾ Seedance ਫਰੇਮਵਰਕ ਸਮਝੌਤੇ 'ਤੇ ਹਸਤਾਖਰ ਕੀਤੇ।
@@ -485,11 +485,11 @@ TF-Router Toonflow ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ
 > ਸਾਡੇ ਉੱਤੇ ਭਰੋਸਾ ਨਾ ਹੋਵੇ ਤਾਂ ਵੀ ਕੋਈ ਗੱਲ ਨਹੀਂ। ਕੋਡ ਪੜ੍ਹੋ, ਖ਼ੁਦ ਸਥਾਪਿਤ ਕਰੋ ਅਤੇ ਖ਼ੁਦ ਚਲਾਓ।
 > ਇਹੀ ਸਾਡਾ ਰੁਖ ਹੈ।
 > ਜੇਕਰ ਤੁਸੀਂ ਇਸ ਨੂੰ ਅਜ਼ਮਾਉਣ ਦੀ ਚੋਣ ਕਰਦੇ ਹੋ, ਤਾਂ ਤੁਸੀਂ ਇਸ ਕੰਮ ਨੂੰ ਜਾਰੀ ਰੱਖਣ ਲਈ ਸਾਡੇ ਕੋਲ ਮੌਜੂਦਾ ਤਰੀਕੇ ਨਾਲ ਹੀ ਭਰੋਸਾ ਰੱਖ ਰਹੇ ਹੋ।
-> ਜੇ ਤੁਸੀਂ ਨਹੀਂ ਕਰਦੇ, ਤਾਂ ਇਹ ਵੀ ਠੀਕ ਹੈ। Toonflow ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਰਹੋ, ਸਾਡੀ ਆਲੋਚਨਾ ਕਰਦੇ ਰਹੋ, ਅਤੇ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਲਈ ਪੁੱਛਦੇ ਰਹੋ।
+> ਜੇ ਤੁਸੀਂ ਨਹੀਂ ਕਰਦੇ, ਤਾਂ ਇਹ ਵੀ ਠੀਕ ਹੈ। Laywork ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਰਹੋ, ਸਾਡੀ ਆਲੋਚਨਾ ਕਰਦੇ ਰਹੋ, ਅਤੇ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਲਈ ਪੁੱਛਦੇ ਰਹੋ।
 > ਅਸੀਂ ਇੱਥੇ ਹਾਂ।
 > ਇੱਕ ਆਖਰੀ ਗੱਲ, ਦਿਲ ਤੋਂ:
 > ਅਸੀਂ ਸਿਰਫ਼ ਆਮ ਲੋਕਾਂ ਦਾ ਇੱਕ ਸਮੂਹ ਹਾਂ ਜੋ ਮੰਨਦੇ ਹਨ ਕਿ ਰਚਨਾਤਮਕ ਔਜ਼ਾਰ ਹਰ ਕਿਸੇ ਦੇ ਕੋਲ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ।
-> Toonflow ਕਦੇ ਵੀ ਸਿਰਫ਼ ਸਾਡਾ ਉਤਪਾਦ ਨਹੀਂ ਰਿਹਾ।
+> Laywork ਕਦੇ ਵੀ ਸਿਰਫ਼ ਸਾਡਾ ਉਤਪਾਦ ਨਹੀਂ ਰਿਹਾ।
 > ਇਹ ਉਹ ਕਹਾਣੀ ਹੈ ਜੋ ਅਸੀਂ ਇਕੱਠੇ ਲਿਖ ਰਹੇ ਹਾਂ।
 > ਤੀਜੀ ਵਾਰ ਨਵੇਂ ਸਿਰੇ ਤੋਂ ਲਿਖਣਾ ਅੰਤ ਨਹੀਂ ਹੈ।
 > ਇੱਥੋਂ ਹੀ ਅਸੀਂ ਮੁੜ ਸ਼ੁਰੂ ਕਰਦੇ ਹਾਂ।
@@ -505,7 +505,7 @@ TF-Router Toonflow ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ
 
 ਸਮੂਹ ਸੱਦਾ ਸਹਾਇਕ ਨਾਲ ਸੰਪਰਕ ਕਰਨ ਲਈ QR ਕੋਡ ਨੂੰ ਸਕੈਨ ਕਰੋ:
 
-<img src="../images/qr.png" alt="Toonflow ਕਮਿਊਨਿਟੀ QR ਕੋਡ" height="400"/>
+<img src="../images/qr.png" alt="Laywork ਕਮਿਊਨਿਟੀ QR ਕੋਡ" height="400"/>
 
 ਤੁਸੀਂ Discord ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਣ ਲਈ ਆਈਕਨ 'ਤੇ ਵੀ ਕਲਿੱਕ ਕਰ ਸਕਦੇ ਹੋ:
 
@@ -517,15 +517,15 @@ TF-Router Toonflow ਦਾ ਅਧਿਕਾਰਤ, ਸਵੈ-ਸੰਚਾਲਿਤ
 
 ## 8. 💌 ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ
 
-📧 ਈਮੇਲ: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Toonflow咨询)
+📧 ਈਮੇਲ: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Laywork咨询)
 
 ---
 
 ## 9. 📜 ਓਪਨ-ਸਰੋਤ ਲਾਇਸੰਸ
 
-Toonflow [MIT License](../../LICENSE) ਦੇ ਅਧੀਨ ਲਾਇਸੰਸਸ਼ੁਦਾ ਹੈ। ਤੀਜੀ-ਧਿਰ ਦੀ ਨਿਰਭਰਤਾ ਅਤੇ ਸੰਪਤੀਆਂ ਉਹਨਾਂ ਦੇ ਸੰਬੰਧਿਤ ਲਾਇਸੰਸ ਅਤੇ ਕਾਪੀਰਾਈਟ ਨੋਟਿਸਾਂ ਦੇ ਅਧੀਨ ਰਹਿੰਦੀਆਂ ਹਨ।
+Laywork [MIT License](../../LICENSE) ਦੇ ਅਧੀਨ ਲਾਇਸੰਸਸ਼ੁਦਾ ਹੈ। ਤੀਜੀ-ਧਿਰ ਦੀ ਨਿਰਭਰਤਾ ਅਤੇ ਸੰਪਤੀਆਂ ਉਹਨਾਂ ਦੇ ਸੰਬੰਧਿਤ ਲਾਇਸੰਸ ਅਤੇ ਕਾਪੀਰਾਈਟ ਨੋਟਿਸਾਂ ਦੇ ਅਧੀਨ ਰਹਿੰਦੀਆਂ ਹਨ।
 
-[![Toonflow ਸਟਾਰ ਇਤਿਹਾਸ](https://api.star-history.com/svg?repos=HBAI-Ltd/Toonflow-app&type=Date)](https://www.star-history.com/#HBAI-Ltd/Toonflow-app&Date)
+[![Laywork ਸਟਾਰ ਇਤਿਹਾਸ](https://api.star-history.com/svg?repos=1797127235/Toonflow-app&type=Date)](https://www.star-history.com/#1797127235/Toonflow-app&Date)
 
 > **ਪੁਰਾਣੇ ਸੰਸਕਰਣਾਂ ਉੱਤੇ ਲਾਗੂ ਨਾ ਹੋਣ ਦੀ ਸ਼ਰਤ**: v1.0.8 ਤੋਂ ਪਹਿਲਾਂ ਦੇ ਸੰਸਕਰਣ AGPL-3.0 ਅਧੀਨ ਵਰਤਣ ਵਾਲਿਆਂ ਉੱਤੇ AGPL-3.0 ਹੀ ਲਾਗੂ ਰਹਿੰਦਾ ਹੈ। v1.0.8 ਤੋਂ v1.1.8 ਤੱਕ ਦੇ ਸੰਸਕਰਣਾਂ ਉੱਤੇ Apache-2.0 ਅਤੇ ਉਸਦਾ ਵਾਧੂ ਸਮਝੌਤਾ ਲਾਗੂ ਰਹਿੰਦਾ ਹੈ। ਇਹ ਲਾਇਸੰਸ ਤਬਦੀਲੀ ਉਨ੍ਹਾਂ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਨਹੀਂ ਕਰਦੀ।
 
@@ -546,4 +546,4 @@ Xi'an Zhongxing Digital Intelligence Technology Co., Ltd. (西安中星数字智
 
 </div>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="Toonflow ਫੁੱਟਰ" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="Laywork ਫੁੱਟਰ" width="100%" />

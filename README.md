@@ -1,7 +1,7 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Toonflow&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Toonflow" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Laywork&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Laywork" width="100%" />
 
 <p>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app">
+  <a href="https://github.com/1797127235/Toonflow-app">
     <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
   </a>
   &nbsp;|&nbsp;
@@ -19,32 +19,32 @@
 <div align="center">
 
 <p align="center">
-  <img src="./docs/images/logo.png" alt="Toonflow Logo" width="120" height="120" />
+  <img src="./docs/images/logo.png" alt="Laywork Logo" width="120" height="120" />
 </p>
 
-<h1 align="center">Toonflow｜开源 AI 短剧、漫剧与视频创作平台</h1>
+<h1 align="center">Laywork｜开源 AI 创作画布</h1>
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Toonflow;AI%E7%9F%AD%E5%89%A7%E5%B7%A5%E5%8E%82;%E8%AE%A9%E7%81%B5%E6%84%9F%E6%88%90%E4%B8%BA%E7%9C%8B%E5%BE%97%E8%A7%81%E7%9A%84%E6%95%85%E4%BA%8B" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Toonflow;AI%E7%9F%AD%E5%89%A7%E5%B7%A5%E5%8E%82;%E8%AE%A9%E7%81%B5%E6%84%9F%E6%88%90%E4%B8%BA%E7%9C%8B%E5%BE%97%E8%A7%81%E7%9A%84%E6%95%85%E4%BA%8B" alt="Toonflow · AI 短剧工厂 · 让灵感成为看得见的故事" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;%E6%97%A0%E9%99%90%E7%94%BB%E5%83%83;Agent%20%E5%8A%A9%E6%89%8B" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;%E6%97%A0%E9%99%90%E7%94%BB%E5%83%83;Agent%20%E5%8A%A9%E6%89%8B" alt="Laywork · 无限画布 · Agent 助手" width="600" />
   </picture>
 </a>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/stargazers">
-    <img src="https://img.shields.io/github/stars/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github" alt="Stars Badge" />
+  <a href="https://github.com/1797127235/Toonflow-app/stargazers">
+    <img src="https://img.shields.io/github/stars/1797127235/Toonflow-app?style=for-the-badge&logo=github" alt="Stars Badge" />
   </a>
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License Badge" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">
-    <img src="https://img.shields.io/github/v/release/HBAI-Ltd/Toonflow-app?style=for-the-badge" alt="Release" />
+  <a href="https://github.com/1797127235/Toonflow-app/releases">
+    <img src="https://img.shields.io/github/v/release/1797127235/Toonflow-app?style=for-the-badge" alt="Release" />
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/network/members">
-    <img src="https://img.shields.io/github/forks/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="Forks Badge" />
+  <a href="https://github.com/1797127235/Toonflow-app/network/members">
+    <img src="https://img.shields.io/github/forks/1797127235/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="Forks Badge" />
   </a>
   <a href="https://atomgit.com/HBAI-Ltd/Toonflow-app">
     <img src="https://img.shields.io/badge/AtomGit-G--Star%20No.540-FF6B35?style=for-the-badge&logo=git&logoColor=white" alt="AtomGit G-Star No.540" />
@@ -54,14 +54,14 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/issues">
-    <img src="https://img.shields.io/github/issues/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=F48D73" alt="Issues" />
+  <a href="https://github.com/1797127235/Toonflow-app/issues">
+    <img src="https://img.shields.io/github/issues/1797127235/Toonflow-app?style=for-the-badge&color=F48D73" alt="Issues" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=2088FF" alt="Contributors" />
+  <a href="https://github.com/1797127235/Toonflow-app/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/1797127235/Toonflow-app?style=for-the-badge&color=2088FF" alt="Contributors" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/commits">
-    <img src="https://img.shields.io/github/last-commit/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=blueviolet" alt="Last Commit" />
+  <a href="https://github.com/1797127235/Toonflow-app/commits">
+    <img src="https://img.shields.io/github/last-commit/1797127235/Toonflow-app?style=for-the-badge&color=blueviolet" alt="Last Commit" />
   </a>
 </p>
 <p align="center">
@@ -99,7 +99,7 @@
   </a>
 </p>
 
-Toonflow 是面向短剧、漫剧和短视频创作者的开源 AI 创作工具。通过无限画布编写剧本与分镜、管理角色和场景素材、生成图片与视频。支持本地部署、自由接入模型，并可通过 AI Agent、MCP 与插件扩展创作流程。
+Laywork 是开源的 AI 创作工具。在无限画布上组织文字、图片、视频、音频和自定义节点，用 Agent 助手搭建、修改并执行。支持本地部署、自由接入模型，并可通过 MCP 与插件扩展。
 
 </div>
 
@@ -108,12 +108,12 @@ Toonflow 是面向短剧、漫剧和短视频创作者的开源 AI 创作工具�
     <tr>
       <td width="50%" align="center">
         <a href="./docs/images/gStar.png">
-          <img src="./docs/images/gStar.png" alt="Toonflow AtomGit G-Star 认证证书 No.540" width="100%" />
+          <img src="./docs/images/gStar.png" alt="Laywork AtomGit G-Star 认证证书 No.540" width="100%" />
         </a>
       </td>
       <td width="50%" align="center">
         <a href="./docs/images/gvp.jpg">
-          <img src="./docs/images/gvp.jpg" alt="Toonflow Gitee GVP 认证证书" width="100%" />
+          <img src="./docs/images/gvp.jpg" alt="Laywork Gitee GVP 认证证书" width="100%" />
         </a>
       </td>
     </tr>
@@ -121,7 +121,7 @@ Toonflow 是面向短剧、漫剧和短视频创作者的开源 AI 创作工具�
 </div>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">下载客户端</a> ·
+  <a href="https://github.com/1797127235/Toonflow-app/releases">下载客户端</a> ·
   <a href="https://qcn7xdsqgc4z.feishu.cn/docx/RXFqdgR2Xo0dXZxGfd0cZCGgnwf">使用教程</a> ·
   <a href="https://api.toonflow.net/console/plugIn">插件市场</a> ·
   <a href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd">开发者文档</a> ·
@@ -132,7 +132,7 @@ Toonflow 是面向短剧、漫剧和短视频创作者的开源 AI 创作工具�
 
 ## 1. 💛 赞助与支持
 
-感谢以下合作伙伴对 Toonflow 开源项目的支持。
+感谢以下合作伙伴对 Laywork 开源项目的支持。
 
 <table>
   <tr>
@@ -176,19 +176,19 @@ Toonflow 是面向短剧、漫剧和短视频创作者的开源 AI 创作工具�
 
 ## 2. 🌟 亮点
 
-Toonflow 是面向短剧、漫剧与短视频制作的开源 AI 创作平台，把剧本、资产与视频片段整合进同一张无限画布。
+Laywork 是开源的 AI 创作平台。无限画布用来摆放和连接创作内容，Agent 助手可以直接操作画布和节点。
 
 | 能力 | 说明 |
 | --- | --- |
 | 🏠 **本地部署** | 项目与素材保存在自己的设备或服务器，支持桌面、Android、Docker 与服务器部署。 |
-| 🖼️ **无限画布** | 在同一画布中组织剧本、角色、场景与视频片段。 |
+| 🖼️ **无限画布** | 在同一画布中组织文字、图片、视频、音频和自定义节点。 |
 | 🔌 **MCP** | 通过 MCP 连接外部工具与服务。 |
 | 🧩 **插件市场** | 通过[插件市场](https://api.toonflow.net/console/plugIn)扩展节点、工具与创作能力。 |
 | 🤖 **开放 Agent** | 开放提示词、工具和 A2A，支持自定义 Agent 行为及外部协作。 |
 | 🔧 **自由接入模型** | 配置第三方 API，也可接入本地 ComfyUI 和 LLM。 |
 | 🌐 **多语言支持** | 支持 21 种界面语言。 |
 
-### 如何用 Toonflow 制作 AI 短剧与漫剧
+### 如何用 Laywork 制作 AI 短剧与漫剧
 
 1. **编写剧本与分镜**：在文本节点中整理故事、人物设定和镜头描述，使用语言模型辅助创作，再审阅与修改内容。
 2. **准备角色与场景素材**：导入参考图片，或通过图片生成节点制作角色、场景和分镜图。
@@ -199,13 +199,13 @@ Toonflow 是面向短剧、漫剧与短视频制作的开源 AI 创作平台，�
 
 ### 常见问题
 
-**Toonflow 可以用于哪些 AI 短剧和漫剧制作环节？**
+**Laywork 可以用于哪些 AI 短剧和漫剧制作环节？**
 
-Toonflow 提供文本、图片与视频生成节点，可用于剧本与分镜创作、角色和场景素材制作、视频镜头生成，以及素材的预览与整理。创作者需要审阅和调整内容，具体生成能力取决于配置的模型。
+Laywork 提供文本、图片与视频生成节点，可用于剧本与分镜创作、角色和场景素材制作、视频镜头生成，以及素材的预览与整理。创作者需要审阅和调整内容，具体生成能力取决于配置的模型。
 
-**Toonflow 免费吗？模型调用需要付费吗？**
+**Laywork 免费吗？模型调用需要付费吗？**
 
-Toonflow 采用 MIT 开源许可，可自行部署。第三方模型服务的 API 调用可能收费；使用本地模型或 ComfyUI 时，需要自行准备相应的运行环境与算力。作品示例中的制作费用仅代表该案例，不是固定价格。
+Laywork 采用 MIT 开源许可，可自行部署。第三方模型服务的 API 调用可能收费；使用本地模型或 ComfyUI 时，需要自行准备相应的运行环境与算力。作品示例中的制作费用仅代表该案例，不是固定价格。
 
 **可以接入自己的模型和 ComfyUI 工作流吗？**
 
@@ -223,25 +223,25 @@ Toonflow 采用 MIT 开源许可，可自行部署。第三方模型服务的 AP
 
 <div align="center">
 
-<a href="./docs/images/screenshots/projectHome.png"><img src="./docs/images/screenshots/projectHome.png" alt="Toonflow 项目首页与灵感创作" width="80%" /></a><br /><sub>项目首页与灵感创作</sub>
+<a href="./docs/images/screenshots/projectHome.png"><img src="./docs/images/screenshots/projectHome.png" alt="Laywork 项目首页与灵感创作" width="80%" /></a><br /><sub>项目首页与灵感创作</sub>
 
-<a href="./docs/images/screenshots/quickStart.png"><img src="./docs/images/screenshots/quickStart.png" alt="Toonflow 首次启动与快速配置" width="80%" /></a><br /><sub>首次启动与快速配置</sub>
+<a href="./docs/images/screenshots/quickStart.png"><img src="./docs/images/screenshots/quickStart.png" alt="Laywork 首次启动与快速配置" width="80%" /></a><br /><sub>首次启动与快速配置</sub>
 
-<a href="./docs/images/screenshots/canvasDark.png"><img src="./docs/images/screenshots/canvasDark.png" alt="Toonflow 深色主题画布与 AI 助手" width="80%" /></a><br /><sub>创作画布 · 深色主题</sub>
+<a href="./docs/images/screenshots/canvasDark.png"><img src="./docs/images/screenshots/canvasDark.png" alt="Laywork 深色主题画布与 AI 助手" width="80%" /></a><br /><sub>创作画布 · 深色主题</sub>
 
-<a href="./docs/images/screenshots/canvasLight.png"><img src="./docs/images/screenshots/canvasLight.png" alt="Toonflow 浅色主题画布与 AI 助手" width="80%" /></a><br /><sub>创作画布 · 浅色主题</sub>
+<a href="./docs/images/screenshots/canvasLight.png"><img src="./docs/images/screenshots/canvasLight.png" alt="Laywork 浅色主题画布与 AI 助手" width="80%" /></a><br /><sub>创作画布 · 浅色主题</sub>
 
-<a href="./docs/images/screenshots/assetCanvas.png"><img src="./docs/images/screenshots/assetCanvas.png" alt="Toonflow 角色、场景与道具资产画布" width="80%" /></a><br /><sub>角色、场景与道具资产</sub>
+<a href="./docs/images/screenshots/assetCanvas.png"><img src="./docs/images/screenshots/assetCanvas.png" alt="Laywork 角色、场景与道具资产画布" width="80%" /></a><br /><sub>角色、场景与道具资产</sub>
 
-<a href="./docs/images/screenshots/directorStudio.png"><img src="./docs/images/screenshots/directorStudio.png" alt="Toonflow 3D 导演台与镜头预演" width="80%" /></a><br /><sub>3D 导演台与镜头预演</sub>
+<a href="./docs/images/screenshots/directorStudio.png"><img src="./docs/images/screenshots/directorStudio.png" alt="Laywork 3D 导演台与镜头预演" width="80%" /></a><br /><sub>3D 导演台与镜头预演</sub>
 
-<a href="./docs/images/screenshots/characterImageGeneration.png"><img src="./docs/images/screenshots/characterImageGeneration.png" alt="Toonflow 角色三视图图片生成" width="80%" /></a><br /><sub>角色三视图与图片生成</sub>
+<a href="./docs/images/screenshots/characterImageGeneration.png"><img src="./docs/images/screenshots/characterImageGeneration.png" alt="Laywork 角色三视图图片生成" width="80%" /></a><br /><sub>角色三视图与图片生成</sub>
 
-<a href="./docs/images/screenshots/videoGeneration.png"><img src="./docs/images/screenshots/videoGeneration.png" alt="Toonflow 多参考素材视频生成" width="80%" /></a><br /><sub>多参考素材视频生成</sub>
+<a href="./docs/images/screenshots/videoGeneration.png"><img src="./docs/images/screenshots/videoGeneration.png" alt="Laywork 多参考素材视频生成" width="80%" /></a><br /><sub>多参考素材视频生成</sub>
 
-<a href="./docs/images/screenshots/nodeMenu.png"><img src="./docs/images/screenshots/nodeMenu.png" alt="Toonflow 节点菜单与分组操作" width="80%" /></a><br /><sub>节点菜单与分组操作</sub>
+<a href="./docs/images/screenshots/nodeMenu.png"><img src="./docs/images/screenshots/nodeMenu.png" alt="Laywork 节点菜单与分组操作" width="80%" /></a><br /><sub>节点菜单与分组操作</sub>
 
-<a href="./docs/images/screenshots/pluginMarket.png"><img src="./docs/images/screenshots/pluginMarket.png" alt="Toonflow 插件市场" width="80%" /></a><br /><sub>插件市场</sub>
+<a href="./docs/images/screenshots/pluginMarket.png"><img src="./docs/images/screenshots/pluginMarket.png" alt="Laywork 插件市场" width="80%" /></a><br /><sub>插件市场</sub>
 
 </div>
 
@@ -253,22 +253,22 @@ Toonflow 采用 MIT 开源许可，可自行部署。第三方模型服务的 AP
 
 | 操作系统 | GitHub                                                       |
 | -------- | ------------------------------------------------------------ |
-| Windows  | [Release](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| macOS    | [Release](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| Android ARM64 | [APK 下载](https://github.com/HBAI-Ltd/Toonflow-app/releases/latest) |
+| Windows  | [Release](https://github.com/1797127235/Toonflow-app/releases) |
+| macOS    | [Release](https://github.com/1797127235/Toonflow-app/releases) |
+| Android ARM64 | [APK 下载](https://github.com/1797127235/Toonflow-app/releases/latest) |
 
 Android 版仅支持 ARM64 设备，下载发布页中的 `toonflow-版本号-android-arm64.apk` 安装。手机内置本地 Bun 后端，可独立运行；也可从首页「设备互联」扫码或手动连接已开启共享的电脑或远程后端（支持局域网与公网）。
 
 Windows 安装器会自动检测并安装 WebView2；如果安装后打开闪退，请前往 [WebView2 下载页面](https://developer.microsoft.com/microsoft-edge/webview2/) 手动安装运行时。
 
-macOS（Apple Silicon）将 Toonflow 拖入“应用程序”后直接打开即可，无需预先执行终端命令。若遇到系统安全提示，请按以下顺序处理。
+macOS（Apple Silicon）将 Laywork 拖入“应用程序”后直接打开即可，无需预先执行终端命令。若遇到系统安全提示，请按以下顺序处理。
 
 <details>
 <summary><strong>macOS 无法安装或打开时的处理方法</strong></summary>
 
-**1. 在“隐私与安全性”中允许 Toonflow**
+**1. 在“隐私与安全性”中允许 Laywork**
 
-如果提示“无法验证开发者”或“Apple 无法检查 App 是否包含恶意软件”，先尝试打开 Toonflow，再前往“系统设置 → 隐私与安全性”，找到 Toonflow 被阻止的提示，点击“仍要打开”，并按提示确认。详见 [Apple 官方说明](https://support.apple.com/zh-cn/102445)。
+如果提示“无法验证开发者”或“Apple 无法检查 App 是否包含恶意软件”，先尝试打开 Laywork，再前往“系统设置 → 隐私与安全性”，找到 Laywork 被阻止的提示，点击“仍要打开”，并按提示确认。详见 [Apple 官方说明](https://support.apple.com/zh-cn/102445)。
 
 **2. 仍因系统隔离限制无法打开时，再尝试移除隔离属性**
 
@@ -306,7 +306,7 @@ sudo spctl --master-disable
 克隆源码后，在仓库根目录执行：
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 docker compose up -d --build
 ```
@@ -360,7 +360,7 @@ bun --version
 克隆源码并启动：
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 bun install --frozen-lockfile
 
@@ -387,9 +387,9 @@ bun run start:server
 
 ##  📜 开源许可
 
-Toonflow 采用 [MIT 许可证](./LICENSE)。第三方依赖和素材遵循各自的许可与版权声明。
+Laywork 采用 [MIT 许可证](./LICENSE)。第三方依赖和素材遵循各自的许可与版权声明。
 
-[![Toonflow Star History](https://api.star-history.com/svg?repos=HBAI-Ltd/Toonflow-app&type=Date)](https://www.star-history.com/#HBAI-Ltd/Toonflow-app&Date)
+[![Laywork Star History](https://api.star-history.com/svg?repos=1797127235/Toonflow-app&type=Date)](https://www.star-history.com/#1797127235/Toonflow-app&Date)
 
 > **不追溯条款**：v1.0.8 发布前基于 AGPL-3.0 使用的用户，继续按 AGPL-3.0 执行，v1.0.8 ~ v1.1.8 继续按 Apache-2.0 与附加协议执行，不受本协议变更约束。
 

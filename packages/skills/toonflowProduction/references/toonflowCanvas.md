@@ -1,6 +1,6 @@
-# Toonflow 画布操作：能力探测 + 双向回读 + 不伪造素材
+# Laywork 画布操作：能力探测 + 双向回读 + 不伪造素材
 
-仅在 Toonflow 真正提供以下能力时按其**实时 schema**执行；这是基于上传版 `workflow/references/canvasExecution.md` 和 Toonflow 官方工具脚手架的适配规则，而非对本聊天有任何 Toonflow 连接的声称。
+仅在 Laywork 真正提供以下能力时按其**实时 schema**执行；这是基于上传版 `workflow/references/canvasExecution.md` 和 Laywork 官方工具脚手架的适配规则，而非对本聊天有任何 Laywork 连接的声称。
 
 ## 发现
 - `getCanvas({})` 取当前画布概览；按需要 `include: ["nodeTypes", "canvases"]`；

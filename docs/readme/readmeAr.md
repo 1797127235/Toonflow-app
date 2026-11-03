@@ -1,7 +1,7 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Toonflow&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Toonflow" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=200&section=header&text=Laywork&fontSize=90&fontColor=ffffff&animation=fadeIn&fontAlignY=50" alt="Laywork" width="100%" />
 
 <p>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app">
+  <a href="https://github.com/1797127235/Toonflow-app">
     <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub" />
   </a>
   &nbsp;|&nbsp;
@@ -45,30 +45,30 @@
 <div align="center">
 
 <p align="center">
-  <img src="../images/logo.png" alt="شعار Toonflow" width="120" height="120" />
+  <img src="../images/logo.png" alt="شعار Laywork" width="120" height="120" />
 </p>
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Toonflow;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Toonflow · استوديو الدراما القصيرة بالذكاء الاصطناعي · حوّل الأفكار إلى قصص" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · استوديو الدراما القصيرة بالذكاء الاصطناعي · حوّل الأفكار إلى قصص" width="600" />
   </picture>
 </a>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/stargazers">
-    <img src="https://img.shields.io/github/stars/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github" alt="شارة النجوم" />
+  <a href="https://github.com/1797127235/Toonflow-app/stargazers">
+    <img src="https://img.shields.io/github/stars/1797127235/Toonflow-app?style=for-the-badge&logo=github" alt="شارة النجوم" />
   </a>
   <a href="../../LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="شارة MIT License" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">
-    <img src="https://img.shields.io/github/v/release/HBAI-Ltd/Toonflow-app?style=for-the-badge" alt="الإصدار" />
+  <a href="https://github.com/1797127235/Toonflow-app/releases">
+    <img src="https://img.shields.io/github/v/release/1797127235/Toonflow-app?style=for-the-badge" alt="الإصدار" />
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/network/members">
-    <img src="https://img.shields.io/github/forks/HBAI-Ltd/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="شارة النسخ المتفرعة" />
+  <a href="https://github.com/1797127235/Toonflow-app/network/members">
+    <img src="https://img.shields.io/github/forks/1797127235/Toonflow-app?style=for-the-badge&logo=github&color=orange" alt="شارة النسخ المتفرعة" />
   </a>
   <a href="https://atomgit.com/HBAI-Ltd/Toonflow-app">
     <img src="https://img.shields.io/badge/AtomGit-G--Star%20No.540-FF6B35?style=for-the-badge&logo=git&logoColor=white" alt="AtomGit G-Star No.540" />
@@ -78,14 +78,14 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/issues">
-    <img src="https://img.shields.io/github/issues/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=F48D73" alt="المشكلات" />
+  <a href="https://github.com/1797127235/Toonflow-app/issues">
+    <img src="https://img.shields.io/github/issues/1797127235/Toonflow-app?style=for-the-badge&color=F48D73" alt="المشكلات" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=2088FF" alt="المساهمون" />
+  <a href="https://github.com/1797127235/Toonflow-app/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/1797127235/Toonflow-app?style=for-the-badge&color=2088FF" alt="المساهمون" />
   </a>
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/commits">
-    <img src="https://img.shields.io/github/last-commit/HBAI-Ltd/Toonflow-app?style=for-the-badge&color=blueviolet" alt="آخر إيداع" />
+  <a href="https://github.com/1797127235/Toonflow-app/commits">
+    <img src="https://img.shields.io/github/last-commit/1797127235/Toonflow-app?style=for-the-badge&color=blueviolet" alt="آخر إيداع" />
   </a>
 </p>
 <p align="center">
@@ -134,12 +134,12 @@
     <tr>
       <td width="50%" align="center">
         <a href="../images/gStar.png">
-          <img src="../images/gStar.png" alt="شهادة Toonflow من AtomGit G-Star رقم 540" width="100%" />
+          <img src="../images/gStar.png" alt="شهادة Laywork من AtomGit G-Star رقم 540" width="100%" />
         </a>
       </td>
       <td width="50%" align="center">
         <a href="../images/gvp.jpg">
-          <img src="../images/gvp.jpg" alt="شهادة Toonflow من Gitee GVP" width="100%" />
+          <img src="../images/gvp.jpg" alt="شهادة Laywork من Gitee GVP" width="100%" />
         </a>
       </td>
     </tr>
@@ -147,7 +147,7 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/HBAI-Ltd/Toonflow-app/releases">تنزيل</a> ·
+  <a href="https://github.com/1797127235/Toonflow-app/releases">تنزيل</a> ·
   <a href="https://qcn7xdsqgc4z.feishu.cn/docx/RXFqdgR2Xo0dXZxGfd0cZCGgnwf">دليل المستخدم</a> ·
   <a href="https://api.toonflow.net/console/plugIn">سوق الإضافات</a> ·
   <a href="https://qcn7xdsqgc4z.feishu.cn/docx/KNBNd9naqolsy6xjAOCcEAkqnRd">وثائق المطورين</a> ·
@@ -158,7 +158,7 @@
 
 ## 1. 💛 الرعاة والدعم
 
-نشكر الشركاء التاليين على دعم مشروع Toonflow مفتوح المصدر.
+نشكر الشركاء التاليين على دعم مشروع Laywork مفتوح المصدر.
 
 <table>
   <tr>
@@ -200,7 +200,7 @@
 
 ## 2. 🌟 أبرز المزايا
 
-Toonflow منصة إبداع بالذكاء الاصطناعي مفتوحة المصدر للأعمال الدرامية القصيرة والقصص المصورة المتحركة والفيديوهات القصيرة، تجمع السيناريوهات والأصول ومقاطع الفيديو على لوحة لا نهائية واحدة.
+Laywork منصة إبداع بالذكاء الاصطناعي مفتوحة المصدر للأعمال الدرامية القصيرة والقصص المصورة المتحركة والفيديوهات القصيرة، تجمع السيناريوهات والأصول ومقاطع الفيديو على لوحة لا نهائية واحدة.
 
 | الميزة | الوصف |
 | --- | --- |
@@ -224,25 +224,25 @@ Toonflow منصة إبداع بالذكاء الاصطناعي مفتوحة ال
 
 <div align="center">
 
-<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Toonflow · الصفحة الرئيسية للمشروع وابتكار الأفكار" width="80%" /></a><br /><sub>الصفحة الرئيسية للمشروع وابتكار الأفكار</sub>
+<a href="../images/screenshots/projectHome.png"><img src="../images/screenshots/projectHome.png" alt="Laywork · الصفحة الرئيسية للمشروع وابتكار الأفكار" width="80%" /></a><br /><sub>الصفحة الرئيسية للمشروع وابتكار الأفكار</sub>
 
-<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Toonflow · التشغيل الأول والإعداد السريع" width="80%" /></a><br /><sub>التشغيل الأول والإعداد السريع</sub>
+<a href="../images/screenshots/quickStart.png"><img src="../images/screenshots/quickStart.png" alt="Laywork · التشغيل الأول والإعداد السريع" width="80%" /></a><br /><sub>التشغيل الأول والإعداد السريع</sub>
 
-<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Toonflow · لوحة الإبداع · المظهر الداكن" width="80%" /></a><br /><sub>لوحة الإبداع · المظهر الداكن</sub>
+<a href="../images/screenshots/canvasDark.png"><img src="../images/screenshots/canvasDark.png" alt="Laywork · لوحة الإبداع · المظهر الداكن" width="80%" /></a><br /><sub>لوحة الإبداع · المظهر الداكن</sub>
 
-<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Toonflow · لوحة الإبداع · المظهر الفاتح" width="80%" /></a><br /><sub>لوحة الإبداع · المظهر الفاتح</sub>
+<a href="../images/screenshots/canvasLight.png"><img src="../images/screenshots/canvasLight.png" alt="Laywork · لوحة الإبداع · المظهر الفاتح" width="80%" /></a><br /><sub>لوحة الإبداع · المظهر الفاتح</sub>
 
-<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Toonflow · أصول الشخصيات والمشاهد والإكسسوارات" width="80%" /></a><br /><sub>أصول الشخصيات والمشاهد والإكسسوارات</sub>
+<a href="../images/screenshots/assetCanvas.png"><img src="../images/screenshots/assetCanvas.png" alt="Laywork · أصول الشخصيات والمشاهد والإكسسوارات" width="80%" /></a><br /><sub>أصول الشخصيات والمشاهد والإكسسوارات</sub>
 
-<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Toonflow · استوديو الإخراج ثلاثي الأبعاد والتصور المسبق للقطات" width="80%" /></a><br /><sub>استوديو الإخراج ثلاثي الأبعاد والتصور المسبق للقطات</sub>
+<a href="../images/screenshots/directorStudio.png"><img src="../images/screenshots/directorStudio.png" alt="Laywork · استوديو الإخراج ثلاثي الأبعاد والتصور المسبق للقطات" width="80%" /></a><br /><sub>استوديو الإخراج ثلاثي الأبعاد والتصور المسبق للقطات</sub>
 
-<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Toonflow · لوحات الشخصيات من ثلاث زوايا وإنشاء الصور" width="80%" /></a><br /><sub>لوحات الشخصيات من ثلاث زوايا وإنشاء الصور</sub>
+<a href="../images/screenshots/characterImageGeneration.png"><img src="../images/screenshots/characterImageGeneration.png" alt="Laywork · لوحات الشخصيات من ثلاث زوايا وإنشاء الصور" width="80%" /></a><br /><sub>لوحات الشخصيات من ثلاث زوايا وإنشاء الصور</sub>
 
-<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Toonflow · إنشاء الفيديو باستخدام أصول مرجعية متعددة" width="80%" /></a><br /><sub>إنشاء الفيديو باستخدام أصول مرجعية متعددة</sub>
+<a href="../images/screenshots/videoGeneration.png"><img src="../images/screenshots/videoGeneration.png" alt="Laywork · إنشاء الفيديو باستخدام أصول مرجعية متعددة" width="80%" /></a><br /><sub>إنشاء الفيديو باستخدام أصول مرجعية متعددة</sub>
 
-<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Toonflow · قائمة العقد وعمليات التجميع" width="80%" /></a><br /><sub>قائمة العقد وعمليات التجميع</sub>
+<a href="../images/screenshots/nodeMenu.png"><img src="../images/screenshots/nodeMenu.png" alt="Laywork · قائمة العقد وعمليات التجميع" width="80%" /></a><br /><sub>قائمة العقد وعمليات التجميع</sub>
 
-<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Toonflow · سوق الإضافات" width="80%" /></a><br /><sub>سوق الإضافات</sub>
+<a href="../images/screenshots/pluginMarket.png"><img src="../images/screenshots/pluginMarket.png" alt="Laywork · سوق الإضافات" width="80%" /></a><br /><sub>سوق الإضافات</sub>
 
 </div>
 
@@ -254,22 +254,22 @@ Toonflow منصة إبداع بالذكاء الاصطناعي مفتوحة ال
 
 | نظام التشغيل | GitHub |
 | --- | --- |
-| Windows | [الإصدارات](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| macOS | [الإصدارات](https://github.com/HBAI-Ltd/Toonflow-app/releases) |
-| Android ARM64 | [تنزيل APK](https://github.com/HBAI-Ltd/Toonflow-app/releases/latest) |
+| Windows | [الإصدارات](https://github.com/1797127235/Toonflow-app/releases) |
+| macOS | [الإصدارات](https://github.com/1797127235/Toonflow-app/releases) |
+| Android ARM64 | [تنزيل APK](https://github.com/1797127235/Toonflow-app/releases/latest) |
 
 يدعم تطبيق Android أجهزة ARM64 فقط. نزّل ملف `toonflow-VERSION-android-arm64.apk` من صفحة الإصدار وثبّته. يتضمن التطبيق خادم Bun محليًا ويمكنه العمل بشكل مستقل، أو يمكنك استخدام «ربط الأجهزة» في الصفحة الرئيسية لمسح رمز QR أو الاتصال يدويًا بجهاز كمبيوتر أو خادم يتيح مشاركة الاتصال عبر الشبكة المحلية أو الإنترنت.
 
 يكتشف مُثبّت Windows وجود WebView2 ويثبّته تلقائيًا. إذا أُغلق التطبيق فورًا بعد التثبيت، فنزّل بيئة التشغيل وثبّتها يدويًا من [صفحة تنزيل WebView2](https://developer.microsoft.com/microsoft-edge/webview2/).
 
-على macOS ‏(Apple Silicon)، اسحب Toonflow إلى مجلد التطبيقات وافتحه مباشرة. لا تحتاج إلى تنفيذ أوامر في الطرفية مسبقًا. إذا عرض macOS تحذيرًا أمنيًا، فاتبع الخطوات التالية بالترتيب.
+على macOS ‏(Apple Silicon)، اسحب Laywork إلى مجلد التطبيقات وافتحه مباشرة. لا تحتاج إلى تنفيذ أوامر في الطرفية مسبقًا. إذا عرض macOS تحذيرًا أمنيًا، فاتبع الخطوات التالية بالترتيب.
 
 <details>
-<summary><strong>إذا تعذر تثبيت Toonflow أو فتحه على macOS</strong></summary>
+<summary><strong>إذا تعذر تثبيت Laywork أو فتحه على macOS</strong></summary>
 
-**1. السماح بتشغيل Toonflow من إعدادات الخصوصية والأمان**
+**1. السماح بتشغيل Laywork من إعدادات الخصوصية والأمان**
 
-إذا ظهر تحذير يفيد بتعذر التحقق من المطور أو بأن Apple لا تستطيع فحص التطبيق بحثًا عن برامج ضارة، فحاول أولًا فتح Toonflow. ثم انتقل إلى إعدادات النظام ← الخصوصية والأمان، وابحث عن الرسالة التي تفيد بحظر Toonflow، وانقر على «فتح على أي حال»، وأكّد عند الطلب. راجع [تعليمات Apple الرسمية](https://support.apple.com/zh-cn/102445).
+إذا ظهر تحذير يفيد بتعذر التحقق من المطور أو بأن Apple لا تستطيع فحص التطبيق بحثًا عن برامج ضارة، فحاول أولًا فتح Laywork. ثم انتقل إلى إعدادات النظام ← الخصوصية والأمان، وابحث عن الرسالة التي تفيد بحظر Laywork، وانقر على «فتح على أي حال»، وأكّد عند الطلب. راجع [تعليمات Apple الرسمية](https://support.apple.com/zh-cn/102445).
 
 **2. إذا استمرت قيود العزل في منع الفتح، فجرّب إزالة سمة العزل**
 
@@ -307,7 +307,7 @@ sudo spctl --master-disable
 استنسخ الشيفرة المصدرية، ثم نفّذ ما يلي في المجلد الجذر للمستودع:
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 docker compose up -d --build
 ```
@@ -361,7 +361,7 @@ bun --version
 استنسخ الشيفرة المصدرية وابدأ تشغيل الخدمة:
 
 ```sh
-git clone https://github.com/HBAI-Ltd/Toonflow-app.git
+git clone https://github.com/1797127235/Toonflow-app.git
 cd Toonflow-app
 bun install --frozen-lockfile
 
@@ -388,7 +388,7 @@ bun run start:server
 
 ### 4.5 النشر السحابي
 
-يوفر شريكنا [AI Galaxy (智星云)](https://www.ai-galaxy.com/) صورة تجارية لـToonflow معتمدة رسميًا، ببيئة جاهزة للاستخدام. للتعليمات، راجع [دليل نشر الصورة بالشرح المصوّر](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1).
+يوفر شريكنا [AI Galaxy (智星云)](https://www.ai-galaxy.com/) صورة تجارية لـLaywork معتمدة رسميًا، ببيئة جاهزة للاستخدام. للتعليمات، راجع [دليل نشر الصورة بالشرح المصوّر](https://mp.weixin.qq.com/s/lq9X1ovQ1_TKeXMOLgicKg?scene=1).
 
 ---
 
@@ -418,19 +418,19 @@ https://github.com/user-attachments/assets/2d9fddac-dfdf-4640-b030-b09d7f7287e9
   </a>
 </p>
 
-TF-Router هي البوابة الرسمية لنماذج Toonflow، ونديرها بأنفسنا. يسعدنا أن تستخدمها. شيفرتها المصدرية بالكامل مفتوحة ومتاحة للاستضافة الذاتية والتدقيق: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router).
+TF-Router هي البوابة الرسمية لنماذج Laywork، ونديرها بأنفسنا. يسعدنا أن تستخدمها. شيفرتها المصدرية بالكامل مفتوحة ومتاحة للاستضافة الذاتية والتدقيق: [HBAI-Ltd/TF-Router](https://github.com/HBAI-Ltd/TF-Router).
 
 <details>
-<summary><strong>رسالة إلى مجتمع Toonflow (نُشرت في 2026-06-08)</strong></summary>
+<summary><strong>رسالة إلى مجتمع Laywork (نُشرت في 2026-06-08)</strong></summary>
 
-> ### رسالة إلى مجتمع Toonflow
+> ### رسالة إلى مجتمع Laywork
 > 130 يومًا.
 > ليست مدة طويلة، لكنها كانت كافية لنرى بعض الأمور بوضوح.
 > مضى 130 يومًا منذ أول سطر شيفرة أودعناه حتى اليوم. أصدرنا 20 إصدارًا، وأجرينا أكثر من 800 عملية إيداع، وكتبنا 213,765 سطرًا من الشيفرة تحتوي على 640,810 محرفًا.
 > أعدنا كتابة المشروع مرتين، وبنينا نظامًا لمزودي الخدمات وسير عمل نفخر به.
 > ظننا أن ذلك سيكون كافيًا.
 > لكنه لم يكن كذلك.
-> أخبرنا بعضكم أنه أراد إضافة وحدة خاصة به إلى Toonflow، لكنه أمضى ساعات في المحاولة دون أن يفهم كيفية تعديله.
+> أخبرنا بعضكم أنه أراد إضافة وحدة خاصة به إلى Laywork، لكنه أمضى ساعات في المحاولة دون أن يفهم كيفية تعديله.
 > وقال آخرون إن المجتمع صغير جدًا، وإنهم لم يجدوا من يساعدهم عندما واجهوا مشكلات.
 > وأخبرنا آخرون أن الشروط التجارية منعتهم من استخدام مشروعاتهم فعليًا.
 > سمعناكم.
@@ -438,7 +438,7 @@ TF-Router هي البوابة الرسمية لنماذج Toonflow، وندير�
 > ليس لأن لدينا أموالًا كثيرة.
 > بل لأننا نؤمن بأن هذا العمل يستحق.
 > لذلك قررنا إعادة كتابة المشروع للمرة الثالثة.
-> مع كل إعادة كتابة لـToonflow، اتجهنا نحو مزيد من الانفتاح والمصدر المفتوح.
+> مع كل إعادة كتابة لـLaywork، اتجهنا نحو مزيد من الانفتاح والمصدر المفتوح.
 > وهذه المرة اخترنا فتح كل شيء.
 >
 > 1. MIT License
@@ -473,9 +473,9 @@ TF-Router هي البوابة الرسمية لنماذج Toonflow، وندير�
 > تتطلب إعادة الكتابة وقتًا. وخلاله، تستمر الخوادم في العمل، وتحتاج النطاقات إلى التجديد، ويسهر الفريق، وترتفع تكلفة القهوة.
 > ليست لدينا استثمارات ولا إعلانات ولا خطط تجارية مخفية.
 > لكننا نحتاج إلى الاستمرار حتى نكمل ما بدأناه.
-> لهذا أطلقنا TF-Router، البوابة الرسمية لنماذج Toonflow.
+> لهذا أطلقنا TF-Router، البوابة الرسمية لنماذج Laywork.
 > بصراحة، ترددنا طويلًا بشأن هذه المنصة.
-> لم تكن شيئًا أردنا بناءه. لم نرد لبوابة أن تجعل الناس يشعرون بأن Toonflow بدأ «يستغلهم لجني المال».
+> لم تكن شيئًا أردنا بناءه. لم نرد لبوابة أن تجعل الناس يشعرون بأن Laywork بدأ «يستغلهم لجني المال».
 > ظل هذا الهاجس يثقلنا مدة طويلة.
 > لكن كثيرًا من المستخدمين لم يتمكنوا من الحصول على موافقة للوصول إلى Seedance 2.0، وظلوا يسألوننا عن طريقة لاستخدامه.
 > بعد تفكير طويل، قررنا أخيرًا بناء منصة بأنفسنا، ووقعنا اتفاقية إطار سنوية لـSeedance مع Volcengine.
@@ -485,11 +485,11 @@ TF-Router هي البوابة الرسمية لنماذج Toonflow، وندير�
 > لا تثقون بنا؟ لا بأس. اقرؤوا الشيفرة، وانشروها بأنفسكم، وشغّلوها بأنفسكم.
 > هذا هو موقفنا.
 > إذا اخترتم تجربتها، فأنتم تمنحون ثقتكم للطريقة الوحيدة المتاحة لنا حاليًا لمواصلة هذا العمل.
-> وإن لم تختاروها، فلا بأس أيضًا. واصلوا استخدام Toonflow، وانتقادنا، وطلب الميزات.
+> وإن لم تختاروها، فلا بأس أيضًا. واصلوا استخدام Laywork، وانتقادنا، وطلب الميزات.
 > نحن هنا.
 > كلمة أخيرة من القلب:
 > نحن مجرد مجموعة من الأشخاص العاديين يؤمنون بأن أدوات الإبداع يجب أن تكون للجميع.
-> لم يكن Toonflow يومًا منتجًا يخصنا وحدنا.
+> لم يكن Laywork يومًا منتجًا يخصنا وحدنا.
 > إنه القصة التي نكتبها معًا.
 > إعادة الكتابة الثالثة ليست خط النهاية.
 > إنها نقطة انطلاقنا من جديد.
@@ -505,7 +505,7 @@ TF-Router هي البوابة الرسمية لنماذج Toonflow، وندير�
 
 امسح رمز QR للتواصل مع مساعد الدعوة إلى المجموعة:
 
-<img src="../images/qr.png" alt="رمز QR لمجتمع Toonflow" height="400"/>
+<img src="../images/qr.png" alt="رمز QR لمجتمع Laywork" height="400"/>
 
 يمكنك أيضًا النقر على الأيقونة للانضمام إلى Discord:
 
@@ -517,15 +517,15 @@ TF-Router هي البوابة الرسمية لنماذج Toonflow، وندير�
 
 ## 8. 💌 تواصل معنا
 
-📧 البريد الإلكتروني: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Toonflow咨询)
+📧 البريد الإلكتروني: [ltlctools@outlook.com](mailto:ltlctools@outlook.com?subject=Laywork咨询)
 
 ---
 
 ## 9. 📜 ترخيص المصدر المفتوح
 
-يتوفر Toonflow بموجب [MIT License](../../LICENSE). تظل الاعتماديات والأصول التابعة لأطراف أخرى خاضعة لتراخيصها وإشعارات حقوق النشر الخاصة بها.
+يتوفر Laywork بموجب [MIT License](../../LICENSE). تظل الاعتماديات والأصول التابعة لأطراف أخرى خاضعة لتراخيصها وإشعارات حقوق النشر الخاصة بها.
 
-[![سجل نجوم Toonflow](https://api.star-history.com/svg?repos=HBAI-Ltd/Toonflow-app&type=Date)](https://www.star-history.com/#HBAI-Ltd/Toonflow-app&Date)
+[![سجل نجوم Laywork](https://api.star-history.com/svg?repos=1797127235/Toonflow-app&type=Date)](https://www.star-history.com/#1797127235/Toonflow-app&Date)
 
 > **بند عدم الأثر الرجعي**: يظل المستخدمون الذين استخدموا إصدارات أقدم من v1.0.8 بموجب AGPL-3.0 خاضعين لـAGPL-3.0. وتظل الإصدارات من v1.0.8 إلى v1.1.8 خاضعة لـApache-2.0 واتفاقيته الإضافية. لا يسري هذا التغيير في الترخيص على هؤلاء المستخدمين.
 
@@ -546,4 +546,4 @@ Xi'an Zhongxing Digital Intelligence Technology Co., Ltd. (西安中星数字智
 
 </div>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="تذييل Toonflow" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=90&section=footer" alt="تذييل Laywork" width="100%" />

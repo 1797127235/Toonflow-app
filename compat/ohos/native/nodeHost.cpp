@@ -253,7 +253,7 @@ extern "C" __attribute__((visibility("default"))) void runNodeHost(void *handle)
       setEnvironment("TOONFLOW_NATIVE_DIR", state.nativeDir);
       setEnvironment("TOONFLOW_PLATFORM", "ohos");
       setEnvironment("TOONFLOW_MOBILE_DATA_DIR", state.dataDir);
-      setEnvironment("TOONFLOW_MOBILE_DEVICE_NAME", "Toonflow HarmonyOS");
+      setEnvironment("TOONFLOW_MOBILE_DEVICE_NAME", "Laywork HarmonyOS");
       setEnvironment("TMPDIR", state.cacheDir);
       setEnvironment("HOME", state.dataDir.substr(0, state.dataDir.find_last_of('/')));
       notify(state, 0, "正在初始化 Node 进程平台");

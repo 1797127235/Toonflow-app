@@ -1,15 +1,15 @@
 {
   "name": "toonflow",
-  "description": "Toonflow 是一款 AI 短剧漫剧工具，能够利用 AI 技术将小说自动转化为剧本，并结合 AI 生成的图片和视频，实现高效的短剧创作。",
+  "description": "Laywork 是一款开源 AI 创作工具，用无限画布和 Agent 助手组织文字、图片、视频、音频与自定义节点。",
   "author": "HBAI-Ltd <ltlctools@outlook.com>",
   "license": "MIT",
-  "homepage": "https://github.com/HBAI-Ltd/Toonflow-app#readme",
+  "homepage": "https://github.com/1797127235/Toonflow-app#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HBAI-Ltd/Toonflow-app.git"
+    "url": "git+https://github.com/1797127235/Toonflow-app.git"
   },
   "bugs": {
-    "url": "https://github.com/HBAI-Ltd/Toonflow-app/issues",
+    "url": "https://github.com/1797127235/Toonflow-app/issues",
     "email": "ltlctools@outlook.com"
   },
   "type": "module",

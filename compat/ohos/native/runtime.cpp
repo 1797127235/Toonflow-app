@@ -149,7 +149,7 @@ void *runHost(void *data) {
     std::lock_guard<std::mutex> lock(state->mutex);
     state->exited = true;
     if (!state->stopRequested && state->error.empty()) state->error = "本地 Node 服务已退出（退出码 " + state->exitCode + "）";
-    if (!state->stopRequested) OH_LOG_Print(LOG_APP, LOG_ERROR, 0, "ToonflowRuntime", "%{public}s\n%{public}s", state->error.c_str(), state->outputTail.c_str());
+    if (!state->stopRequested) OH_LOG_Print(LOG_APP, LOG_ERROR, 0, "LayworkRuntime", "%{public}s\n%{public}s", state->error.c_str(), state->outputTail.c_str());
     state->condition.notify_all();
   }
   releaseRuntime(state);

@@ -1,4 +1,4 @@
-# Toonflow OHOS
+# Laywork OHOS
 
 独立鸿蒙兼容构建，复用 `apps/mobile/src/server.ts`、完整网页与内置插件。ArkTS UIAbility/ArkWeb 加载应用内服务在随机 localhost 端口提供的页面；服务由 C++ 桥嵌入 Node 共享库运行。构建时只转换 OHOS 所需的 Bun 接口，其他平台沿用 Bun。
 
@@ -50,7 +50,7 @@ $hdc = Join-Path $env:DEVECO_HOME 'sdk\default\openharmony\toolchains\hdc.exe'
 & $hdc -t 127.0.0.1:5557 shell param get const.product.cpu.abilist
 & $hdc -t 127.0.0.1:5557 install -r (Resolve-Path build/ohos/toonflow-2.0.0-ohos-arm64-v8a-signed.hap).Path
 & $hdc -t 127.0.0.1:5557 shell aa start -b com.toonflow.mobile -a entryAbility
-& $hdc -t 127.0.0.1:5557 shell hilog -T ToonflowRuntime
+& $hdc -t 127.0.0.1:5557 shell hilog -T LayworkRuntime
 ```
 
 设备地址、版本文件名按实际情况替换。Windows HDC 的本地文件参数使用 `Resolve-Path` 返回的绝对反斜杠路径。配置签名后输出 `-signed.hap`；未配置时仍可编译，但 `-unsigned.hap` 不代表可安装包。重新执行命令行 `build` 会重新生成工程配置，IDE 中的签名应按上述方式保存并传入。

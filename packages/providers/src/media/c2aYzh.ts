@@ -946,7 +946,7 @@ export default {
   icon: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI4IiBmaWxsPSIjMjU2M0VCIi8+PHBhdGggZD0iTTEwIDIyVjEwaDUuNWEzLjUgMy41IDAgMCAxIDAgN0gxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIuNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGNpcmNsZSBjeD0iMjIiIGN5PSIyMiIgcj0iMi42IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
   version,
   readme: `## C2A 中转（Codex2API）
-把 C2A 网关的图片与视频模型接入 Toonflow；文本模型请在「文本模型 → 添加自定义供应商」里另行配置。
+把 C2A 网关的图片与视频模型接入 Laywork；文本模型请在「文本模型 → 添加自定义供应商」里另行配置。
 
 - 网关地址默认 \`https://www.codex2api.com/v1\`，填不填末尾的 \`/v1\` 都能识别。
 - **图片**：Grok 图片走 \`/images/generations\`，带参考图走 \`/images/edits\`（multipart，单图 \`image\`、多图 \`image[]\`）；GPT Image 用同一对接口，但走 OpenAI 原生参数（显式 \`size\` 像素与 \`quality\`），1K/2K/4K 会换算成 WxH，\`gpt-image-2.5-flare\` 只开放到 2K。

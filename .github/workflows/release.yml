@@ -1,5 +1,5 @@
-name: Release Toonflow
-run-name: Release Toonflow ${{ inputs.version || github.ref_name }}
+name: Release Laywork
+run-name: Release Laywork ${{ inputs.version || github.ref_name }}
 
 on:
   workflow_dispatch:
@@ -95,7 +95,7 @@ jobs:
             "",
             "下载后双击安装包，按提示完成安装。",
             "",
-            "包含导演之眼、Toonflow 导演与视频制作、剧本创作工作室内置插件。",
+            "包含导演之眼、Laywork 导演与视频制作、剧本创作工作室内置插件。",
             "",
             "其他附件为完整更新包和更新清单。",
             "",
@@ -106,7 +106,7 @@ jobs:
         with:
           tag_name: v${{ needs.build.outputs.version }}
           target_commitish: ${{ needs.build.outputs.commit }}
-          name: ${{ inputs.title || format('Toonflow {0}', needs.build.outputs.version) }}
+          name: ${{ inputs.title || format('Laywork {0}', needs.build.outputs.version) }}
           make_latest: true
           body_path: releaseBody.md
           generate_release_notes: true

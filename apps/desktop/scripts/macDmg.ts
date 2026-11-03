@@ -65,11 +65,11 @@ function run(args) {
   }
   const dark = $.NSColor.colorWithCalibratedWhiteAlpha(0.15, 1);
   const muted = $.NSColor.colorWithCalibratedWhiteAlpha(0.4, 1);
-  text("安装 Toonflow", 320, 28, dark);
+  text("安装 Laywork", 320, 28, dark);
   text("将左侧应用拖到右侧 Applications 文件夹", 282, 17, muted);
   text("→", 165, 56, $.NSColor.colorWithCalibratedRedGreenBlueAlpha(0.25, 0.45, 0.9, 1));
-  text("等待复制完成，再从“应用程序”打开 Toonflow。", 64, 15, dark);
-  text("Drag Toonflow to Applications to install.", 34, 13, muted);
+  text("等待复制完成，再从“应用程序”打开 Laywork。", 64, 15, dark);
+  text("Drag Laywork to Applications to install.", 34, 13, muted);
   image.unlockFocus;
   const bitmap = $.NSBitmapImageRep.imageRepWithData(image.TIFFRepresentation);
   if (!bitmap.representationUsingTypeProperties($.NSPNGFileType, $({})).writeToFileAtomically(args[0], true)) {

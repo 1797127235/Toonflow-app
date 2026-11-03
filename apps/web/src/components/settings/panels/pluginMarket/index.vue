@@ -190,7 +190,7 @@
                 </el-button>
               </el-badge>
               <el-popconfirm
-                v-if="plugin.author !== 'Toonflow' || plugin.type === 'skill' || plugin.type === 'agent' || plugin.type === 'ext'"
+                v-if="!builtInAuthor(plugin) || plugin.type === 'skill' || plugin.type === 'agent' || plugin.type === 'ext'"
                 :title="`确定卸载“${plugin.displayName}”${plugin.type === 'skill' ? '及其附属文件' : ''}吗？`"
                 width="280"
                 confirmButtonText="卸载"
@@ -397,6 +397,10 @@ function openPlugin(plugin: Plugin) {
   }
   selectedPlugin.value = plugin;
   detailsVisible.value = true;
+}
+
+function builtInAuthor(plugin: Plugin) {
+  return plugin.author === "Laywork" || plugin.author === "Toonflow";
 }
 
 function canConfigurePlugin(plugin: Plugin) {
@@ -740,7 +744,7 @@ async function updatePlugin(plugin: Plugin, action: "setEnabled" | "uninstall", 
     loading.value ||
     pendingPlugins.value.has(plugin.key) ||
     exportingPlugins.value.has(plugin.key) ||
-    (action === "uninstall" && plugin.author === "Toonflow" && (plugin.type === "node" || plugin.type === "tool"))
+    (action === "uninstall" && builtInAuthor(plugin) && (plugin.type === "node" || plugin.type === "tool"))
   )
     return;
   pendingPlugins.value.add(plugin.key);

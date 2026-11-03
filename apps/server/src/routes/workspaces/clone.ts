@@ -54,10 +54,10 @@ export default Router().post("/", validateFields(inputSchema.shape), async (req,
           && typeof edge.source === "string" && typeof edge.target === "string" && nodeIds.has(edge.source) && nodeIds.has(edge.target));
       } catch { return false; }
     });
-    if (!hasCanvas) throw Object.assign(new Error("项目包必须包含有效的 Toonflow 画布 JSON 文件"), { status: 400 });
+    if (!hasCanvas) throw Object.assign(new Error("项目包必须包含有效的 Laywork 画布 JSON 文件"), { status: 400 });
     signal.throwIfAborted();
     let name = input.name.replace(/[<>:"/\\|?*\x00-\x1f]/g, "_").replace(/[. ]+$/, "").slice(0, 80);
-    if (!name || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name)) name = "Toonflow";
+    if (!name || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(name)) name = "Laywork";
     directory = await mkdtemp(join(parent, `${name}-`));
     created = await lstat(directory);
     if (!u.workspaceFile.isWithin(parent, await realpath(directory))) throw new Error("项目下载目录超出所选位置");

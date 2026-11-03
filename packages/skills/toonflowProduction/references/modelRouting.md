@@ -1,6 +1,6 @@
 # 模型特定适配：先查实时宿主能力，再选一个出口
 
-**只读能力发现优先于写提示词**：以当前 Toonflow 节点实际供应商、模式、模型名、有效时长/分辨率、参考类目/数量、原生声轨为准；不支持则换制作计划，经允许后再换模型。以下是格式与能力校验参考，不是自动开放全部接口的承诺。
+**只读能力发现优先于写提示词**：以当前 Laywork 节点实际供应商、模式、模型名、有效时长/分辨率、参考类目/数量、原生声轨为准；不支持则换制作计划，经允许后再换模型。以下是格式与能力校验参考，不是自动开放全部接口的承诺。
 
 | 模型 | 导演内部时轴 | 送模型的表达 | 模型适配重点 |
 |---|---|---|---|
@@ -9,12 +9,12 @@
 | MiniMax H3 | 毫秒完整预算 | 按 Base / Ref2VA 官方字段；`[Shot 1]` 起，后续镜头 `At 00:SS.mmm` | 4~15 s 整数秒（仍按实时配置）；Ref2VA 先 `subject_definitions`；声音另层 |
 
 ## Seedance 2.0
-- 当前上传的 Toonflow 调研（2026-10-20）对照火山方舟官方指南：2.0 使用镜序比精细小数秒时间戳可靠。创作过程仍以 `00:00.000` 时轴审阅，但**仅保留镜头顺序、串并行动作和必要节奏**到最终 `model_prompt`。精确时轴在 `director_timeline`，不重复粘到模型正文。
+- 当前上传的 Laywork 调研（2026-10-20）对照火山方舟官方指南：2.0 使用镜序比精细小数秒时间戳可靠。创作过程仍以 `00:00.000` 时轴审阅，但**仅保留镜头顺序、串并行动作和必要节奏**到最终 `model_prompt`。精确时轴在 `director_timeline`，不重复粘到模型正文。
 - 若用户特别要求在 2.0 正文内强制毫秒指令，提示可保留数值作说明，但不要保证模型精确执行，优先用户明确授权下的小样 A/B。
 - 文字转视频、图像/多参考、首尾帧不是天然等价；参考能力看实际节点，不暗把多视图资料板作为可控首帧。
 
 ## Seedance 2.5
-- 字节跳动 Seed 团队于 2026-07-31 公开介绍最长单次 30 秒、时间戳编辑和多模态能力，**仅表示模型体系能力上限**，不保证当前 Toonflow 供应商节点可用全部参数。
+- 字节跳动 Seed 团队于 2026-07-31 公开介绍最长单次 30 秒、时间戳编辑和多模态能力，**仅表示模型体系能力上限**，不保证当前 Laywork 供应商节点可用全部参数。
 - 模型提示词多镜按 `0–4s / 4–7s` 类连续块表达，对具体切点的精度不要承诺毫秒级。导演时轴仍用 3 位小数；需精密对嘴时依真实录音/后期配音校时。
 - 图片/视频/音频职责逐项声明，尤其区别“锁外观、锁首帧、参考运镜、参考音色”；不得仅写“参考全部”。
 
@@ -34,8 +34,8 @@
 一个生成段可包含多个镜头，但如果“身份＋多人接触＋长台词＋快速运镜＋换景”同时出现，优先拆段/减少变量，而不是增加强调词。
 
 ## 来源（实际制作须按本地版本/能力复核）
-- Toonflow 官方仓库：https://github.com/HBAI-Ltd/Toonflow-app
-- Toonflow 节点工具开发说明：https://github.com/HBAI-Ltd/Toonflow-app/blob/master/packages/toolScaffold/readme.md
+- Laywork 官方仓库：https://github.com/1797127235/Toonflow-app
+- Laywork 节点工具开发说明：https://github.com/1797127235/Toonflow-app/blob/master/packages/toolScaffold/readme.md
 - Seedance 2.5 官方介绍：https://seed.bytedance.com/en/blog/one-take-creation-flexible-referencing-introducing-seedance-2-5
 - 火山方舟指南：https://docs.volcengine.com/docs/ark/seedance-2-5-prompt-guide?lang=zh
 - MiniMax 官方模型规格：https://platform.minimax.io/docs/guides/video-generation

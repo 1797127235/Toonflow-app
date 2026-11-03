@@ -351,4 +351,4 @@ jobs:
           artifactUrl: ${{ steps.artifact.outputs.artifact-url }}
           artifactTarget: ${{ matrix.target }}
         run: |
-          printf '[下载 Toonflow %s · %s](%s)\n' "$appVersion" "$artifactTarget" "$artifactUrl" >> "$GITHUB_STEP_SUMMARY"
+          printf '[下载 Laywork %s · %s](%s)\n' "$appVersion" "$artifactTarget" "$artifactUrl" >> "$GITHUB_STEP_SUMMARY"
