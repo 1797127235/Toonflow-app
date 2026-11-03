@@ -718,7 +718,8 @@ const VIDEO_SPECS: Record<string, VideoSpec> = {
   "kling-4.0": { label: "Kling 4.0", resolutions: ["720p", "1080p", "2k", "4k"], duration: [3, 30], images: 10, videos: 0, audios: 0 },
   "kling-4.0-Omni": { label: "Kling 4.0 Omni", resolutions: ["720p", "1080p", "2k", "4k"], duration: [3, 30], images: 10, videos: 5, audios: 3 },
   "MiniMax-H3": { label: "MiniMax H3", resolutions: ["768p", "1080p", "2k", "4k"], duration: [4, 15], images: 9, videos: 3, audios: 0 },
-  "MiniMax-H3-Max": { label: "MiniMax H3 Max", resolutions: ["768p", "1080p"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
+  // 实测上游 Hailuo H3-Max 只接受 [5, 15]，4 秒直接 400（区别于 H3 的 4 秒可用）。
+  "MiniMax-H3-Max": { label: "MiniMax H3 Max", resolutions: ["768p", "1080p"], duration: [5, 15], images: 9, videos: 3, audios: 3 },
   "MiniMax-H3-open": { label: "MiniMax H3 Open", resolutions: ["720p", "1080p", "2k", "4k"], duration: [4, 15], images: 9, videos: 3, audios: 3 },
   "wan3.0-video": { label: "万相 3.0", resolutions: ["480p", "720p", "1080p"], duration: [2, 30], images: 10, videos: 5, audios: 5 },
   "wan3.0-video-prime": { label: "万相 3.0 Prime", resolutions: ["480p", "720p", "1080p"], duration: [2, 30], images: 10, videos: 5, audios: 5 },  // ── yzh 分组（haishu-视频模型-yzh渠道-1.2x）：取自分组页模型定价 ──
@@ -1096,7 +1097,7 @@ export default {
       type: "video",
       mode: ["text", "singleImage", "endFrameOptional", "startEndRequired", ["imageReference:9", "videoReference:3", "audioReference:3"]],
       audio: "optional",
-      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["768p", "1080p"] }],
+      durationResolutionMap: [{ duration: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["768p", "1080p"] }],
     },
     {
       id: "MiniMax-H3-open",
