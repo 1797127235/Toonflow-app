@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI مختصر ڈرامہ اسٹوڈیو · خیالات کو کہانیوں میں ڈھالیں" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · لامحدود کینوس · Agent معاون" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**مختصر ڈراموں، متحرک کامکس اور ویڈیو تخلیق کے لیے اوپن سورس AI پلیٹ فارم**
+**عام تخلیق کے لیے اوپن سورس AI کینوس۔ مختصر ڈرامے اور متحرک کامکس اس کی ایک سمت ہیں**
 
-> 🚀 **مختصر ڈرامے بنانے کا مکمل انتظام ایک جگہ**: اسکرپٹ لکھیں، اثاثوں کا انتظام کریں اور تصاویر و ویڈیوز بنائیں؛ اپنا پورا تخلیقی کام ایک لامحدود کینوس پر ترتیب دیں۔
+> 🚀 **ایک کینوس پر تخلیق**: متن، تصویر، ویڈیو، آڈیو اور حسبِ ضرورت نوڈ ترتیب دیں۔ مختصر ڈرامے اور متحرک کامکس بھی اسی کینوس پر بنتے ہیں۔
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork کے اوپن سورس منصوبے کی معاونت کرنے والے 
 
 ## 2. 🌟 نمایاں خصوصیات
 
-Laywork مختصر ڈراموں، متحرک کامکس اور مختصر ویڈیوز کی AI تخلیق کے لیے اوپن سورس پلیٹ فارم ہے، جو اسکرپٹس، اثاثوں اور ویڈیو کلپس کو ایک لامحدود کینوس پر اکٹھا کرتا ہے۔
+Laywork اوپن سورس AI تخلیقی پلیٹ فارم ہے، جو متن، تصویر، ویڈیو اور آڈیو کو ایک لامحدود کینوس پر اکٹھا کرتا ہے۔ مختصر ڈرامے، متحرک کامکس اور مختصر ویڈیوز اس کی ایک تخلیقی سمت ہیں۔
 
 | خصوصیت | تفصیل |
 | --- | --- |
 | 🏠 **مقامی تنصیب** | منصوبے اور اثاثے اپنے آلے یا سرور پر رکھیں؛ ڈیسک ٹاپ، Android، Docker اور سرور پر تنصیب کے اختیارات موجود ہیں۔ |
-| 🖼️ **لامحدود کینوس** | اسکرپٹس، کرداروں، مناظر اور ویڈیو کلپس کو ایک ہی کینوس پر ترتیب دیں۔ |
+| 🖼️ **لامحدود کینوس** | متن، تصاویر، ویڈیو، آڈیو اور حسبِ ضرورت نوڈز کو ایک ہی کینوس پر ترتیب دیں۔ |
 | 🔌 **MCP** | بیرونی ٹولز اور سروسز کو MCP کے ذریعے جوڑیں۔ |
 | 🧩 **پلگ اِن مارکیٹ** | [پلگ اِن مارکیٹ](https://api.toonflow.net/console/plugIn) کے ذریعے نوڈز، ٹولز اور تخلیقی صلاحیتوں میں اضافہ کریں۔ |
 | 🤖 **اوپن Agent** | پرامپٹس، ٹولز اور A2A تک کھلی رسائی کے ساتھ Agent کا طرزِ عمل اپنی ضرورت کے مطابق بنائیں اور بیرونی ایجنٹس سے تعاون کریں۔ |

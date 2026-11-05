@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20Ideas%20into%20Stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20Ideas%20into%20Stories" alt="Laywork · สตูดิโอละครสั้น AI · เปลี่ยนแรงบันดาลใจให้เป็นเรื่องราวที่มองเห็นได้" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · แคนวาสไม่จำกัด · ผู้ช่วย Agent" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**แพลตฟอร์มสร้างวิดีโอละครสั้นและการ์ตูนด้วย AI แบบโอเพนซอร์ส**
+**แคนวาส AI โอเพนซอร์สสำหรับงานสร้างทั่วไป ละครสั้นและการ์ตูนเคลื่อนไหวเป็นหนึ่งในทิศทาง**
 
-> 🚀 **สร้างละครสั้นครบในที่เดียว**: รวมการเขียนบท การจัดการทรัพยากร และการสร้างภาพกับวิดีโอ พร้อมจัดระเบียบกระบวนการสร้างสรรค์ทั้งหมดบนแคนวาสไม่จำกัด
+> 🚀 **สร้างงานบนแคนวาสเดียว**: จัดข้อความ ภาพ วิดีโอ เสียง และโหนดกำหนดเอง ละครสั้นและการ์ตูนเคลื่อนไหวก็ทำบนแคนวาสเดียวกันได้
 
 </div>
 
@@ -200,12 +200,12 @@
 
 ## 2. 🌟 จุดเด่น
 
-Laywork คือแพลตฟอร์มสร้างสรรค์ด้วย AI แบบโอเพนซอร์สสำหรับการผลิตละครสั้น วิดีโอการ์ตูน และวิดีโอสั้น โดยรวมบท ทรัพยากร และคลิปวิดีโอไว้บนแคนวาสไม่จำกัดผืนเดียว
+Laywork คือแพลตฟอร์มสร้างสรรค์ด้วย AI แบบโอเพนซอร์ส รวบรวมข้อความ ภาพ วิดีโอ และเสียงไว้บนแคนวาสไม่จำกัดผืนเดียว ละครสั้น วิดีโอการ์ตูน และวิดีโอสั้นเป็นหนึ่งในทิศทางการผลิต
 
 | ความสามารถ | รายละเอียด |
 | --- | --- |
 | 🏠 **ติดตั้งในระบบของคุณ** | บันทึกโครงการและสื่อไว้บนอุปกรณ์หรือเซิร์ฟเวอร์ของคุณเอง รองรับการติดตั้งแบบเดสก์ท็อป Android Docker และเซิร์ฟเวอร์ |
-| 🖼️ **แคนวาสไม่จำกัด** | จัดวางบท ตัวละคร ฉาก และคลิปวิดีโอบนแคนวาสเดียวกัน |
+| 🖼️ **แคนวาสไม่จำกัด** | จัดวางข้อความ ภาพ วิดีโอ เสียง และโหนดกำหนดเองบนแคนวาสเดียวกัน |
 | 🔌 **MCP** | เชื่อมต่อเครื่องมือและบริการภายนอกผ่าน MCP |
 | 🧩 **ตลาดปลั๊กอิน** | เพิ่มโหนด เครื่องมือ และความสามารถในการสร้างสรรค์ผ่าน[ตลาดปลั๊กอิน](https://api.toonflow.net/console/plugIn) |
 | 🤖 **Agent แบบเปิด** | เปิดให้ปรับแต่งพรอมป์ต์และเครื่องมือ พร้อมรองรับ A2A เพื่อกำหนดพฤติกรรมของ Agent และทำงานร่วมกับ Agent ภายนอก |

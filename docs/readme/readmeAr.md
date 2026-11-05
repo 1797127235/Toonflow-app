@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · استوديو الدراما القصيرة بالذكاء الاصطناعي · حوّل الأفكار إلى قصص" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · لوحة لا نهائية · مساعد Agent" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**منصة ذكاء اصطناعي مفتوحة المصدر لإنشاء الأعمال الدرامية القصيرة والقصص المصورة المتحركة والفيديو**
+**لوحة ذكاء اصطناعي مفتوحة المصدر للإنتاج العام. الأعمال الدرامية القصيرة والقصص المصورة المتحركة أحد اتجاهاتها**
 
-> 🚀 **إنشاء الأعمال الدرامية القصيرة في مكان واحد**: اكتب السيناريوهات، وأدر الأصول، وأنشئ الصور ومقاطع الفيديو، ونظّم سير عملك الإبداعي بالكامل على لوحة لا نهائية.
+> 🚀 **الإنتاج على لوحة واحدة**: نظّم النص والصور والفيديو والصوت والعقد المخصصة. يمكن صنع الأعمال الدرامية القصيرة والقصص المصورة المتحركة على اللوحة نفسها.
 
 </div>
 
@@ -200,12 +200,12 @@
 
 ## 2. 🌟 أبرز المزايا
 
-Laywork منصة إبداع بالذكاء الاصطناعي مفتوحة المصدر للأعمال الدرامية القصيرة والقصص المصورة المتحركة والفيديوهات القصيرة، تجمع السيناريوهات والأصول ومقاطع الفيديو على لوحة لا نهائية واحدة.
+Laywork منصة إبداع بالذكاء الاصطناعي مفتوحة المصدر. تجمع النص والصور والفيديو والصوت على لوحة لا نهائية واحدة. الأعمال الدرامية القصيرة والقصص المصورة المتحركة والفيديوهات القصيرة أحد اتجاهات الإنتاج.
 
 | الميزة | الوصف |
 | --- | --- |
 | 🏠 **تشغيل محلي** | احتفظ بالمشروعات والأصول على جهازك أو خادمك، مع خيارات لتطبيق سطح المكتب وAndroid وDocker والتشغيل على الخادم. |
-| 🖼️ **لوحة لا نهائية** | نظّم السيناريوهات والشخصيات والمشاهد ومقاطع الفيديو على اللوحة نفسها. |
+| 🖼️ **لوحة لا نهائية** | نظّم النص والصور والفيديو والصوت والعقد المخصصة على اللوحة نفسها. |
 | 🔌 **MCP** | اربط الأدوات والخدمات الخارجية عبر MCP. |
 | 🧩 **سوق الإضافات** | وسّع العقد والأدوات والإمكانات الإبداعية من خلال [سوق الإضافات](https://api.toonflow.net/console/plugIn). |
 | 🤖 **Agent مفتوح** | وصول مفتوح إلى الموجّهات والأدوات وA2A لتخصيص سلوك Agent والتعاون مع وكلاء خارجيين. |

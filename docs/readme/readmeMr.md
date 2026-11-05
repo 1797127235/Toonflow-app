@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI लघु नाटक स्टुडिओ · कल्पनांना कथांमध्ये रूपांतरित करा" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · अनंत कॅनव्हास · Agent सहाय्यक" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**लघु नाटके, ॲनिमेटेड कॉमिक्स आणि व्हिडिओ निर्मितीसाठी एक मुक्त-स्रोत AI प्लॅटफॉर्म**
+**सर्वसामान्य निर्मितीसाठी मुक्त-स्रोत AI कॅनव्हास. लघु नाटके आणि ॲनिमेटेड कॉमिक्स ही त्याची एक दिशा आहे**
 
-> 🚀 **लघुनाट्य निर्मितीची सर्व कामे एकाच ठिकाणी**: पटकथा लिहा, सर्जनशील सामग्री सांभाळा आणि प्रतिमा व व्हिडिओ तयार करा. तुमची संपूर्ण निर्मिती प्रक्रिया एका अनंत कॅनव्हासवर मांडता येते.
+> 🚀 **एकाच कॅनव्हासवर निर्मिती**: मजकूर, प्रतिमा, व्हिडिओ, ऑडिओ आणि सानुकूल नोड्स मांडा. लघु नाटके आणि ॲनिमेटेड कॉमिक्सही त्याच कॅनव्हासवर तयार होतात.
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork ओपन-सोर्स प्रोजेक्टला समर्
 
 ## 2. 🌟 ठळक मुद्दे
 
-Laywork हे लघुनाट्ये, ॲनिमेटेड कॉमिक्स आणि लहान व्हिडिओ तयार करण्यासाठीचे मुक्त-स्रोत AI व्यासपीठ आहे. पटकथा, सर्जनशील सामग्री आणि व्हिडिओ क्लिप एका अनंत कॅनव्हासवर एकत्र आणते.
+Laywork हे मुक्त-स्रोत AI निर्मिती व्यासपीठ आहे. ते मजकूर, प्रतिमा, व्हिडिओ आणि ऑडिओ एका अनंत कॅनव्हासवर एकत्र आणते. लघुनाट्ये, ॲनिमेटेड कॉमिक्स आणि लहान व्हिडिओ ही त्याची एक निर्मिती दिशा आहे.
 
 | क्षमता | वर्णन |
 | --- | --- |
 | 🏠 **स्वतःच्या यंत्रणेवर स्थापना** | प्रकल्प आणि सामग्री तुमच्या स्वतःच्या उपकरणावर किंवा सर्व्हरवर ठेवा. डेस्कटॉप, Android, Docker आणि सर्व्हरवर स्थापनेचे पर्याय उपलब्ध आहेत. |
-| 🖼️ **अनंत कॅनव्हास** | पटकथा, पात्रे, दृश्ये आणि व्हिडिओ क्लिप एकाच कॅनव्हासवर व्यवस्थित मांडा. |
+| 🖼️ **अनंत कॅनव्हास** | मजकूर, प्रतिमा, व्हिडिओ, ऑडिओ आणि सानुकूल नोड्स एकाच कॅनव्हासवर व्यवस्थित मांडा. |
 | 🔌 **MCP** | MCP द्वारे बाह्य साधने आणि सेवा कनेक्ट करा. |
 | 🧩 **प्लगइन बाजारपेठ** | [प्लगइन बाजारपेठेतून](https://api.toonflow.net/console/plugIn) नोड, साधने आणि सर्जनशील सुविधा जोडा. |
 | 🤖 **मुक्त Agent व्यवस्था** | प्रॉम्प्ट, साधने आणि A2A वापरून Agent चे वर्तन बदलता येते आणि बाह्य Agent सोबत काम करता येते. |

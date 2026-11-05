@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20%E7%9F%AD%E5%8A%87%E5%B7%A5%E5%BB%A0;%E8%AE%93%E9%9D%88%E6%84%9F%E6%88%90%E7%82%BA%E7%9C%8B%E5%BE%97%E8%A6%8B%E7%9A%84%E6%95%85%E4%BA%8B" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20%E7%9F%AD%E5%8A%87%E5%B7%A5%E5%BB%A0;%E8%AE%93%E9%9D%88%E6%84%9F%E6%88%90%E7%82%BA%E7%9C%8B%E5%BE%97%E8%A6%8B%E7%9A%84%E6%95%85%E4%BA%8B" alt="Laywork · AI 短劇工廠 · 讓靈感成為看得見的故事" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;%E7%84%A1%E9%99%90%E7%95%AB%E5%B8%83;Agent%20%E5%8A%A9%E6%89%8B" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;%E7%84%A1%E9%99%90%E7%95%AB%E5%B8%83;Agent%20%E5%8A%A9%E6%89%8B" alt="Laywork · 無限畫布 · Agent 助手" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**開源 AI 短劇與動態漫畫影片創作平台**
+**開源 AI 創作畫布。短劇與動態漫畫是其中一條製作方向**
 
-> 🚀 **一站式短劇創作**：整合劇本創作、素材管理、圖像與影片生成，在無限畫布中安排完整的創作流程。
+> 🚀 **在無限畫布上完成製作**：組織文字、圖片、影片、音訊與自訂節點。短劇與動態漫畫也可以沿同一張畫布製作。
 
 </div>
 
@@ -200,12 +200,12 @@
 
 ## 2. 🌟 亮點
 
-Laywork 是面向短劇、動態漫畫與短影片製作的開源 AI 創作平台，將劇本、素材與影片片段整合到同一張無限畫布。
+Laywork 是開源的 AI 創作平台，把文字、圖片、影片與音訊放在同一張無限畫布上。短劇、動態漫畫與短影片是其中一條製作方向。
 
 | 功能 | 說明 |
 | --- | --- |
 | 🏠 **本機部署** | 專案與素材儲存在自己的裝置或伺服器，支援桌面、Android、Docker 與伺服器部署。 |
-| 🖼️ **無限畫布** | 在同一張畫布中組織劇本、角色、場景與影片片段。 |
+| 🖼️ **無限畫布** | 在同一張畫布中組織文字、圖片、影片、音訊與自訂節點。 |
 | 🔌 **MCP** | 透過 MCP 連接外部工具與服務。 |
 | 🧩 **外掛市集** | 透過[外掛市集](https://api.toonflow.net/console/plugIn)擴充節點、工具與創作功能。 |
 | 🤖 **開放 Agent** | 開放提示詞、工具與 A2A，支援自訂 Agent 行為及外部協作。 |

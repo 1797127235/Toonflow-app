@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20Ideas%20into%20Stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20Ideas%20into%20Stories" alt="Laywork · Xưởng phim ngắn AI · Biến cảm hứng thành câu chuyện có thể nhìn thấy" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · Canvas vô hạn · Trợ lý Agent" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**Nền tảng mã nguồn mở sáng tạo video phim ngắn và phim truyện tranh bằng AI**
+**Canvas AI mã nguồn mở cho sản xuất chung. Phim ngắn và truyện tranh động là một hướng sản xuất**
 
-> 🚀 **Sáng tạo phim ngắn trong một nền tảng**: Tích hợp viết kịch bản, quản lý tài nguyên, tạo ảnh và video; tổ chức toàn bộ quy trình sáng tạo trên canvas vô hạn.
+> 🚀 **Sản xuất trên một canvas**：Sắp xếp chữ, ảnh, video, âm thanh và nút tùy chỉnh. Phim ngắn và truyện tranh động cũng làm trên cùng canvas này.
 
 </div>
 
@@ -200,12 +200,12 @@ Xin cảm ơn các đối tác sau đã hỗ trợ dự án mã nguồn mở Lay
 
 ## 2. 🌟 Điểm nổi bật
 
-Laywork là nền tảng sáng tạo AI mã nguồn mở dành cho sản xuất phim ngắn nhiều tập, phim truyện tranh và video ngắn, kết hợp kịch bản, tài nguyên và các đoạn video trên cùng một canvas vô hạn.
+Laywork là nền tảng sáng tạo AI mã nguồn mở. Nó đưa chữ, ảnh, video và âm thanh lên cùng một canvas vô hạn. Phim ngắn nhiều tập, phim truyện tranh và video ngắn là một hướng sản xuất.
 
 | Khả năng | Mô tả |
 | --- | --- |
 | 🏠 **Triển khai trên hệ thống của bạn** | Lưu dự án và tư liệu trên thiết bị hoặc máy chủ của riêng bạn; hỗ trợ ứng dụng desktop, Android, Docker và triển khai máy chủ. |
-| 🖼️ **Canvas vô hạn** | Sắp xếp kịch bản, nhân vật, bối cảnh và các đoạn video trên cùng một canvas. |
+| 🖼️ **Canvas vô hạn** | Sắp xếp chữ, ảnh, video, âm thanh và nút tùy chỉnh trên cùng một canvas. |
 | 🔌 **MCP** | Kết nối công cụ và dịch vụ bên ngoài qua MCP. |
 | 🧩 **Chợ plugin** | Mở rộng các nút, công cụ và khả năng sáng tạo thông qua [chợ plugin](https://api.toonflow.net/console/plugIn). |
 | 🤖 **Agent mở** | Cho phép tùy chỉnh prompt và công cụ, đồng thời hỗ trợ A2A để tùy biến hành vi Agent và phối hợp với Agent bên ngoài. |

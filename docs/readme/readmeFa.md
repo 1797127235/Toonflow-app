@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · استودیوی سریال کوتاه با هوش مصنوعی · ایده‌ها را به داستان تبدیل کنید" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · بوم بی‌نهایت · دستیار Agent" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**پلتفرم متن‌باز هوش مصنوعی برای ساخت سریال‌های کوتاه، کمیک‌های متحرک و ویدیو**
+**بوم هوش مصنوعی متن‌باز برای تولید عمومی. سریال کوتاه و کمیک متحرک یکی از جهت‌های آن است**
 
-> 🚀 **ساخت یکپارچهٔ سریال کوتاه**: فیلم‌نامه بنویسید، دارایی‌ها را مدیریت کنید و تصویر و ویدیو بسازید؛ همهٔ مراحل کار خلاقانهٔ شما روی یک بوم بی‌نهایت کنار هم قرار می‌گیرند.
+> 🚀 **تولید روی یک بوم**: متن، تصویر، ویدیو، صدا و گره‌های سفارشی را کنار هم بگذارید. سریال کوتاه و کمیک متحرک هم روی همین بوم ساخته می‌شوند.
 
 </div>
 
@@ -200,12 +200,12 @@
 
 ## 2. 🌟 قابلیت‌های برجسته
 
-Laywork پلتفرمی متن‌باز برای خلق سریال‌های کوتاه، کمیک‌های متحرک و ویدیوهای کوتاه با هوش مصنوعی است که فیلم‌نامه‌ها، دارایی‌ها و کلیپ‌های ویدیویی را روی یک بوم بی‌نهایت گرد هم می‌آورد.
+Laywork پلتفرمی متن‌باز برای خلق با هوش مصنوعی است و متن، تصویر، ویدیو و صدا را روی یک بوم بی‌نهایت جمع می‌کند. سریال‌های کوتاه، کمیک‌های متحرک و ویدیوهای کوتاه یکی از جهت‌های تولید هستند.
 
 | قابلیت | توضیح |
 | --- | --- |
 | 🏠 **اجرای محلی** | پروژه‌ها و دارایی‌ها را روی دستگاه یا سرور خود نگه دارید؛ با گزینه‌های برنامهٔ دسکتاپ، Android، Docker و استقرار روی سرور. |
-| 🖼️ **بوم بی‌نهایت** | فیلم‌نامه‌ها، شخصیت‌ها، صحنه‌ها و کلیپ‌های ویدیویی را روی یک بوم سازمان‌دهی کنید. |
+| 🖼️ **بوم بی‌نهایت** | متن، تصویر، ویدیو، صدا و گره‌های سفارشی را روی یک بوم سازمان‌دهی کنید. |
 | 🔌 **MCP** | ابزارها و سرویس‌های بیرونی را از طریق MCP متصل کنید. |
 | 🧩 **بازار افزونه‌ها** | گره‌ها، ابزارها و قابلیت‌های خلاقانه را از طریق [بازار افزونه‌ها](https://api.toonflow.net/console/plugIn) گسترش دهید. |
 | 🤖 **Agent باز** | دسترسی باز به پرامپت‌ها، ابزارها و A2A برای سفارشی‌سازی رفتار Agent و همکاری با عامل‌های بیرونی. |

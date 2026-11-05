@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · Studio Drama Pendek AI · Ubah ide menjadi cerita" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · Kanvas tanpa batas · Asisten Agent" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**Platform AI sumber terbuka untuk membuat drama pendek, komik animasi, dan video**
+**Kanvas AI sumber terbuka untuk produksi umum. Drama pendek dan komik animasi adalah salah satu arahnya**
 
-> 🚀 **Pembuatan drama pendek dalam satu tempat**：Tulis naskah, kelola aset, serta buat gambar dan video dengan seluruh alur kreatif tertata di kanvas tanpa batas.
+> 🚀 **Produksi di satu kanvas**：Susun teks, gambar, video, audio, dan node kustom. Drama pendek dan komik animasi juga dibuat di kanvas yang sama.
 
 </div>
 
@@ -200,12 +200,12 @@ Terima kasih kepada para mitra berikut atas dukungannya untuk proyek sumber terb
 
 ## 2. 🌟 Fitur Unggulan
 
-Laywork adalah platform kreasi AI sumber terbuka untuk drama pendek, komik animasi, dan video pendek yang menyatukan naskah, aset, serta klip video di satu kanvas tanpa batas.
+Laywork adalah platform kreasi AI sumber terbuka. Ia mengumpulkan teks, gambar, video, dan audio di satu kanvas tanpa batas. Drama pendek, komik animasi, dan video pendek adalah salah satu arah produksi.
 
 | Kemampuan | Deskripsi |
 | --- | --- |
 | 🏠 **Penerapan lokal** | Simpan proyek dan aset di perangkat atau server Anda sendiri, dengan pilihan penerapan desktop, Android, Docker, dan server. |
-| 🖼️ **Kanvas tanpa batas** | Tata naskah, karakter, adegan, dan klip video di kanvas yang sama. |
+| 🖼️ **Kanvas tanpa batas** | Tata teks, gambar, video, audio, dan node kustom di kanvas yang sama. |
 | 🔌 **MCP** | Hubungkan alat dan layanan eksternal melalui MCP. |
 | 🧩 **Marketplace plugin** | Tambahkan node, alat, dan kemampuan kreatif melalui [Marketplace Plugin](https://api.toonflow.net/console/plugIn). |
 | 🤖 **Agent terbuka** | Akses terbuka ke prompt, alat, dan A2A untuk menyesuaikan perilaku Agent serta berkolaborasi dengan Agent eksternal. |

@@ -212,20 +212,22 @@ Laywork is an open-source AI creation platform. The infinite canvas holds the wo
 | 🔧 **Flexible model integration** | Configure third-party APIs or connect local ComfyUI instances and LLMs. |
 | 🌐 **Multilingual support** | Supports 21 interface languages. |
 
-### How to Create AI Short Dramas and Animated Comics with Laywork
+### How to Produce with Laywork
 
-1. **Write scripts and storyboards**: Develop your story, character descriptions and shot descriptions in text nodes, using a language model for assistance before reviewing and editing the results.
-2. **Prepare character and scene references**: Import reference images or use image generation nodes to create character, scene and storyboard images.
-3. **Generate video shots**: Connect text and image references, select a video model and generation mode, and generate individual clips.
-4. **Preview, organize and download**: Preview and arrange images and video clips on the infinite canvas, then download the assets for further production work.
+Arrange text, images, video, audio, and custom nodes on the infinite canvas around the deliverable you need now. Short dramas and animated comics are one production direction.
 
-Supported references, video durations, resolutions and audio capabilities depend on the selected model and provider.
+1. **Set up this job**: Write what you are making in a text node. For a short drama or animated comic, that includes the story, characters, and shots. For a poster, tutorial, ad, or single video, write only what this job needs.
+2. **Prepare assets**: Import existing images, video, and audio, or use generation nodes to create the pictures and sound you need.
+3. **Generate the result**: Connect the text and assets, choose a model and mode, and generate images, video, or audio.
+4. **Preview, organize, and download**: Preview and arrange the results on the infinite canvas, then download them to continue.
+
+Short dramas and animated comics can still follow the script, character and scene, storyboard, and video-shot path. Supported references, durations, resolutions, and audio capabilities depend on the selected model and provider.
 
 ### Frequently Asked Questions
 
-**Which stages of AI short drama and animated comic production does Laywork support?**
+**Which production stages does Laywork support?**
 
-Text, image and video generation nodes support script and storyboard development, character and scene asset creation, video-shot generation, and asset preview and organization. Creators need to review and refine the results. Available generation features depend on the configured models.
+Text, image, video, and audio nodes support writing, image, video, and audio generation and organization. They also support scripts, storyboards, character and scene assets, and video shots for short dramas and animated comics. Creators need to review and refine the results. Available generation features depend on the configured models.
 
 **Is Laywork free? Do model calls cost money?**
 

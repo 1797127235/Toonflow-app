@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI 숏드라마 스튜디오 · 아이디어를 이야기로" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · 무한 캔버스 · Agent 도우미" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**숏드라마, 모션 코믹스, 영상 제작을 위한 오픈 소스 AI 플랫폼**
+**범용 제작을 위한 오픈 소스 AI 캔버스. 숏드라마와 모션 코믹스는 제작 방향 중 하나입니다**
 
-> 🚀 **한곳에서 완성하는 숏드라마 제작**：대본 작성, 자산 관리, 이미지·영상 생성을 통합하고, 무한 캔버스에서 전체 제작 과정을 구성하세요.
+> 🚀 **무한 캔버스에서 제작하기**：글, 이미지, 영상, 오디오와 사용자 노드를 한 캔버스에 정리합니다. 숏드라마와 모션 코믹스도 같은 캔버스에서 만들 수 있습니다.
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork 오픈 소스 프로젝트를 지원해 주시는 다음 파트너 여�
 
 ## 2. 🌟 주요 기능
 
-Laywork는 숏드라마, 모션 코믹스, 짧은 영상 제작을 위한 오픈 소스 AI 창작 플랫폼입니다. 대본, 자산, 영상 클립을 하나의 무한 캔버스에 모을 수 있습니다.
+Laywork는 오픈 소스 AI 창작 플랫폼입니다. 글, 이미지, 영상, 오디오를 하나의 무한 캔버스에 모읍니다. 숏드라마, 모션 코믹스, 짧은 영상은 그중 하나의 제작 방향입니다.
 
 | 기능 | 설명 |
 | --- | --- |
 | 🏠 **로컬 배포** | 프로젝트와 자산을 자신의 기기나 서버에 저장하며 데스크톱, Android, Docker, 서버 배포를 지원합니다. |
-| 🖼️ **무한 캔버스** | 하나의 캔버스에서 대본, 캐릭터, 장면, 영상 클립을 정리합니다. |
+| 🖼️ **무한 캔버스** | 하나의 캔버스에서 글, 이미지, 영상, 오디오, 사용자 노드를 정리합니다. |
 | 🔌 **MCP** | MCP를 통해 외부 도구와 서비스에 연결합니다. |
 | 🧩 **플러그인 마켓** | [플러그인 마켓](https://api.toonflow.net/console/plugIn)에서 노드, 도구, 창작 기능을 확장합니다. |
 | 🤖 **개방형 Agent** | 프롬프트, 도구, A2A를 개방하여 Agent 동작을 맞춤 설정하고 외부 Agent와 협업할 수 있습니다. |

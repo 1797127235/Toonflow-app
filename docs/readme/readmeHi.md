@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI लघु नाटक स्टूडियो · विचारों को कहानियों में बदलें" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · असीमित कैनवस · Agent सहायक" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**लघु नाटकों, एनिमेटेड कॉमिक्स और वीडियो निर्माण के लिए एक ओपन-सोर्स AI प्लेटफ़ॉर्म**
+**सामान्य निर्माण के लिए ओपन-सोर्स AI कैनवस। लघु नाटक और एनिमेटेड कॉमिक्स इसकी एक दिशा हैं**
 
-> 🚀 **लघु नाटक बनाने का संपूर्ण समाधान**：पटकथाएँ लिखें, सामग्री व्यवस्थित करें और चित्र व वीडियो बनाएँ—आपकी पूरी रचनात्मक प्रक्रिया एक असीमित कैनवस पर।
+> 🚀 **एक कैनवस पर निर्माण**：पाठ, चित्र, वीडियो, ऑडियो और कस्टम नोड व्यवस्थित करें। लघु नाटक और एनिमेटेड कॉमिक्स भी इसी कैनवस पर बनते हैं।
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork ओपन-सोर्स परियोजना का समर्�
 
 ## 2. 🌟 प्रमुख विशेषताएँ
 
-Laywork लघु नाटकों, एनिमेटेड कॉमिक्स और छोटे वीडियो के लिए एक ओपन-सोर्स AI निर्माण प्लेटफ़ॉर्म है, जो पटकथाओं, सामग्री और वीडियो क्लिप को एक असीमित कैनवस पर साथ लाता है।
+Laywork एक ओपन-सोर्स AI निर्माण प्लेटफ़ॉर्म है, जो पाठ, चित्र, वीडियो और ऑडियो को एक असीमित कैनवस पर साथ लाता है। लघु नाटक, एनिमेटेड कॉमिक्स और छोटे वीडियो इसकी एक निर्माण दिशा हैं।
 
 | क्षमता | विवरण |
 | --- | --- |
 | 🏠 **स्थानीय परिनियोजन** | डेस्कटॉप, Android, Docker और सर्वर परिनियोजन विकल्पों के साथ अपनी परियोजनाएँ और सामग्री अपने डिवाइस या सर्वर पर रखें। |
-| 🖼️ **असीमित कैनवस** | पटकथाओं, पात्रों, दृश्यों और वीडियो क्लिप को एक ही कैनवस पर व्यवस्थित करें। |
+| 🖼️ **असीमित कैनवस** | पाठ, चित्र, वीडियो, ऑडियो और कस्टम नोड को एक ही कैनवस पर व्यवस्थित करें। |
 | 🔌 **MCP** | MCP के माध्यम से बाहरी टूल और सेवाएँ जोड़ें। |
 | 🧩 **प्लगइन मार्केटप्लेस** | [प्लगइन मार्केटप्लेस](https://api.toonflow.net/console/plugIn) से नोड, टूल और रचनात्मक क्षमताएँ बढ़ाएँ। |
 | 🤖 **ओपन Agent** | प्रॉम्प्ट, टूल और A2A की खुली पहुँच के साथ Agent का व्यवहार अनुकूलित करें और बाहरी Agent के साथ काम करें। |

@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI షార్ట్ డ్రామా స్టూడియో · ఆలోచనలను కథలుగా మార్చండి" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · అనంతమైన కాన్వాస్ · Agent సహాయకుడు" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**లఘు నాటకాలు, యానిమేటెడ్ కామిక్స్, వీడియోల సృష్టికి ఓపెన్ సోర్స్ AI వేదిక**
+**సాధారణ నిర్మాణానికి ఓపెన్ సోర్స్ AI కాన్వాస్. లఘు నాటకాలు మరియు యానిమేటెడ్ కామిక్స్ దాని ఒక దిశ**
 
-> 🚀 **లఘు నాటకాల సృష్టికి అవసరమైనవన్నీ ఒకే చోట**: స్క్రిప్ట్‌లు రాయండి, సృజనాత్మక వనరులను నిర్వహించండి, చిత్రాలు మరియు వీడియోలను సృష్టించండి. మీ మొత్తం పని క్రమాన్ని అనంతమైన కాన్వాస్‌పై అమర్చుకోండి.
+> 🚀 **ఒకే కాన్వాస్‌పై నిర్మాణం**: వచనం, చిత్రాలు, వీడియో, ఆడియో మరియు అనుకూల నోడ్‌లను అమర్చండి. లఘు నాటకాలు మరియు యానిమేటెడ్ కామిక్స్ కూడా అదే కాన్వాస్‌పై తయారవుతాయి.
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork ఓపెన్ సోర్స్ ప్రాజెక్ట్‌క�
 
 ## 2. 🌟 ముఖ్యాంశాలు
 
-Laywork అనేది లఘు నాటకాలు, యానిమేటెడ్ కామిక్స్, చిన్న వీడియోల సృష్టికి ఓపెన్ సోర్స్ AI వేదిక. స్క్రిప్ట్‌లు, సృజనాత్మక వనరులు, వీడియో క్లిప్‌లను ఒకే అనంతమైన కాన్వాస్‌పై ఒకచోట చేర్చుతుంది.
+Laywork అనేది ఓపెన్ సోర్స్ AI నిర్మాణ వేదిక. వచనం, చిత్రాలు, వీడియో, ఆడియోను ఒకే అనంతమైన కాన్వాస్‌పై చేర్చుతుంది. లఘు నాటకాలు, యానిమేటెడ్ కామిక్స్, చిన్న వీడియోలు దాని ఒక నిర్మాణ దిశ.
 
 | సామర్థ్యం | వివరణ |
 | --- | --- |
 | 🏠 **సొంత వ్యవస్థలో ఏర్పాటు** | మీ పరికరం లేదా సర్వర్‌లోనే ప్రాజెక్టులు, వనరులను ఉంచుకోండి. డెస్క్‌టాప్, Android, Docker, సర్వర్ ఇన్‌స్టాలేషన్ ఎంపికలు ఉన్నాయి. |
-| 🖼️ **అనంతమైన కాన్వాస్** | స్క్రిప్ట్‌లు, పాత్రలు, సన్నివేశాలు మరియు వీడియో క్లిప్‌లను ఒకే కాన్వాస్‌పై నిర్వహించండి. |
+| 🖼️ **అనంతమైన కాన్వాస్** | వచనం, చిత్రాలు, వీడియో, ఆడియో మరియు అనుకూల నోడ్‌లను ఒకే కాన్వాస్‌పై నిర్వహించండి. |
 | 🔌 **MCP** | MCP ద్వారా బాహ్య సాధనాలు మరియు సేవలను కనెక్ట్ చేయండి. |
 | 🧩 **ప్లగిన్ మార్కెట్‌ప్లేస్** | [ప్లగిన్ మార్కెట్‌ప్లేస్](https://api.toonflow.net/console/plugIn) ద్వారా నోడ్‌లు, సాధనాలు, సృజనాత్మక సదుపాయాలను జోడించండి. |
 | 🤖 **ఓపెన్ Agent వ్యవస్థ** | ప్రాంప్ట్‌లు, సాధనాలు, A2Aను ఉపయోగించి Agent ప్రవర్తనను అనుకూలీకరించండి; బయటి Agentలతో కలిసి పనిచేయండి. |

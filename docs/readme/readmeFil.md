@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI studio para sa maikling drama · Gawing kuwento ang mga ideya" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · Walang-hanggang canvas · Agent assistant" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**Isang open-source na AI platform para sa maiikling drama, animated na komiks, at paggawa ng video**
+**Open-source na AI canvas para sa pangkalahatang produksyon. Ang maiikling drama at animated na komiks ay isa sa mga direksyon nito**
 
-> 🚀 **Kumpletong paggawa ng maikling drama**: Sumulat ng iskrip, pamahalaan ang mga asset, at bumuo ng mga larawan at video. Ayusin ang buong proseso ng paglikha sa isang walang-hanggang canvas.
+> 🚀 **Produksyon sa iisang canvas**: Ayusin ang teksto, larawan, video, audio, at custom na node. Ang maikling drama at animated na komiks ay puwede ring gawin sa parehong canvas.
 
 </div>
 
@@ -200,12 +200,12 @@ Salamat sa mga sumusunod na katuwang sa pagsuporta sa open-source na proyektong 
 
 ## 2. 🌟 Mga Pangunahing Kakayahan
 
-Ang Laywork ay isang open-source na AI platform para sa maiikling drama, animated na komiks, at maiikling video. Pinagsasama nito ang mga iskrip, asset, at video clip sa iisang walang-hanggang canvas.
+Ang Laywork ay isang open-source na AI platform para sa pangkalahatang paglikha. Pinagsasama nito ang teksto, larawan, video, at audio sa iisang walang-hanggang canvas. Ang maiikling drama, animated na komiks, at maiikling video ay isa sa mga direksyon ng produksyon.
 
 | Kakayahan | Paglalarawan |
 | --- | --- |
 | 🏠 **Lokal na deployment** | Itago ang mga proyekto at asset sa sarili mong device o server. May mga opsyon para sa desktop, Android, Docker, at server deployment. |
-| 🖼️ **Walang-hanggang canvas** | Ayusin ang mga iskrip, tauhan, tagpuan, at video clip sa iisang canvas. |
+| 🖼️ **Walang-hanggang canvas** | Ayusin ang teksto, larawan, video, audio, at custom na node sa iisang canvas. |
 | 🔌 **MCP** | Kumonekta sa mga panlabas na tool at serbisyo sa pamamagitan ng MCP. |
 | 🧩 **Pamilihan ng mga plugin** | Palawakin ang mga node, tool, at kakayahan sa paglikha gamit ang [Pamilihan ng mga Plugin](https://api.toonflow.net/console/plugIn). |
 | 🤖 **Bukas na Agent** | Bukas ang mga prompt, tool, at A2A upang maiangkop ang kilos ng Agent at makipagtulungan sa mga panlabas na Agent. |

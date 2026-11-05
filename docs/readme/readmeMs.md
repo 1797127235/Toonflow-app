@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · Studio Drama Pendek AI · Jadikan idea sebagai cerita" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · Kanvas tanpa had · Pembantu Agent" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**Platform AI sumber terbuka untuk menghasilkan drama pendek, komik animasi dan video**
+**Kanvas AI sumber terbuka untuk produksi umum. Drama pendek dan komik animasi ialah salah satu arahnya**
 
-> 🚀 **Penghasilan drama pendek dalam satu tempat**: Tulis skrip, urus aset serta jana imej dan video, dengan seluruh aliran kerja kreatif anda tersusun pada kanvas tanpa had.
+> 🚀 **Produksi di satu kanvas**：Susun teks, imej, video, audio dan nod tersuai. Drama pendek serta komik animasi juga dibuat pada kanvas yang sama.
 
 </div>
 
@@ -200,12 +200,12 @@ Terima kasih kepada rakan kongsi berikut kerana menyokong projek sumber terbuka 
 
 ## 2. 🌟 Ciri Utama
 
-Laywork ialah platform penciptaan AI sumber terbuka untuk drama pendek, komik animasi dan video pendek, yang menghimpunkan skrip, aset dan klip video pada satu kanvas tanpa had.
+Laywork ialah platform penciptaan AI sumber terbuka. Ia mengumpulkan teks, imej, video dan audio pada satu kanvas tanpa had. Drama pendek, komik animasi dan video pendek ialah salah satu arah produksi.
 
 | Keupayaan | Penerangan |
 | --- | --- |
 | 🏠 **Pemasangan setempat** | Simpan projek dan aset pada peranti atau pelayan anda sendiri, dengan pilihan pemasangan desktop, Android, Docker dan pelayan. |
-| 🖼️ **Kanvas tanpa had** | Susun skrip, watak, adegan dan klip video pada kanvas yang sama. |
+| 🖼️ **Kanvas tanpa had** | Susun teks, imej, video, audio dan nod tersuai pada kanvas yang sama. |
 | 🔌 **MCP** | Hubungkan alat dan perkhidmatan luaran melalui MCP. |
 | 🧩 **Pasaran pemalam** | Tambah nod, alat dan keupayaan kreatif melalui [Pasaran Pemalam](https://api.toonflow.net/console/plugIn). |
 | 🤖 **Agent terbuka** | Akses terbuka kepada arahan AI, alat dan A2A untuk menyesuaikan tingkah laku Agent serta bekerjasama dengan Agent luaran. |

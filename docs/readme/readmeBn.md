@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI শর্ট ড্রামা স্টুডিও · ধারণাগুলিকে গল্পে পরিণত করুন" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · অসীম ক্যানভাস · Agent সহকারী" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**স্বল্পদৈর্ঘ্য নাটক, অ্যানিমেটেড কমিকস ও ভিডিও তৈরির জন্য একটি ওপেন-সোর্স AI প্ল্যাটফর্ম**
+**সাধারণ নির্মাণের জন্য ওপেন-সোর্স AI ক্যানভাস। স্বল্পদৈর্ঘ্য নাটক ও অ্যানিমেটেড কমিকস এর একটি দিক**
 
-> 🚀 **স্বল্পদৈর্ঘ্য নাটক তৈরির সব কাজ এক জায়গায়**: চিত্রনাট্য লিখুন, উপকরণ গুছিয়ে রাখুন এবং ছবি ও ভিডিও তৈরি করুন—সম্পূর্ণ সৃজনশীল কাজের ধাপগুলো সাজান একটি অসীম ক্যানভাসে।
+> 🚀 **এক ক্যানভাসে নির্মাণ**: লেখা, ছবি, ভিডিও, অডিও ও কাস্টম নোড সাজান। স্বল্পদৈর্ঘ্য নাটক ও অ্যানিমেটেড কমিকসও একই ক্যানভাসে তৈরি হয়।
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork ওপেন সোর্স প্রকল্পকে সমর্থ
 
 ## 2. 🌟 বিশেষ সুবিধা
 
-Laywork স্বল্পদৈর্ঘ্য নাটক, অ্যানিমেটেড কমিকস ও ছোট ভিডিও তৈরির একটি ওপেন-সোর্স AI প্ল্যাটফর্ম। চিত্রনাট্য, উপকরণ ও ভিডিও ক্লিপ—সবকিছু এক অসীম ক্যানভাসে একত্রিত করে।
+Laywork একটি ওপেন-সোর্স AI নির্মাণ প্ল্যাটফর্ম। এটি লেখা, ছবি, ভিডিও ও অডিওকে এক অসীম ক্যানভাসে আনে। স্বল্পদৈর্ঘ্য নাটক, অ্যানিমেটেড কমিকস ও ছোট ভিডিও এর একটি নির্মাণ দিক।
 
 | সুবিধা | বিবরণ |
 | --- | --- |
 | 🏠 **স্থানীয় স্থাপনা** | ডেস্কটপ, Android, Docker, এবং সার্ভার স্থাপনার বিকল্পগুলি সহ আপনার নিজস্ব ডিভাইস বা সার্ভারে প্রকল্প এবং সম্পদ রাখুন৷ |
-| 🖼️ **অসীম ক্যানভাস** | একই ক্যানভাসে চিত্রনাট্য, চরিত্র, দৃশ্য ও ভিডিও ক্লিপ সাজিয়ে রাখুন। |
+| 🖼️ **অসীম ক্যানভাস** | একই ক্যানভাসে লেখা, ছবি, ভিডিও, অডিও ও কাস্টম নোড সাজিয়ে রাখুন। |
 | 🔌 **MCP** | MCP এর মাধ্যমে বাহ্যিক সরঞ্জাম এবং পরিষেবাগুলি সংযুক্ত করুন৷ |
 | 🧩 **প্লাগইন মার্কেটপ্লেস** | [প্লাগইন মার্কেটপ্লেস](https://api.toonflow.net/console/plugIn) থেকে নোড, টুল ও সৃজনশীল সুবিধা যোগ করুন। |
 | 🤖 **উন্মুক্ত Agent ব্যবস্থা** | প্রম্পট, টুল ও A2A ব্যবহারের উন্মুক্ত সুযোগ নিয়ে Agent-এর আচরণ বদলান এবং বাইরের Agent-এর সঙ্গে কাজ করুন। |

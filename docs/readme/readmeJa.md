@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E5%B7%A5%E6%88%BF;%E3%81%B2%E3%82%89%E3%82%81%E3%81%8D%E3%82%92%E3%80%81%E7%9B%AE%E3%81%AB%E8%A6%8B%E3%81%88%E3%82%8B%E7%89%A9%E8%AA%9E%E3%81%B8" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20%E3%82%B7%E3%83%A7%E3%83%BC%E3%83%88%E3%83%89%E3%83%A9%E3%83%9E%E5%B7%A5%E6%88%BF;%E3%81%B2%E3%82%89%E3%82%81%E3%81%8D%E3%82%92%E3%80%81%E7%9B%AE%E3%81%AB%E8%A6%8B%E3%81%88%E3%82%8B%E7%89%A9%E8%AA%9E%E3%81%B8" alt="Laywork · AI ショートドラマ工房 · ひらめきを、目に見える物語へ" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;%E7%84%A1%E9%99%90%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%90%E3%82%B9;Agent%20%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;%E7%84%A1%E9%99%90%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%90%E3%82%B9;Agent%20%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88" alt="Laywork · 無限キャンバス · Agent アシスタント" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**AI ショートドラマ・モーションコミック制作のためのオープンソースプラットフォーム**
+**汎用制作のためのオープンソース AI キャンバス。ショートドラマとモーションコミックも、その制作方向の一つです**
 
-> 🚀 **ショートドラマ制作を一つの環境で**：脚本作成、素材管理、画像・動画生成を統合し、無限キャンバス上で制作の全工程を整理できます。
+> 🚀 **無限キャンバスで制作する**：文字、画像、動画、音声、カスタムノードを一つのキャンバスに整理します。ショートドラマやモーションコミックも、同じキャンバスで制作できます。
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork オープンソースプロジェクトをご支援くださるパート
 
 ## 2. 🌟 特長
 
-Laywork はショートドラマ、モーションコミック、ショート動画の制作に向けたオープンソースの AI 制作プラットフォームです。脚本、素材、動画クリップを一つの無限キャンバスにまとめられます。
+Laywork はオープンソースの AI 制作プラットフォームです。文字、画像、動画、音声を一つの無限キャンバスにまとめます。ショートドラマ、モーションコミック、ショート動画はその制作方向の一つです。
 
 | 機能 | 説明 |
 | --- | --- |
 | 🏠 **ローカル環境で運用** | プロジェクトと素材を自分のデバイスやサーバーに保存。デスクトップ、Android、Docker、サーバーへの導入に対応しています。 |
-| 🖼️ **無限キャンバス** | 同じキャンバス上で脚本、キャラクター、シーン、動画クリップを整理できます。 |
+| 🖼️ **無限キャンバス** | 同じキャンバス上で文字、画像、動画、音声、カスタムノードを整理できます。 |
 | 🔌 **MCP** | MCP を通じて外部ツールやサービスに接続できます。 |
 | 🧩 **プラグインマーケット** | [プラグインマーケット](https://api.toonflow.net/console/plugIn)からノード、ツール、制作機能を追加できます。 |
 | 🤖 **オープンな Agent** | プロンプト、ツール、A2A のオープンな仕組みにより、Agent の動作のカスタマイズと外部連携に対応します。 |

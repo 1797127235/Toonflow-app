@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · AI ਛੋਟਾ ਡਰਾਮਾ ਸਟੂਡੀਓ · ਵਿਚਾਰਾਂ ਨੂੰ ਕਹਾਣੀਆਂ ਵਿੱਚ ਬਦਲੋ" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · ਬੇਅੰਤ ਕੈਨਵਸ · Agent ਸਹਾਇਕ" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**ਛੋਟੇ ਨਾਟਕਾਂ, ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ, ਅਤੇ ਵੀਡੀਓ ਬਣਾਉਣ ਲਈ ਇੱਕ ਓਪਨ-ਸੋਰਸ AI ਪਲੇਟਫਾਰਮ**
+**ਆਮ ਨਿਰਮਾਣ ਲਈ ਓਪਨ-ਸੋਰਸ AI ਕੈਨਵਸ। ਛੋਟੇ ਨਾਟਕ ਅਤੇ ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ ਇਸ ਦੀ ਇੱਕ ਦਿਸ਼ਾ ਹਨ**
 
-> 🚀 **ਛੋਟੇ ਨਾਟਕ ਬਣਾਉਣ ਦੇ ਸਾਰੇ ਕੰਮ ਇੱਕੋ ਥਾਂ**: ਪਟਕਥਾਵਾਂ ਲਿਖੋ, ਰਚਨਾਤਮਕ ਸਮੱਗਰੀ ਸੰਭਾਲੋ ਅਤੇ ਤਸਵੀਰਾਂ ਤੇ ਵੀਡੀਓ ਬਣਾਓ। ਆਪਣੀ ਪੂਰੀ ਸਿਰਜਣਾਤਮਕ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਬੇਅੰਤ ਕੈਨਵਸ ਉੱਤੇ ਸਜਾਓ।
+> 🚀 **ਇੱਕੋ ਕੈਨਵਸ ਉੱਤੇ ਨਿਰਮਾਣ**: ਲਿਖਤ, ਤਸਵੀਰਾਂ, ਵੀਡੀਓ, ਆਡੀਓ ਅਤੇ ਕਸਟਮ ਨੋਡ ਸਜਾਓ। ਛੋਟੇ ਨਾਟਕ ਅਤੇ ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ ਵੀ ਉਸੇ ਕੈਨਵਸ ਉੱਤੇ ਬਣਦੇ ਹਨ।
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork ਓਪਨ-ਸੋਰਸ ਪ੍ਰੋਜੈਕਟ ਦਾ ਸਮਰਥਨ �
 
 ## 2. 🌟 ਖ਼ਾਸ ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ
 
-Laywork ਛੋਟੇ ਨਾਟਕਾਂ, ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ ਅਤੇ ਛੋਟੇ ਵੀਡੀਓ ਬਣਾਉਣ ਲਈ ਇੱਕ ਓਪਨ-ਸੋਰਸ AI ਪਲੇਟਫਾਰਮ ਹੈ। ਇਹ ਪਟਕਥਾਵਾਂ, ਰਚਨਾਤਮਕ ਸਮੱਗਰੀ ਅਤੇ ਵੀਡੀਓ ਕਲਿੱਪਾਂ ਨੂੰ ਇੱਕੋ ਬੇਅੰਤ ਕੈਨਵਸ ਉੱਤੇ ਇਕੱਠਾ ਕਰਦਾ ਹੈ।
+Laywork ਆਮ ਰਚਨਾ ਲਈ ਇੱਕ ਓਪਨ-ਸੋਰਸ AI ਪਲੇਟਫਾਰਮ ਹੈ। ਇਹ ਲਿਖਤ, ਤਸਵੀਰਾਂ, ਵੀਡੀਓ ਅਤੇ ਆਡੀਓ ਨੂੰ ਇੱਕੋ ਬੇਅੰਤ ਕੈਨਵਸ ਉੱਤੇ ਇਕੱਠਾ ਕਰਦਾ ਹੈ। ਛੋਟੇ ਨਾਟਕ, ਐਨੀਮੇਟਡ ਕਾਮਿਕਸ ਅਤੇ ਛੋਟੇ ਵੀਡੀਓ ਇਸ ਦੀ ਇੱਕ ਨਿਰਮਾਣ ਦਿਸ਼ਾ ਹਨ।
 
 | ਸਮਰੱਥਾ | ਵਰਣਨ |
 | --- | --- |
 | 🏠 **ਆਪਣੇ ਸਿਸਟਮ ਉੱਤੇ ਸਥਾਪਨਾ** | ਪ੍ਰੋਜੈਕਟ ਅਤੇ ਸਮੱਗਰੀ ਆਪਣੇ ਡਿਵਾਈਸ ਜਾਂ ਸਰਵਰ ਉੱਤੇ ਰੱਖੋ। ਡੈਸਕਟਾਪ, Android, Docker ਅਤੇ ਸਰਵਰ ਸਥਾਪਨਾ ਦੇ ਵਿਕਲਪ ਹਨ। |
-| 🖼️ **ਬੇਅੰਤ ਕੈਨਵਸ** | ਪਟਕਥਾਵਾਂ, ਪਾਤਰ, ਦ੍ਰਿਸ਼ ਅਤੇ ਵੀਡੀਓ ਕਲਿੱਪਾਂ ਨੂੰ ਇੱਕੋ ਕੈਨਵਸ ਉੱਤੇ ਸਜਾਓ। |
+| 🖼️ **ਬੇਅੰਤ ਕੈਨਵਸ** | ਲਿਖਤ, ਤਸਵੀਰਾਂ, ਵੀਡੀਓ, ਆਡੀਓ ਅਤੇ ਕਸਟਮ ਨੋਡ ਨੂੰ ਇੱਕੋ ਕੈਨਵਸ ਉੱਤੇ ਸਜਾਓ। |
 | 🔌 **MCP** | MCP ਰਾਹੀਂ ਬਾਹਰੀ ਔਜ਼ਾਰਾਂ ਅਤੇ ਸੇਵਾਵਾਂ ਨੂੰ ਕਨੈਕਟ ਕਰੋ। |
 | 🧩 **ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ** | [ਪਲੱਗਇਨ ਮਾਰਕੀਟਪਲੇਸ](https://api.toonflow.net/console/plugIn) ਰਾਹੀਂ ਨੋਡ, ਟੂਲ ਅਤੇ ਰਚਨਾਤਮਕ ਸਹੂਲਤਾਂ ਜੋੜੋ। |
 | 🤖 **ਖੁੱਲ੍ਹਾ Agent ਸਿਸਟਮ** | ਪ੍ਰੋਂਪਟ, ਟੂਲ ਅਤੇ A2A ਦੀ ਖੁੱਲ੍ਹੀ ਪਹੁੰਚ ਨਾਲ Agent ਦਾ ਵਿਹਾਰ ਬਦਲੋ ਅਤੇ ਬਾਹਰੀ Agent ਨਾਲ ਮਿਲ ਕੇ ਕੰਮ ਕਰੋ। |

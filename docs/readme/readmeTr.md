@@ -50,8 +50,8 @@
 
 <a href="https://git.io/typing-svg">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" />
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;AI%20Short%20Drama%20Studio;Turn%20ideas%20into%20stories" alt="Laywork · Yapay Zekâ Kısa Drama Stüdyosu · Fikirleri hikâyelere dönüştürün" width="600" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=FFFFFF&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" />
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=40&duration=3000&pause=1000&color=000000&center=true&vCenter=true&width=600&lines=Laywork;Infinite%20Canvas;Agent%20Assistant" alt="Laywork · Sonsuz tuval · Agent asistanı" width="600" />
   </picture>
 </a>
 
@@ -123,9 +123,9 @@
   </a>
 </p>
 
-**Kısa dramalar, hareketli çizgi romanlar ve video üretimi için açık kaynaklı yapay zekâ platformu**
+**Genel prodüksiyon için açık kaynaklı yapay zekâ tuvali. Kısa dramalar ve hareketli çizgi romanlar yönlerden biridir**
 
-> 🚀 **Kısa drama üretimi tek bir yerde**: Senaryo yazın, varlıkları yönetin, görsel ve video üretin; tüm yaratıcı iş akışınızı sonsuz bir tuval üzerinde düzenleyin.
+> 🚀 **Tek tuvalde prodüksiyon**: Metin, görsel, video, ses ve özel düğümleri düzenleyin. Kısa dramalar ve hareketli çizgi romanlar da aynı tuvalde yapılır.
 
 </div>
 
@@ -200,12 +200,12 @@ Laywork açık kaynak projesini destekleyen aşağıdaki iş ortaklarına teşek
 
 ## 2. 🌟 Öne Çıkan Özellikler
 
-Laywork; senaryoları, varlıkları ve video kliplerini tek bir sonsuz tuvalde bir araya getiren, kısa dramalar, hareketli çizgi romanlar ve kısa videolar için açık kaynaklı bir yapay zekâ üretim platformudur.
+Laywork, metin, görsel, video ve sesi tek bir sonsuz tuvalde toplayan açık kaynaklı bir yapay zekâ üretim platformudur. Kısa dramalar, hareketli çizgi romanlar ve kısa videolar üretim yönlerinden biridir.
 
 | Özellik | Açıklama |
 | --- | --- |
 | 🏠 **Yerel kurulum** | Masaüstü, Android, Docker ve sunucu kurulumu seçenekleriyle projeleri ve varlıkları kendi cihazınızda veya sunucunuzda tutun. |
-| 🖼️ **Sonsuz tuval** | Senaryoları, karakterleri, sahneleri ve video kliplerini aynı tuval üzerinde düzenleyin. |
+| 🖼️ **Sonsuz tuval** | Metin, görsel, video, ses ve özel düğümleri aynı tuval üzerinde düzenleyin. |
 | 🔌 **MCP** | Harici araç ve hizmetleri MCP üzerinden bağlayın. |
 | 🧩 **Eklenti pazarı** | [Eklenti Pazarı](https://api.toonflow.net/console/plugIn) üzerinden düğümleri, araçları ve yaratıcı olanakları genişletin. |
 | 🤖 **Açık Agent** | Agent davranışını özelleştirmek ve harici Agent’larla iş birliği yapmak için istemlere, araçlara ve A2A’ya açık erişim. |
