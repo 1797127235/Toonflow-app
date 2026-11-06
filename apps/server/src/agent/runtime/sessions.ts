@@ -3,7 +3,8 @@ import { basename, dirname, resolve } from "node:path";
 import { readFile, readdir } from "@toonflow/file";
 import { calculateContextTokens, estimateTokens, getLastAssistantUsage, parseSessionEntries, SessionManager } from "@earendil-works/pi-coding-agent";
 import type { AgentSession, FileEntry, SessionEntry } from "@earendil-works/pi-coding-agent";
-import type { AgentEvent, AgentMention, AgentSubAgent, AgentToolCall } from "@/agent/runtime/types";
+import type { AgentContextSegment, AgentEvent, AgentMention, AgentSubAgent, AgentToolCall } from "@/agent/runtime/types";
+import { loadContextPrefix } from "@/agent/runtime/contextUsage";
 import { agentMentionsSchema } from "@/agent/runtime/mentions";
 import conf from "@/utils/conf";
 import { providerSchema, getModelLimits } from "@/utils/ai";
@@ -76,6 +77,10 @@ export function registerAgentSession(path: string, active: ActiveAgentSession) {
 export function getSubAgentInfo(history: SessionManager) {
   return history.getEntries().find(entry => entry.type === "custom" && entry.customType === "toonflowSubAgentInfo") as
     (SessionEntry & { data: AgentSubAgent }) | undefined;
+}
+
+export function delegatedAgentInstructions(child: { name: string; task: string }) {
+  return `## 子 Agent 职责\n你正在执行委派任务：${JSON.stringify({ name: child.name, task: child.task })}。遵守当前工作区规则与授权，用户可以进入此子会话补充要求。重要进展与最终结论使用 report 上报父 Agent。`;
 }
 
 export function getParentSessionFile(history: SessionManager) {
@@ -390,12 +395,14 @@ export async function getAgentSession(cwd: string, path: string) {
     const interrupted = agent.status === "running" && !active && !getActiveAgentSession(resolve(dirname(path), agent.file));
     subAgents.set(agent.file, interrupted ? { ...agent, status: "cancelled", result: "上次运行已中断" } : agent);
   }
+  const child = getSubAgentInfo(history)?.data;
+  const prefix = await loadContextPrefix(cwd, child ? delegatedAgentInstructions(child) : "").catch(() => []);
   return {
     file: basename(path),
     name: history.getSessionName() || (firstUserMessage?.content.trim() || firstUserMessage?.attachments?.[0]?.name)?.slice(0, 60) || "新对话",
     messages,
     stats: getAgentStats(history),
-    contextUsage: getAgentContext(history, active?.session?.model?.contextWindow ?? (configuredModel && model ? getModelLimits(model.provider, configuredModel).contextWindow : 0)),
+    contextUsage: getAgentContext(history, active?.session?.model?.contextWindow ?? (configuredModel && model ? getModelLimits(model.provider, configuredModel).contextWindow : 0), prefix),
     providerId: model?.provider,
     modelId: model?.modelId,
     thinkingLevel: reasoningSelection.success ? reasoningSelection.data.thinkingLevel ?? undefined : context.thinkingLevel,
@@ -446,8 +453,17 @@ export function getAgentStats(history: SessionManager, timing?: { outputTokens: 
   return { tokens, tokensPerSecond: decodeMs > 0 ? (outputTokens * 1000) / decodeMs : undefined };
 }
 
-export function getAgentContext(history: SessionManager, contextWindow = 0) {
-  if (contextWindow <= 0) return undefined;
+function fitSegments(segments: AgentContextSegment[], total: number) {
+  const sum = segments.reduce((count, segment) => count + segment.tokens, 0);
+  if (sum <= total) return segments;
+  if (total <= 0) return [];
+  const fitted = segments.map(segment => ({ ...segment, tokens: Math.floor(segment.tokens * total / sum) }));
+  const drift = total - fitted.reduce((count, segment) => count + segment.tokens, 0);
+  if (drift > 0 && fitted[0]) fitted[0].tokens += drift;
+  return fitted.filter(segment => segment.tokens > 0);
+}
+
+export function getAgentContext(history: SessionManager, contextWindow = 0, prefix: AgentContextSegment[] = []) {
   const branch = history.getBranch();
   const compactionIndex = branch.findLastIndex((entry) => entry.type === "compaction");
   const recent = branch.slice(compactionIndex + 1);
@@ -460,10 +476,24 @@ export function getAgentContext(history: SessionManager, contextWindow = 0) {
       (entry.customType === "toonflowDeletedUser" || entry.customType === "toonflowDeletedEntry") &&
       Date.parse(entry.timestamp) >= (messages[usageIndex]?.timestamp ?? 0)
   );
-  // ACT: 压缩后先按摘要与保留消息估算，首条新回复后再使用模型 usage。
-  const tokens =
-    usage && usageIndex >= 0 && !deletedAfterReply
-      ? calculateContextTokens(usage) + messages.slice(usageIndex + 1).reduce((total, message) => total + estimateTokens(message), 0)
-      : messages.reduce((total, message) => total + estimateTokens(message), 0);
-  return { tokens, contextWindow, percent: (tokens / contextWindow) * 100 };
+  // ACT: 压缩后先按摘要与保留消息估算，首条新回复后再使用模型 usage。模型 usage 已包含当轮静态提示，对话段取剩余量。
+  const includesStaticPrompt = Boolean(usage && usageIndex >= 0 && !deletedAfterReply);
+  const measured = includesStaticPrompt
+    ? calculateContextTokens(usage!) + messages.slice(usageIndex + 1).reduce((total, message) => total + estimateTokens(message), 0)
+    : messages.reduce((total, message) => total + estimateTokens(message), 0);
+  const rawPrefix = prefix.filter(segment => segment.tokens > 0);
+  const staticSegments = includesStaticPrompt ? fitSegments(rawPrefix, measured) : rawPrefix;
+  const staticTokens = staticSegments.reduce((total, segment) => total + segment.tokens, 0);
+  const conversation = includesStaticPrompt ? Math.max(0, measured - staticTokens) : measured;
+  const tokens = conversation + staticTokens;
+  if (contextWindow <= 0 && tokens <= 0) return undefined;
+  return {
+    tokens,
+    contextWindow,
+    percent: contextWindow > 0 ? (tokens / contextWindow) * 100 : null,
+    segments: [
+      ...staticSegments,
+      ...(conversation > 0 ? [{ id: "conversation" as const, label: "对话", tokens: conversation }] : []),
+    ],
+  };
 }

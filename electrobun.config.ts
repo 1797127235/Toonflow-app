@@ -1,13 +1,24 @@
+import { execFileSync } from "node:child_process";
 import type { ElectrobunConfig } from "./.hutch/devkit/api/config/ElectrobunConfig";
 
 const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? "macX64" : "macArm64")
   : process.platform === "win32" ? "windowsX64" : undefined;
 
+function appVersion() {
+  if (process.env.appVersion) return process.env.appVersion;
+  // ACT: 当前分支的版本是 git 标签，不能沿用配置里旧的 2.0.0。
+  try {
+    const tag = execFileSync("git", ["describe", "--tags", "--abbrev=0"], { cwd: import.meta.dirname, encoding: "utf8" }).trim().replace(/^v/, "");
+    if (/^\d+\.\d+\.\d+$/.test(tag)) return tag;
+  } catch { /* 没有标签时不用过期的发布号。 */ }
+  return "0.0.0";
+}
+
 export default {
   app: {
     name: "toonflow",
     identifier: "local.toonflow.desktop",
-    version: process.env.appVersion ?? "2.0.0",
+    version: appVersion(),
     urlSchemes: ["toonflow"],
   },
   build: {

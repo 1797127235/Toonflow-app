@@ -88,7 +88,7 @@ const selectedModel = ref(pendingMessage?.model ?? (props.initialSession?.provid
   ? JSON.stringify([props.initialSession.providerId, props.initialSession.modelId]) : ""));
 const reasoningEffort = ref(pendingMessage?.reasoningEffort ?? props.initialSession?.thinkingLevel ?? "");
 const selectedModelChoice = computed(() => modelChoices.value.find(item => item.value === selectedModel.value));
-const contextWindow = computed(() => contextUsage.value?.contextWindow ?? selectedModelChoice.value?.contextWindow ?? 262144);
+const contextWindow = computed(() => contextUsage.value?.contextWindow || selectedModelChoice.value?.contextWindow || 262144);
 function applyEvent(event: AgentEvent) {
   switch (event.type) {
     case "subAgent":

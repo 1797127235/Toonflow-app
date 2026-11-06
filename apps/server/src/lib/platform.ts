@@ -15,7 +15,9 @@ export function getRuntimePlatform() {
   const nativeDevelopment = desktopSystem && development;
   const host = desktop || mobile;
   // local 表示本机任意工作目录能力，native 表示原生宿主或开发原生操作，均不代替请求授权。
-  const local = desktopSystem && (development || desktop);
+  // ACT: Linux 桌面与 Windows、macOS 一样可选本机目录；独立服务器进程和 OpenHarmony 仍只能用服务器工作区。
+  const linuxDesktop = process.platform === "linux" && desktop && process.env.TOONFLOW_PLATFORM !== "ohos";
+  const local = linuxDesktop || (desktopSystem && (development || desktop));
   const native = host || nativeDevelopment;
 
   return {
@@ -23,7 +25,7 @@ export function getRuntimePlatform() {
     id: `${os}-l${Number(local)}n${Number(native)}h${Number(host)}`,
     os, development, desktop, mobile, local, native, host,
     nativeDevelopment,
-    // 此限制与 local 不等价：Linux 桌面宿主仍限制 Host，但不开放任意工作目录。
+    // 桌面宿主限制为本机页面；是否允许任意目录由 local 决定。
     requiresLocalHost: desktop || nativeDevelopment,
   };
 }

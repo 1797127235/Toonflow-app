@@ -18,7 +18,22 @@ export type AgentStats = {
   tokensPerSecond?: number;
 };
 
-export type AgentContext = { tokens: number | null; contextWindow: number; percent: number | null };
+/** 上下文占用估算分段。按字符数 ÷ 4 估算，不是模型 tokenizer；tokens 为 0 的分段不下发。 */
+export type AgentContextSegment = {
+  /** system 系统提示；rules 工作区/全局 AGENTS 与长期记忆；skills 预载技能目录；tools 内置工具 JSON；mcp MCP 工具 JSON；conversation 消息与按需读入内容。 */
+  id: "system" | "rules" | "skills" | "tools" | "mcp" | "conversation";
+  label: string;
+  tokens: number;
+};
+
+/** 当前上下文占用。有模型 usage 时 tokens 以 usage 为准，分段占比按估算切分；尚无 usage 时总占用为各分段估算之和。 */
+export type AgentContext = {
+  tokens: number | null;
+  contextWindow: number;
+  /** 上下文窗口未知时为 null，前端勿用 0 做分母。 */
+  percent: number | null;
+  segments?: AgentContextSegment[];
+};
 
 export type AgentSubAgent = {
   file: string;

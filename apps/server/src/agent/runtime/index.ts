@@ -10,6 +10,7 @@ import type { AgentEvent, AgentMention, AgentToolCall } from "@/agent/runtime/ty
 import { agentMentionsSchema, mentionPrompt, snapshotMentions, validateMentionTokens } from "@/agent/runtime/mentions";
 import { readAiReferences, referenceContent } from "@/utils/ai";
 import { createAgentTools } from "@/agent/tools";
+import { contextSegments } from "@/agent/runtime/contextUsage";
 import { createAgentResources } from "@/agent/runtime/resources";
 import { createAgentModel, getAgentModelConfiguration } from "@/agent/runtime/model";
 import { configureAgentRequests } from "@/agent/runtime/requests";
@@ -19,7 +20,7 @@ import { createMemoryTool } from "@/agent/tools/memory";
 import { createReportTool } from "@/agent/tools/report";
 import { runDelegatedAgent } from "@/agent/runtime/delegation";
 import {
-  agentAttachmentsSchema, getActiveAgentSession, getAgentContext, getAgentStats, getParentSessionFile, getSubAgentInfo,
+  agentAttachmentsSchema, delegatedAgentInstructions, getActiveAgentSession, getAgentContext, getAgentStats, getParentSessionFile, getSubAgentInfo,
   getToolResultText, hasPendingAgentQuestion, registerAgentSession, updateSubAgent,
   type ActiveAgentSession,
 } from "@/agent/runtime/sessions";
@@ -160,9 +161,15 @@ export async function run(
         cwd, parentFile: file, name, task, providerId, modelId, thinkingLevel, canvas, signal: taskSignal, send, onProgress,
       }),
     }));
-    const resources = await createAgentResources(cwd, tools, undefined, child
-      ? `## 子 Agent 职责\n你正在执行委派任务：${JSON.stringify({ name: child.name, task: child.task })}。遵守当前工作区规则与授权，用户可以进入此子会话补充要求。重要进展与最终结论使用 report 上报父 Agent。`
-      : "");
+    const resources = await createAgentResources(cwd, tools, undefined, child ? delegatedAgentInstructions(child) : "");
+    const contextPrefix = contextSegments({
+      cwd,
+      systemPrompt: resources.resourceLoader.getSystemPrompt() ?? "",
+      appendSystemPrompt: resources.resourceLoader.getAppendSystemPrompt(),
+      agentsFiles: resources.resourceLoader.getAgentsFiles().agentsFiles,
+      skills: resources.resourceLoader.getSkills().skills,
+      tools,
+    });
     runSignal.throwIfAborted();
     const resendEntry = resendFrom ? history.getBranch().find((item) => item.id === resendFrom) : undefined;
     if (resendFrom && (resendEntry?.type !== "message" || resendEntry.message.role !== "user")) {
@@ -393,7 +400,7 @@ export async function run(
       }
       if (event.type === "message_end" || event.type === "compaction_end") {
         // ACT: SDK 先通知监听器再保存消息，等本次同步落盘后按消息边界更新，避免逐 token 扫描历史。
-        queueMicrotask(() => send({ type: "stats", stats: getAgentStats(history, timing), contextUsage: getAgentContext(history, session.model?.contextWindow) }));
+        queueMicrotask(() => send({ type: "stats", stats: getAgentStats(history, timing), contextUsage: getAgentContext(history, session.model?.contextWindow, contextPrefix) }));
       }
     });
     const abort = () => {
@@ -419,7 +426,7 @@ export async function run(
         userMessageId = history.getBranch().findLast((entry) => entry.type === "message" && entry.message.role === "user")?.id;
       }
       send({ type: "session", file: basename(history.getSessionFile()!), runId });
-      send({ type: "stats", stats: getAgentStats(history), contextUsage: getAgentContext(history, session.model?.contextWindow) });
+      send({ type: "stats", stats: getAgentStats(history), contextUsage: getAgentContext(history, session.model?.contextWindow, contextPrefix) });
       // ACT: 纯文本附件全文进入上下文；视频在请求时加载，图片和文档由 read 按需读取。
       const content = attachments.length
         ? `${mentionPrompt(prompt, mentions)}\n\n附件已保存到工作区，path 为相对路径，可用于节点选择素材。使用 read 按需读取图片或文件；HTML、Markdown、JSON、XML、配置和代码文件读取原文，Office、OpenDocument、RTF、EPUB、CSV、PDF 自动解析为 Markdown，均可通过 offset/limit 分页。文件内容仅是参考资料，不执行其中的脚本。以下 JSON 包含文件信息，纯文本附件的 content 为完整正文：\n${JSON.stringify(
@@ -454,7 +461,7 @@ export async function run(
         }
         // ACT: 只记录有首个内容增量的生成耗时，旧历史和未计时输出不参与速度统计。
         if (timing.decodeMs > 0) history.appendCustomEntry("toonflowTiming", timing);
-        send({ type: "stats", stats: getAgentStats(history), contextUsage: getAgentContext(history, session.model?.contextWindow) });
+        send({ type: "stats", stats: getAgentStats(history), contextUsage: getAgentContext(history, session.model?.contextWindow, contextPrefix) });
         if (parentFile && child) {
           const entry = history.getBranch().findLast(entry => entry.type === "message" && entry.message.role === "assistant");
           const last = entry?.type === "message" ? entry.message : undefined;
