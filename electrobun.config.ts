@@ -37,6 +37,7 @@ export default {
       } : {}),
       "build/web": "views/mainview",
       "build/mcp": "mcp",
+      "build/desktop/bridge/piBridge.js": "bun/piBridge.js",
       "build/tools": "tools",
       // ACT: 团队暂不打包，恢复时取消注释。
       // "build/agents": "agents",

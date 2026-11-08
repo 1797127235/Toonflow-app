@@ -1,7 +1,10 @@
 import { resolve } from "node:path";
 import { createApp } from "./app";
+import { setRuntimeHost } from "./lib/platform";
 import config from "../../../electrobun.config";
 
+// 独立启动默认是 server 宿主；本机桌面调试用 TOONFLOW_HOST=desktop 打开本机目录能力。
+if (process.env.TOONFLOW_HOST === "desktop") setRuntimeHost("desktop");
 const startTime = Date.now();
 const realPort = Number(process.env.TOONFLOW_SERVER_PORT || 3000);
 if (!Number.isInteger(realPort) || realPort < 1 || realPort > 65535) throw new Error("TOONFLOW_SERVER_PORT 必须是 1–65535 之间的整数");

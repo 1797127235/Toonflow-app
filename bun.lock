@@ -42,6 +42,7 @@
     "apps/server": {
       "name": "@toonflow/server",
       "dependencies": {
+        "@agentclientprotocol/sdk": "^2.4.0",
         "@babel/parser": "^7.29.8",
         "@breezystack/lamejs": "^1.2.7",
         "@earendil-works/pi-ai": "0.85.1",
@@ -818,6 +819,8 @@
   },
   "packages": {
     "@a2a-js/sdk": ["@a2a-js/sdk@1.2.0", "https://registry.npmmirror.com/@a2a-js/sdk/-/sdk-1.2.0.tgz", { "dependencies": { "jose": "^6.2.3" }, "peerDependencies": { "@bufbuild/protobuf": "^2.10.2", "@grpc/grpc-js": "^1.11.0", "express": "^4.21.2 || ^5.1.0" }, "optionalPeers": ["@bufbuild/protobuf", "@grpc/grpc-js", "express"] }, "sha512-zxjvBrxhPV4J/RN8QTbsYaUIu9Y9RvmR06IP5o42UdJX42A9I0m1StGVvqrcCQ3bdu3SzWHPm5CeC2FNHARvkw=="],
+
+    "@agentclientprotocol/sdk": ["@agentclientprotocol/sdk@2.4.0", "", { "peerDependencies": { "@modelcontextprotocol/server": "^2.4.0", "zod": "^3.25.76 || ^4.0.0" }, "optionalPeers": ["@modelcontextprotocol/server"] }, "sha512-7qJ8nnyj7WesC5ve185ioTpB2/svQoeGV4HA4nLEhgDUrcmBe54/08VcXc/oL4p14tDbxxECZzdYmUYQ+4l+Wg=="],
 
     "@antfu/install-pkg": ["@antfu/install-pkg@2.0.1", "https://registry.npmmirror.com/@antfu/install-pkg/-/install-pkg-2.0.1.tgz", { "dependencies": { "package-manager-detector": "^1.7.0", "tinyexec": "^1.2.4" } }, "sha512-iCKVQcIC0e3oDxEfs3SHQGW+ovhBMZmS1TE+bTk50rVyMCBmCfClv7Qi3HQKlumYwvjb/iIMeWCW2i67q6kFfQ=="],
 

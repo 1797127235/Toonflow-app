@@ -38,7 +38,20 @@
     <teleport v-for="target in draftMentionTargets" :key="target.key" :to="target.element"><mentionThumbnail v-bind="mentionThumbnailProps(target.mention)" :directory="directory"><icon-photo :size="14" /></mentionThumbnail></teleport>
     <mentionContent ref="draftMentionPreview" :mentions="draftMentions" :directory="directory" removable @remove="removeDraftMention" />
     <div class="senderActions">
-      <modelPopover v-model="selectedModel" v-model:reasoningEffort="reasoningEffort" :active="active" :disabled="disabled || voiceActive" />
+      <el-dropdown trigger="click" @command="engine = $event">
+        <el-button class="agentButton" text :aria-label="engine === 'acp' ? '切换 Agent：当前 pi' : '切换 Agent：当前 Laywork'">
+          <span>{{ engine === 'acp' ? 'pi' : 'Laywork' }}</span>
+          <icon-chevron-down :size="14" aria-hidden="true" />
+        </el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="builtin">Laywork</el-dropdown-item>
+            <el-dropdown-item command="acp">pi</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+      <modelPopover v-if="showModel" v-model="activeModel" v-model:reasoningEffort="reasoningEffort" :active="active" :disabled="disabled || voiceActive" :externalChoices="engine === 'acp' ? piModelChoices : undefined"
+        :placeholder="engine === 'acp' ? acpModelPlaceholder : undefined" />
       <input ref="attachmentInput" type="file" :accept="attachmentAccept" multiple hidden :disabled="locked" @change="selectAttachments" />
       <el-button text circle :disabled="locked" aria-label="添加附件" title="添加附件" @click="attachmentInput?.click()"><icon-paperclip :size="16" /></el-button>
       <mentionMenu ref="mentionMenuRef" :directory="directory" :active="active" :disabled="locked || !directory" :query="mentionQuery" :editor="senderElement" :currentCanvasId="createCanvasContext?.()?.id" @open="captureMentionPosition" @select="insertMentions" @dismiss="mentionQuery = undefined" />
@@ -56,7 +69,7 @@
 <script setup lang="ts">
 import { locale, t, translate } from "@toonflow/i18n/vue";
 import { computed, inject, ref, shallowRef, watch } from "vue";
-import { IconArrowUp, IconMicrophone, IconPaperclip, IconPhoto, IconPlayerStopFilled } from "@tabler/icons-vue";
+import { IconArrowUp, IconChevronDown, IconMicrophone, IconPaperclip, IconPhoto, IconPlayerStopFilled } from "@tabler/icons-vue";
 import { ElMessage } from "element-plus";
 import { getReadableFileMimeType, readableFileAccept } from "@toonflow/server/documentFormats";
 import type { AgentContext, AgentMention, AgentStats } from "@toonflow/server/agent/types";
@@ -75,8 +88,16 @@ import useVoiceInput from "./useVoiceInput";
 import xSender, { type AnyTagProps } from "x-sender";
 import "x-sender/lib/XSender.css";
 
-const props = defineProps<{ active: boolean; disabled: boolean; busy: boolean; stopping?: boolean; remoteRunning: boolean; deletingId?: string; directory?: string; contextUsage?: AgentContext; stats?: AgentStats; contextWindow: number }>();
+const props = defineProps<{ active: boolean; disabled: boolean; busy: boolean; stopping?: boolean; remoteRunning: boolean; deletingId?: string; directory?: string; contextUsage?: AgentContext; stats?: AgentStats; contextWindow: number; showModel?: boolean; acpModels?: { value: string; label: string }[]; acpModelsLoading?: boolean; acpModelsError?: string }>();
 const emit = defineEmits<{ submit: []; stop: [] }>();
+const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
+const acpModel = defineModel<string>("acpModel", { default: "" });
+const activeModel = computed({
+  get: () => engine.value === "acp" ? acpModel.value : selectedModel.value,
+  set: value => { if (engine.value === "acp") acpModel.value = value; else selectedModel.value = value; },
+});
+const piModelChoices = computed(() => props.acpModels?.length ? props.acpModels : props.acpModelsLoading ? [{ value: "", label: "正在读取 pi 模型…" }] : undefined);
+const acpModelPlaceholder = computed(() => props.acpModelsLoading ? "正在读取 pi 模型…" : props.acpModelsError || "选择模型");
 const selectedModel = defineModel<string>("selectedModel", { required: true });
 const reasoningEffort = defineModel<string>("reasoningEffort", { required: true });
 const editingId = defineModel<string>("editingId");
@@ -658,6 +679,17 @@ defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restor
 
       > .el-button {
         margin-left: 0;
+      }
+
+      .agentButton {
+        flex: none;
+        height: 28px;
+        padding: 0 8px;
+        color: var(--el-text-color-regular);
+
+        > span {
+          margin-right: 4px;
+        }
       }
 
       .modelPopover {

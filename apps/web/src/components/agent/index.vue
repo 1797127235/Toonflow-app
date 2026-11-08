@@ -26,6 +26,7 @@
       :active="visible && item.key === conversationKey"
       :initialSession="item.session"
       :sessionFile="item.file"
+      v-model:engine="engine"
       :disabled="loading || !initialized"
       @session="setSessionFile(item, $event)"
       @event="receiveAgentEvent"
@@ -46,6 +47,7 @@ import agentMenu from "./menu.vue";
 import conversation from "./conversation.vue";
 
 const visible = defineModel<boolean>({ default: false });
+const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
 type OpenConversation = { key: number; name: string; file?: string; parentFile?: string; subAgents: AgentSubAgent[]; session: AgentConversation | null };
 // ACT: 会话实例保留到工作区关闭，让切换后的回复继续接收流式内容。
 const conversations = ref<OpenConversation[]>([]);

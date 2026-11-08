@@ -20,12 +20,13 @@
   },
   "scripts": {
     "routes": "bun src/core.ts",
-    "dev": "NODE_ENV=dev bun --watch src/index.ts",
+    "dev": "NODE_ENV=dev bun --hot src/index.ts",
     "build": "bun scripts/build.ts",
     "start": "bun ../../build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@agentclientprotocol/sdk": "^2.4.0",
     "@babel/parser": "^7.29.8",
     "@breezystack/lamejs": "^1.2.7",
     "@earendil-works/pi-ai": "0.85.1",

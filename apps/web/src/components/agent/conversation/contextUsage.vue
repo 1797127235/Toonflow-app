@@ -45,7 +45,7 @@
         </div>
       </template>
       <span v-else class="contextHint">{{ usage ? "等待下一次回复更新用量" : "尚无用量数据" }}</span>
-      <div v-if="stats" class="contextStats">
+      <div v-if="stats && stats.tokens.total > 0" class="contextStats">
         <div class="contextHeader">对话累计用量</div>
         <div class="contextTokens"><span>输入</span><span>{{ inputTokens.toLocaleString() }} tok</span></div>
         <div class="contextTokens"><span>输出</span><span>{{ stats.tokens.output.toLocaleString() }} tok</span></div>

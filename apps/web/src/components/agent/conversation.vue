@@ -38,6 +38,12 @@
       :contextUsage="contextUsage"
       :stats="stats"
       :contextWindow="contextWindow"
+      :showModel="true"
+      v-model:engine="engine"
+      v-model:acpModel="acpModel"
+      :acpModels="acpModels"
+      :acpModelsLoading="acpModelsLoading"
+      :acpModelsError="acpModelsError"
       @submit="submitMessage"
       @stop="stopMessage" />
   </div>
@@ -63,9 +69,72 @@ import messageList from "./conversation/messageList.vue";
 import messageInput from "./conversation/messageInput.vue";
 
 const props = defineProps<{ active: boolean; initialSession: AgentConversation | null; sessionFile?: string; disabled: boolean }>();
+const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
 const emit = defineEmits<{ session: [file: string]; sent: [prompt: string]; event: [event: AgentEvent] }>();
 const workspaceStore = useWorkspaceStore();
 const directory = workspaceStore.project?.directory;
+const acpModels = ref<{ value: string; label: string }[]>([]);
+const acpModel = ref("");
+const acpModelsLoading = ref(false);
+const acpModelsError = ref("");
+let acpModelsLoaded = false;
+type AcpModelOption = { value: string; label: string };
+
+function readCachedAcpModels(path: string): { options: AcpModelOption[]; currentValue: string } | null {
+  try {
+    const cached = JSON.parse(localStorage.getItem(`acpModels:${path}`) ?? "null");
+    const options = Array.isArray(cached) ? cached : cached?.options;
+    if (!Array.isArray(options) || !options.every(item => typeof item?.value === "string")) return null;
+    return { options, currentValue: typeof cached?.currentValue === "string" ? cached.currentValue : "" };
+  } catch {
+    return null;
+  }
+}
+
+function applyAcpModels(options: AcpModelOption[], currentValue: string) {
+  acpModels.value = options;
+  const preferred = currentValue && options.some(item => item.value === currentValue) ? currentValue : options[0]?.value ?? "";
+  if (!acpModel.value || !options.some(item => item.value === acpModel.value)) acpModel.value = preferred;
+}
+
+function applyAcpModelsFrom(models: { currentValue?: string; options?: { value: string; name: string }[] } | undefined) {
+  if (!models?.options?.length) return false;
+  applyAcpModels(models.options.map(item => ({ value: item.value, label: item.name })), models.currentValue ?? "");
+  return true;
+}
+
+async function loadAcpModels() {
+  const path = workspaceStore.project?.directory;
+  if (!path || acpModelsLoaded) return;
+  if (!acpModels.value.length) {
+    const cached = readCachedAcpModels(path);
+    if (cached) applyAcpModels(cached.options, cached.currentValue);
+  }
+  acpModelsLoading.value = true;
+  const headers = { "Accept-Language": locale.value, "x-toonflow-workspace": "1" };
+  const sessionUrl = `/api/acp/models?directory=${encodeURIComponent(path)}`;
+  try {
+    // 模型目录直接读 pi 配置文件（毫秒级），读不到才回退到建会话。
+    const catalogPayload = await fetch("/api/acp/modelCatalog", { headers }).then(response => response.json());
+    if (applyAcpModelsFrom(catalogPayload?.data?.models)) {
+      // 提前建好会话，首次发送不必再等 pi 启动；失败不影响模型列表。
+      void fetch(sessionUrl, { headers }).catch(() => {});
+    } else {
+      const payload = await fetch(sessionUrl, { headers }).then(response => response.json());
+      if (!applyAcpModelsFrom(payload?.data?.models)) throw new Error(payload?.message || "pi 未返回可用模型");
+    }
+    try { localStorage.setItem(`acpModels:${path}`, JSON.stringify({ currentValue: acpModel.value, options: acpModels.value })); }
+    catch { /* views:// 下 localStorage 可能不可写，缓存失败不影响本次结果。 */ }
+    acpModelsLoaded = true;
+    acpModelsError.value = "";
+  } catch (error) {
+    acpModelsLoaded = false;
+    acpModelsError.value = error instanceof Error && error.message ? error.message : "读取 pi 模型失败";
+  } finally {
+    acpModelsLoading.value = false;
+  }
+}
+watch([engine, () => workspaceStore.project?.directory], ([value]) => { if (value === "acp") void loadAcpModels(); }, { immediate: true });
 const createCanvasContext = inject<(() => CanvasContext | undefined) | undefined>("canvas", undefined);
 const messages = ref<AgentMessage[]>((props.initialSession?.messages ?? []).map(message => ({ ...message })));
 const stream = createConversationStream(messages);
@@ -177,7 +246,16 @@ async function refreshSession(signal?: AbortSignal) {
   }
 }
 
-async function stopRun(runId: string) {
+async function stopRun(runId?: string) {
+  if (engine.value === "acp") {
+    const response = await fetch("/api/acp/cancel", {
+      method: "POST",
+      headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
+      body: JSON.stringify({ directory }), keepalive: true, signal: AbortSignal.timeout(30000),
+    });
+    if (!response.ok) throw new Error("停止失败，请重试");
+    return;
+  }
   const response = await fetch("/api/agent/stop", {
     method: "POST",
     headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
@@ -276,7 +354,7 @@ async function sendMessage(source?: AgentMessage) {
   if (locked.value || !instance || (!prompt && !attachments.length)) return;
   const model = selectedModelChoice.value;
   if (!directory) return ElMessage.warning("请先打开项目");
-  if (!model) return ElMessage.warning("请先选择模型");
+  if (!model && engine.value !== "acp") return ElMessage.warning("请先选择模型");
 
   const requestController = new AbortController();
   const transportController = new AbortController();
@@ -289,7 +367,8 @@ async function sendMessage(source?: AgentMessage) {
       // 先取得服务端已注册的轮次 ID，避免停止早于会话初始化而遗漏后台请求。
       const response = await responsePromise;
       const runId = response?.headers.get("X-Toonflow-Agent-Run");
-      if (runId) await stopRun(runId);
+      if (engine.value === "acp") await stopRun();
+      else if (runId) await stopRun(runId);
       else if (response?.ok) throw new Error("未收到后台取消通道，请刷新页面后重试");
     } finally {
       transportController.abort();
@@ -299,6 +378,11 @@ async function sendMessage(source?: AgentMessage) {
   cancelCurrent = cancelRun;
   busy.value = true;
   compacting.value = false;
+  // ACP 不提供 token 明细，清空上一轮的累计用量，避免把别的会话数字当成这一轮的。
+  if (engine.value === "acp") {
+    stats.value = undefined;
+    contextUsage.value = undefined;
+  }
   const reply = reactive<AgentMessage>({ id: crypto.randomUUID(), role: "assistant", content: "", parts: [], streaming: true });
   const userMessage = reactive<AgentMessage>({ id: crypto.randomUUID(), role: "user", content: prompt, attachments, mentions });
   let ownsStream = !remoteRunning.value;
@@ -317,10 +401,12 @@ async function sendMessage(source?: AgentMessage) {
     requestController.signal.throwIfAborted();
     await uploadAttachments(attachments, directory, requestController.signal);
     requestController.signal.throwIfAborted();
-    responsePromise = fetch("/api/agent", {
+    responsePromise = fetch(engine.value === "acp" ? "/api/acp/prompt" : "/api/agent", {
       method: "POST",
       headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
-      body: JSON.stringify({ prompt, mentions, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })), directory, providerId: model.providerId, modelId: model.modelId, thinkingLevel: reasoningEffort.value || undefined, sessionFile: props.sessionFile, resendFrom, canvas: canvasContext ? { id: canvasContext.id, tools: canvasContext.tools } : undefined }),
+      body: JSON.stringify(engine.value === "acp"
+        ? { directory, prompt, modelId: acpModel.value || undefined, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })) }
+        : { prompt, mentions, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })), directory, providerId: model?.providerId ?? "", modelId: model?.modelId ?? "", thinkingLevel: reasoningEffort.value || undefined, sessionFile: props.sessionFile, resendFrom, canvas: canvasContext ? { id: canvasContext.id, tools: canvasContext.tools } : undefined }),
       signal: transportController.signal,
     }).then(response => {
       remoteRunId.value = response.headers.get("X-Toonflow-Agent-Run") ?? undefined;

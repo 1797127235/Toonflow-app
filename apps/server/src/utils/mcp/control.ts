@@ -134,7 +134,7 @@ export function callControl(connectionId: string, name: string, args: Record<str
       finish({ error: "控制命令已取消或超时" });
     };
     // ACT: A2A/MCP 的转写与 Agent 共用浏览器 ASR 超时，避免长音频在两分钟时被截断。
-    const timer = name === "transcribeAudio" ? undefined : setTimeout(abort, 120000);
+    const timer = ["transcribeAudio", "askUser"].includes(name) ? undefined : setTimeout(abort, 120000);
     connection.pending = { id: callId, finish };
     signal.addEventListener("abort", abort, { once: true });
     connection.response.write(`data: ${JSON.stringify({ type: "call", callId, name, args, directory })}\n\n`);

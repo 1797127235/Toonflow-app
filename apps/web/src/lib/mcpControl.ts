@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import type { NodeToolInfo } from "@toonflow/tools-scaffold/runtime";
 import { invalidateNodeModels } from "@toonflow/nodes-scaffold/nodeAi";
 import { saveSettings, settings } from "@/stores/settings";
+import { askQuestion } from "@/lib/askQuestion";
 import { useWorkspaceStore } from "@/stores/workspace";
 
 type ControlCall = { type: "call"; callId: string; name: string; args: Record<string, unknown>; directory?: string };
@@ -89,12 +90,13 @@ export function useMcpControl() {
         calls.set(request.callId, controller);
         connectionCalls.set(request.callId, controller);
         // ACT: 长音频转写由 ASR 检测停滞与收尾超时，连接关闭和主动取消仍立即中止。
-        const callSignal = AbortSignal.any([signal, controller.signal, ...(request.name === "transcribeAudio" ? [] : [AbortSignal.timeout(120000)])]);
+        const callSignal = AbortSignal.any([signal, controller.signal, ...(["transcribeAudio", "askUser"].includes(request.name) ? [] : [AbortSignal.timeout(120000)])]);
         let result: unknown;
         let error: string | undefined;
         try {
           callSignal.throwIfAborted();
           if (request.name === "getAppState") result = getState();
+          else if (request.name === "askUser") result = await askQuestion(request.args as unknown as Parameters<typeof askQuestion>[0], request.directory);
           else if (request.name === "getSettings") result = readSettings();
           else if (request.name === "updateSettings") {
             const patch = request.args.patch;

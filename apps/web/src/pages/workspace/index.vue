@@ -99,8 +99,7 @@
             </el-tooltip>
           </div>
         </el-card>
-        <el-tooltip v-if="!agentVisible" content="Laywork Agent" placement="top" :showArrow="false" :hideAfter="0">
-          <el-button
+        <el-tooltip v-if="!agentVisible" content="Laywork Agent" placement="top" :showArrow="false" :hideAfter="0">          <el-button
             class="agentButton"
             :class="{ standalone: activePanel !== 'canvas' }"
             :aria-expanded="agentVisible"
@@ -110,7 +109,7 @@
         </el-tooltip>
       </div>
     </div>
-    <floatingAgent v-model="agentVisible" :inert="workspaceStore.projectLoadingVisible" @resize="agentWidth = $event" />
+    <floatingAgent v-model="agentVisible" v-model:engine="agentEngine" :inert="workspaceStore.projectLoadingVisible" @resize="agentWidth = $event" />
     <settings v-model="settingsVisible" />
     <el-dialog v-model="contactVisible" :title="contactInfo.title" width="min(360px, calc(100vw - 32px))" alignCenter appendToBody>
       <div class="contactContent">
@@ -167,6 +166,7 @@ const panelOptions = [
   { label: "文档", value: "document", icon: IconFileText },
 ];
 const agentVisible = ref(true);
+const agentEngine = ref<"builtin" | "acp">("builtin");
 const agentWidth = ref(0);
 const settingsVisible = ref(false);
 const helpVisible = ref(false);

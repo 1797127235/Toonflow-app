@@ -54,8 +54,16 @@ for (const script of mode === "dev" ? ["dev:plugins"] : [
 ]) {
   await $`${process.execPath} run ${script}`.cwd(projectDir);
 }
-await $`${process.execPath} run --filter @toonflow/web build`.cwd(projectDir);
-await $`${process.execPath} run --filter @toonflow/mcp build`.cwd(projectDir);
+await $`${process.execPath} run --cwd apps/web build`.cwd(projectDir);
+await $`${process.execPath} run --cwd packages/mcp build`.cwd(projectDir);
+// ACT: pi 用 `-e` 单独加载 bridge，不在主进程 bundle 里，需要独立产物。
+const bridgeBuild = await Bun.build({
+  entrypoints: [resolve(projectDir, "apps/server/src/agent/acp/pi/piBridge.ts")],
+  outdir: resolve(projectDir, "build/desktop/bridge"),
+  target: "bun",
+  minify: true,
+});
+if (!bridgeBuild.success) throw new AggregateError(bridgeBuild.logs, "pi bridge 构建失败。");
 const agentDirectory = dirname(realpathSync(Bun.resolveSync("@earendil-works/pi-coding-agent", resolve(projectDir, "apps/server"))));
 const photonDirectory = dirname(Bun.resolveSync("@silvia-odwyer/photon-node", agentDirectory));
 const photonOutput = resolve(projectDir, "build/desktop/photon");

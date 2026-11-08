@@ -117,7 +117,7 @@ export function getMcpRuntime() {
     preferredPort,
     port: runtime?.port ?? null,
     error: runtime?.error ?? null,
-    stdio: runtime?.file && existsSync(runtime.entry)
+    stdio: runtime?.file && existsSync(runtime.file) && existsSync(runtime.entry)
       ? { command: runtime.command, args: [runtime.entry, "--runtime", runtime.file] }
       : null,
   };

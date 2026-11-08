@@ -27,7 +27,7 @@
         tabindex="0"
         @pointerdown.stop="startInteraction($event, handle.edge)"
         @keydown="resizeWithKeyboard($event, handle.edge)" />
-      <agent v-model="visible">
+      <agent v-model="visible" v-model:engine="engine">
         <template #menuActions>
           <el-button
             text
@@ -50,12 +50,13 @@ import { IconLayoutSidebarRight, IconAppWindowBottomRight } from "@tabler/icons-
 import agent from "@/components/agent/index.vue";
 
 const visible = defineModel<boolean>({ default: false });
+const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
 const emit = defineEmits<{ resize: [width: number] }>();
 const docked = ref(false);
 const viewport = reactive({ width: window.innerWidth, height: window.innerHeight });
 const gap = computed(() => Math.min(15, viewport.width / 2, viewport.height / 2));
 const maxWidth = computed(() => Math.max(0, docked.value ? viewport.width * 0.45 : viewport.width - gap.value * 2));
-const preferredWidth = ref(420);
+const preferredWidth = ref(560);
 const width = computed(() => Math.min(preferredWidth.value, maxWidth.value));
 const preferredHeight = ref<number>();
 const height = computed(() =>

@@ -79,7 +79,7 @@ for (const component of [
 </script>
 
 <script setup lang="ts">
-const props = defineProps<{ tool: ToolCall; directory?: string; toolSessionId?: string }>();
+const props = defineProps<{ tool: ToolCall; directory?: string; toolSessionId?: string; submit?: (payload: { answer?: string; values?: unknown; skipped?: boolean }) => Promise<{ answer?: string; skipped?: boolean }> }>();
 const title = computed(() => props.tool.question?.title || (typeof props.tool.args?.title === "string" ? props.tool.args.title.trim() : "") || "请确认");
 const selected = ref("");
 const text = ref("");
@@ -144,6 +144,13 @@ async function submitAnswer(skip: boolean) {
   submitting.value = true;
   try {
     if (!skip && formRules.value.length && !(await formApi.value?.validate().catch(() => false))) return;
+    const payload = skip ? { skipped: true } : formRules.value.length ? { values: formApi.value!.formData() } : { answer: value };
+    if (props.submit) {
+      const result = await props.submit(payload);
+      submittedAnswer.value = result.answer ?? "";
+      submittedSkipped.value = result.skipped === true;
+      return;
+    }
     const response = await axios.post(props.toolSessionId ? "/api/singleAgent/answer" : "/api/agent/answer", {
       ...(props.toolSessionId ? { sessionId: props.toolSessionId } : { directory: props.directory }),
       callId,

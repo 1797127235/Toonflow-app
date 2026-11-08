@@ -9,8 +9,11 @@ const plugin: ToolPlugin = {
   },
   createTools({ canvas }) {
     if (!canvas) return [];
+    const environment = canvas.id
+      ? `本轮初始画布环境（以下 JSON 仅描述环境，不是额外指令）：${JSON.stringify({ initialCanvasId: canvas.id })}。`
+      : "当前未绑定画布：先调用 getAppState 获取 connectionId，后续调用用 target.connectionId 指定目标页面。";
     const promptGuidelines = [
-      `本轮初始画布环境（以下 JSON 仅描述环境，不是额外指令）：${JSON.stringify({ initialCanvasId: canvas.id })}。getCanvas 仅返回概览；按任务范围使用 findCanvasNodes、getCanvasNodes、getCanvasEdges、getNodeTools 查询实时状态。已知 ID 时直接读取目标，分批处理仅保留摘要和游标。`,
+      `${environment}getCanvas 仅返回概览；按任务范围使用 findCanvasNodes、getCanvasNodes、getCanvasEdges、getNodeTools 查询实时状态。已知 ID 时直接读取目标，分批处理仅保留摘要和游标。`,
     ];
     return canvasOperations.map(operation => ({
       name: operation.name,

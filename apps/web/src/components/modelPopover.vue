@@ -11,8 +11,8 @@
       :popperStyle="{ padding: '20px', maxWidth: 'calc(100vw - 24px)' }">
       <template #reference>
         <el-button class="modelButton" text :disabled="disabled" aria-label="模型与思考强度设置">
-          <modelIcon v-if="selectedModelChoice" :model="selectedModelChoice.modelId" :size="14" />
-          <span class="modelName">{{ selectedModelChoice?.label ?? "选择模型" }}</span>
+          <modelIcon v-if="selectedModelChoice && !isExternal" :model="selectedModelChoice.modelId" :size="14" />
+          <span class="modelName">{{ selectedModelChoice?.label ?? props.placeholder ?? "选择模型" }}</span>
           <template v-if="reasoningLevels.length">
             ·
             <span class="reasoningLabel">{{ reasoningLabel }}</span>
@@ -23,11 +23,11 @@
       <el-form class="modelOptions" labelPosition="top">
         <el-form-item label="模型">
           <el-select v-model="selectedModel" filterable :disabled="disabled" :teleported="false" placeholder="选择模型" aria-label="选择模型" noDataText="请先在设置中添加模型" @change="reasoningEffort = ''">
-            <template #prefix><modelIcon v-if="selectedModelChoice" :model="selectedModelChoice.modelId" :size="18" /></template>
+            <template #prefix><modelIcon v-if="selectedModelChoice && !isExternal" :model="selectedModelChoice.modelId" :size="18" /></template>
             <el-option-group v-for="provider in modelGroups" :key="provider.id" :label="provider.label">
-              <el-option v-for="model in provider.models" :key="model.id" :label="model.label" :value="JSON.stringify([provider.id, model.id])">
+              <el-option v-for="model in provider.models" :key="model.id" :label="model.label" :value="optionValue(provider.id, model.id)">
                 <el-space :size="8">
-                  <modelIcon :model="model.id" :size="16" />
+                  <modelIcon v-if="!isExternal" :model="model.id" :size="16" />
                   <span>{{ model.label }}</span>
                 </el-space>
               </el-option>
@@ -59,12 +59,18 @@ import { customProviders, modelChoices } from "@/stores/settings";
 
 const selectedModel = defineModel<string>({ default: "" });
 const reasoningEffort = defineModel<string>("reasoningEffort", { default: "" });
-const props = withDefaults(defineProps<{ active?: boolean; disabled?: boolean }>(), { active: true, disabled: false });
+const props = withDefaults(defineProps<{ active?: boolean; disabled?: boolean; externalChoices?: { value: string; label: string }[]; placeholder?: string }>(), { active: true, disabled: false });
 const visible = ref(false);
 const reasoningId = useId();
 const reasoningLabels: Record<ThinkingLevel, string> = { off: "关闭", minimal: "最小", low: "低", medium: "中", high: "高", xhigh: "极高", max: "最高" };
-const modelGroups = computed(() => customProviders.value.toSorted((left, right) => Number(right.id === "tfRouter") - Number(left.id === "tfRouter")));
-const selectedModelChoice = computed(() => modelChoices.value.find(item => item.value === selectedModel.value));
+const isExternal = computed(() => !!props.externalChoices?.length);
+const modelGroups = computed(() => isExternal.value
+  ? [{ id: "external", label: "pi", models: props.externalChoices!.map(item => ({ id: item.value, label: item.label })) }]
+  : customProviders.value.toSorted((left, right) => Number(right.id === "tfRouter") - Number(left.id === "tfRouter")));
+const optionValue = (providerId: string, modelId: string) => isExternal.value ? modelId : JSON.stringify([providerId, modelId]);
+const selectedModelChoice = computed(() => isExternal.value
+  ? { value: selectedModel.value, label: props.externalChoices!.find(item => item.value === selectedModel.value)?.label ?? "选择模型", modelId: "", reasoningLevels: [] as ThinkingLevel[] }
+  : modelChoices.value.find(item => item.value === selectedModel.value));
 const reasoningLevels = computed(() => selectedModelChoice.value?.reasoningLevels ?? []);
 const reasoningOptions = computed(() => [{ label: "默认", value: "" }, ...reasoningLevels.value.map(value => ({ label: reasoningLabels[value], value }))]);
 const reasoningColumns = computed(() => Math.min(4, reasoningOptions.value.length > 4 ? Math.ceil(reasoningOptions.value.length / 2) : reasoningOptions.value.length));
