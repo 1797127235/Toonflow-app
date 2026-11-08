@@ -1,4 +1,4 @@
-import { getMcpRuntime } from "@/utils/mcp/runtime";
+import { ensureAgentMcpStdio } from "@/utils/mcp/runtime";
 import { createAcpClient, type AcpClient } from "../client";
 import { createPiCommand } from "./piCommand";
 
@@ -21,9 +21,7 @@ const sweep = setInterval(() => {
 sweep.unref();
 
 async function create(directory: string): Promise<AcpEntry> {
-  const mcp = getMcpRuntime();
-  if (!mcp.endpoint) throw new Error("Laywork MCP 未启用：请先在设置中打开 MCP 并设置访问令牌");
-  const stdio = mcp.stdio;
+  const stdio = ensureAgentMcpStdio();
   if (!stdio) throw new Error("Laywork MCP 的 stdio 入口不可用，请重启应用后再试");
   const configured = process.env.TOONFLOW_PI_ACP_COMMAND;
   const client = createAcpClient({

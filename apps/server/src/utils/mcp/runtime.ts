@@ -6,10 +6,11 @@ import { dirname, resolve } from "node:path";
 import type { Socket } from "node:net";
 import type { Express } from "express";
 import conf from "@/utils/conf";
-import { getMcpSettings } from "@/utils/mcp/control";
+import { clearAgentMcpToken, createAgentMcpToken, getMcpSettings } from "@/utils/mcp/control";
 import { closeMcpServers } from "@/utils/mcp/servers";
 
 let runtime: { app: Express; appOrigin: string; requestHeaders: Record<string, string>; server?: Server; sockets?: Set<Socket>; url?: string; port?: number; preferredPort?: number; file?: string; command: string; entry: string; error?: string } | undefined;
+let agentRuntimeFile: string | undefined;
 let reloadQueue = Promise.resolve();
 
 function removeRuntime(file?: string) {
@@ -20,6 +21,12 @@ function removeRuntime(file?: string) {
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") console.error("清理 MCP 运行信息失败：", error);
   }
+}
+
+function removeAgentRuntime() {
+  const file = agentRuntimeFile;
+  agentRuntimeFile = undefined;
+  removeRuntime(file);
 }
 
 function saveRuntime(value = runtime) {
@@ -44,6 +51,8 @@ export function stopMcpRuntime() {
     const current = runtime;
     runtime = undefined;
     removeRuntime(current?.file);
+    removeAgentRuntime();
+    clearAgentMcpToken();
     await closeMcpServers();
     if (!current?.server) return;
     await new Promise<void>(resolve => {
@@ -109,6 +118,22 @@ export function reloadMcpRuntime() {
   return reloadQueue;
 }
 
+export function ensureAgentMcpStdio() {
+  const current = runtime;
+  if (!current?.url || !current.file || !existsSync(current.entry)) return null;
+  const { enabled, token } = getMcpSettings();
+  if (enabled && token.length >= 32 && existsSync(current.file)) {
+    removeAgentRuntime();
+    return { command: current.command, args: [current.entry, "--runtime", current.file] };
+  }
+  // ACT: 内置 pi 使用单独的本机凭证。桌面端默认没打开外部 MCP，对外配置文件不会生成，stdio 会是空的。
+  // 同用户可读这份 0600 文件，并在进程存活期间访问回环端口；设置里的开关仍只控制对外复制的配置。
+  const file = resolve(dirname(current.file), "mcpAgentRuntime.json");
+  writeAtomicSync(file, JSON.stringify({ pid: process.pid, url: current.url, token: createAgentMcpToken() }), { mode: 0o600 });
+  agentRuntimeFile = file;
+  return { command: current.command, args: [current.entry, "--runtime", file] };
+}
+
 export function getMcpRuntime() {
   const preferredPort = getMcpSettings().port;
   return {
@@ -129,4 +154,7 @@ conf.onDidChange("settings", (next, previous) => {
   void reloadMcpRuntime().catch(error => console.error("重载 MCP 失败：", error));
 });
 
-process.once("exit", () => removeRuntime(runtime?.file));
+process.once("exit", () => {
+  removeRuntime(runtime?.file);
+  removeRuntime(agentRuntimeFile);
+});

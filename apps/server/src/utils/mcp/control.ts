@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto";
+import { randomBytes, timingSafeEqual } from "node:crypto";
 import type { Request, Response } from "express";
 import { z } from "zod";
 import conf from "@/utils/conf";
@@ -31,6 +31,27 @@ export function getMcpSettings() {
   };
 }
 
+// 只给内置 pi 的本机 stdio 使用，不写入对外设置。
+let agentToken = "";
+
+export function createAgentMcpToken() {
+  if (agentToken.length < 32) agentToken = randomBytes(32).toString("hex");
+  return agentToken;
+}
+
+export function peekAgentMcpToken() {
+  return agentToken;
+}
+
+export function clearAgentMcpToken() {
+  agentToken = "";
+}
+
+function bearerMatches(actual: Buffer, token: string) {
+  const expected = Buffer.from(`Bearer ${token}`);
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
 function allowedHost(req: Request) {
   return isMobileLinkRequest(req) || !getRuntimePlatform().requiresLocalHost || ["localhost", "127.0.0.1", "[::1]"].includes(req.hostname);
 }
@@ -46,14 +67,16 @@ export function getAppOrigin(req: Request) {
 }
 
 export function authorizeMcp(req: Request) {
-  const { enabled, token } = getMcpSettings();
-  if (!enabled || token.length < 32 || !allowedHost(req)) return false;
-  const actual = Buffer.from(req.get("authorization") ?? "");
-  const expected = Buffer.from(`Bearer ${token}`);
+  if (!allowedHost(req)) return false;
   if (req.get("origin")) {
     try { getAppOrigin(req); } catch { return false; }
   }
-  return actual.length === expected.length && timingSafeEqual(actual, expected);
+  const actual = Buffer.from(req.get("authorization") ?? "");
+  const { enabled, token } = getMcpSettings();
+  if (enabled && token.length >= 32 && bearerMatches(actual, token)) return true;
+  const internal = peekAgentMcpToken();
+  const local = ["127.0.0.1", "::1", "::ffff:127.0.0.1"].includes(req.socket.remoteAddress ?? "");
+  return local && internal.length >= 32 && bearerMatches(actual, internal);
 }
 
 export function assertAppRequest(req: Request) {

@@ -21,10 +21,10 @@ export async function createAgentModel(providerId: string, modelId: string, thin
     api: provider.protocol,
     baseUrl,
     models: [{
-      // ACT: 默认不传推理参数，避免 SDK 把内部 off 升到模型支持的首档。
+      // 默认不传推理参数，避免 SDK 把内部 off 升到模型支持的首档。
       id: model.id, name: model.label, reasoning: configured.thinkingLevel === undefined ? false : model.reasoning, thinkingLevelMap: model.thinkingLevelMap,
       compat: configured.thinkingLevel === undefined ? { ...model.compat, supportsMidConvoEffort: false } : model.compat,
-      // ACT: 保留图片输入，由实际供应方判断该模型是否支持。
+      // 保留图片输入，由实际供应方判断该模型是否支持。
       input: ["text", "image"],
       cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
       contextWindow: model.contextWindow, maxTokens: model.maxOutputTokens,
