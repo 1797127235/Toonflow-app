@@ -16,6 +16,7 @@ export default async function createDesktopConnection(app: express.Express, dire
   let closed = false;
   const nativePosts = new Set([
     "/api/desktop/ready", "/api/desktop/devtools", "/api/desktop/clipboard/read", "/api/desktop/clipboard/write",
+    "/api/desktop/localFile/read",
     "/api/desktop/selectSaveFile", "/api/desktop/saveFile", "/api/desktop/providerFile/select", "/api/desktop/providerFile/read",
   ]);
 

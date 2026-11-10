@@ -14,8 +14,9 @@
     @auxclick.capture="preventMiddleClick"
     @pointermove="pointerPosition = { x: $event.clientX, y: $event.clientY }; if (!$event.buttons) updateCanvasSelection($event)"
     @pointerleave="pointerPosition = undefined"
-    @dragover="dragFilesOver"
-    @drop="dropFiles">
+    @dragenter.capture="dragFilesOver"
+    @dragover.capture="dragFilesOver"
+    @drop.capture="dropFiles">
     <vue-flow
       :id="runtimeKey"
       :only-render-visible-elements="false"

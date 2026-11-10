@@ -3,9 +3,12 @@ import { ElMessage } from "element-plus";
 import type { useVueFlow } from "@vue-flow/core";
 import { uploadNodeFile } from "@toonflow/nodes-scaffold/workspaceFiles";
 import type { NodeOutput } from "@toonflow/nodes-scaffold/values";
+import { isDesktop } from "@/lib/platform";
 import useWorkspaceFiles from "@/lib/workspaceFiles";
 
 const assetDragType = "application/toonflow-asset";
+// Linux WebKitGTK 从文件管理器拖入时不提供 Files，只给 text/uri-list。
+const externalFileDragTypes = ["Files", "text/uri-list", "text/x-moz-url", "application/x-moz-file"];
 const fileMimeTypes: Record<string, string> = {
   png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif",
   avif: "image/avif", apng: "image/apng", bmp: "image/bmp", svg: "image/svg+xml", ico: "image/x-icon",
@@ -60,7 +63,45 @@ export function startAssetDrag(event: DragEvent, entry: { type: string; path: st
 }
 
 export function isCanvasFileDrag(event: DragEvent) {
-  return event.dataTransfer?.types.some(type => type === assetDragType || type === "Files") ?? false;
+  return event.dataTransfer?.types.some(type => type === assetDragType || externalFileDragTypes.includes(type)) ?? false;
+}
+
+function transferText(transfer: DataTransfer, type: string) {
+  try { return transfer.getData(type); }
+  catch { return ""; }
+}
+
+function pathsFromUriList(text: string) {
+  const paths: string[] = [];
+  for (const line of text.split(/\r?\n/)) {
+    const value = line.trim();
+    if (!value || value.startsWith("#") || !/^file:/i.test(value)) continue;
+    try {
+      const url = new URL(value);
+      if (url.protocol !== "file:") continue;
+      const pathname = decodeURIComponent(url.pathname);
+      const path = /^\/[a-zA-Z]:\//.test(pathname) ? pathname.slice(1) : pathname;
+      if (path) paths.push(path);
+    } catch { /* 跳过无法解析的 file URL。 */ }
+  }
+  return [...new Set(paths)];
+}
+
+function fileFromBase64(type: string, base64: string, name: string) {
+  const binary = atob(base64);
+  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+  return new File([bytes], name, { type });
+}
+
+async function readDesktopDroppedFiles(paths: string[]) {
+  if (!isDesktop) throw new Error("当前环境无法读取拖入的文件");
+  const { data } = await axios.post<{ code: number; data: { files: { name: string; mimeType: string; data: string }[] }; message: string }>(
+    "/api/desktop/localFile/read",
+    { paths },
+    { headers: { "x-toonflow-desktop": "1" } },
+  );
+  if (data.code !== 200) throw new Error(data.message || "读取拖入文件失败");
+  return data.data.files.map(file => fileFromBase64(file.mimeType, file.data, file.name));
 }
 
 type CanvasFileContext = {
@@ -73,8 +114,10 @@ type CanvasFileContext = {
 export async function dropCanvasFiles(event: DragEvent, context: CanvasFileContext) {
   const transfer = event.dataTransfer;
   if (!transfer) return;
+  // getData 必须在第一次 await 之前调用，之后拖放数据会被浏览器清空。
   const path = transfer.getData(assetDragType);
-  let droppedFiles = Array.from(transfer.files);
+  const droppedPaths = pathsFromUriList([transferText(transfer, "text/uri-list"), transferText(transfer, "text/x-moz-url"), transferText(transfer, "text/plain")].join("\n"));
+  let droppedFiles = Array.from(transfer.files).filter(file => file.size > 0);
   const { signal, flow } = context;
   const position = flow.screenToFlowCoordinate({ x: event.clientX, y: event.clientY });
   try {
@@ -82,7 +125,10 @@ export async function dropCanvasFiles(event: DragEvent, context: CanvasFileConte
     if (path) {
       const { data } = await axios.get<Blob>("/api/assets/read", { params: { path }, responseType: "blob", signal });
       droppedFiles = [new File([data], path.split("/").pop()!, { type: data.type })];
+    } else if (!droppedFiles.length && droppedPaths.length) {
+      droppedFiles = await readDesktopDroppedFiles(droppedPaths);
     }
+    if (!droppedFiles.length && (droppedPaths.length || transfer.types.includes("Files"))) throw new Error("未能读取拖入的文件");
     await importCanvasFiles(droppedFiles, position, context);
   } catch (error) {
     if (!signal.aborted) showError(error);
