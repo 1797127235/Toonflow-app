@@ -85,8 +85,8 @@ export function assertAppRequest(req: Request) {
 }
 
 export function assertControlRequest(req: Request) {
+  // 控制通道只给同源 Laywork 页面（内置 agent 也走这里）；外部 MCP 客户端由 /mcp 的 authorizeMcp 校验。
   assertAppRequest(req);
-  if (!authorizeMcp(req)) throw Object.assign(new Error("MCP 未开启或访问凭证无效"), { status: 403 });
 }
 
 export function listConnections() {
@@ -100,7 +100,12 @@ export function getConnection(id?: string, directory?: string) {
     return connection;
   }
   const matches = [...connections.values()].filter(item => !directory || item.state.directory === directory);
-  if (matches.length > 1) throw new Error("存在多个 Laywork 页面，请用 target.connectionId 指定操作目标");
+  if (matches.length > 1) {
+    // 多标签时优先画布页面，模型不必每次都带 connectionId。
+    const canvases = matches.filter(item => item.state.canvasId);
+    if (canvases.length === 1) return canvases[0];
+    throw new Error("存在多个 Laywork 页面，请用 target.connectionId 指定操作目标");
+  }
   return matches[0];
 }
 

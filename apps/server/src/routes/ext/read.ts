@@ -14,5 +14,5 @@ export default Router().get("/", validateFields({ name: u.extPlugins.extNameSche
   const disabled = await lstat(resolve(u.extPlugins.extDirectory, `${name}.disabled`)).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; });
   if (disabled) return res.status(404).json(error("文件扩展已禁用", null, 404));
   res.set("Cache-Control", "no-cache");
-  await sendFile(res, path);
+  await sendFile(res, path, { dotfiles: "allow" });
 });

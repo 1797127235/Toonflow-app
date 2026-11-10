@@ -6,6 +6,7 @@ import type { AgentSession, FileEntry, SessionEntry } from "@earendil-works/pi-c
 import type { AgentContextSegment, AgentEvent, AgentMention, AgentSubAgent, AgentToolCall } from "@/agent/runtime/types";
 import { loadContextPrefix } from "@/agent/runtime/contextUsage";
 import { agentMentionsSchema } from "@/agent/runtime/mentions";
+import { readAcpBinding } from "@/agent/acp/pi/binding";
 import conf from "@/utils/conf";
 import { providerSchema, getModelLimits } from "@/utils/ai";
 import { lockWorkspaceFiles, resolveWorkspacePath, writeWorkspaceFile } from "@/utils/workspace/files";
@@ -399,6 +400,8 @@ export async function getAgentSession(cwd: string, path: string) {
   const prefix = await loadContextPrefix(cwd, child ? delegatedAgentInstructions(child) : "").catch(() => []);
   return {
     file: basename(path),
+    // 会话归属：ACP 会话与内置会话不能互相续聊，前端据此决定默认引擎。
+    kind: readAcpBinding(branch) ? "acp" as const : "builtin" as const,
     name: history.getSessionName() || (firstUserMessage?.content.trim() || firstUserMessage?.attachments?.[0]?.name)?.slice(0, 60) || "新对话",
     messages,
     stats: getAgentStats(history),

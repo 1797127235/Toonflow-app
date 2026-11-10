@@ -58,9 +58,10 @@ export function useMcpControl() {
 
   watch(() => {
     const config = settings.value.mcp as { enabled?: boolean; token?: string } | undefined;
-    return config?.enabled === true && config.token ? config.token : "";
-  }, (token, _previous, onCleanup) => {
-    if (!token) return;
+    // 控制通道同时服务内置 agent，不能等用户开启外部 MCP；开关与 token 只影响鉴权头。
+    return `${config?.enabled === true}:${config?.token ?? ""}`;
+  }, (_key, _previous, onCleanup) => {
+    const config = settings.value.mcp as { token?: string } | undefined;
     const lifetime = new AbortController();
     let reconnect: ReturnType<typeof setTimeout> | undefined;
     onCleanup(() => {
@@ -73,7 +74,7 @@ export function useMcpControl() {
       const connectionId = crypto.randomUUID();
       const connection = new AbortController();
       const signal = AbortSignal.any([lifetime.signal, connection.signal]);
-      const headers = { Authorization: `Bearer ${token}`, "x-toonflow-workspace": "1" };
+      const headers = { ...(config?.token ? { Authorization: `Bearer ${config.token}` } : {}), "x-toonflow-workspace": "1" };
       let revision = 0;
       async function post(path: "state" | "result", body: object, callSignal?: AbortSignal) {
         const response = await fetch(`/api/mcp/control/${path}`, {

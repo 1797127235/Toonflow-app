@@ -40,10 +40,10 @@
     "build:nodes": "bun -e \"import { rmSync } from '@toonflow/file'; import { resolve } from 'node:path'; import { Glob } from 'bun'; rmSync(resolve('build/nodes'), { recursive: true, force: true }); for (const file of new Glob('packages/nodes/*/package.json').scanSync('.')) { const dir = resolve(file, '..'); const run = Bun.spawnSync(['bun', 'run', 'build'], { cwd: dir, env: { ...process.env, NODE_ENV: 'production' }, stdio: ['inherit', 'inherit', 'inherit'] }); if (run.exitCode) process.exit(run.exitCode); }\"",
     "create:ext": "bun packages/extScaffold/create.ts",
     "build:ext": "bun -e \"import { rmSync } from '@toonflow/file'; import { resolve } from 'node:path'; import { Glob } from 'bun'; rmSync(resolve('build/ext'), { recursive: true, force: true }); for (const file of new Glob('packages/ext/*/package.json').scanSync('.')) { const dir = resolve(file, '..'); const run = Bun.spawnSync(['bun', 'run', 'build'], { cwd: dir, env: { ...process.env, NODE_ENV: 'production' }, stdio: ['inherit', 'inherit', 'inherit'] }); if (run.exitCode) process.exit(run.exitCode); }\"",
-    "build:desktop": "bun run --filter '@toonflow/desktop' build",
+    "build:desktop": "bun apps/desktop/scripts/build.ts build",
     "build:mcp": "bun run --filter '@toonflow/mcp' build",
     "build:teams": "NODE_ENV=production bun run --filter './packages/teams/*' build",
-    "package:desktop": "bun run --filter '@toonflow/desktop' package",
+    "package:desktop": "bun apps/desktop/scripts/build.ts package",
     "release:desktop": "bun run apps/desktop/scripts/release.ts",
     "typecheck": "bun run --filter '@toonflow/*' typecheck",
     "build:tools": "bun -e \"import { rmSync } from '@toonflow/file'; import { resolve } from 'node:path'; import { Glob } from 'bun'; rmSync(resolve('build/tools'), { recursive: true, force: true }); for (const file of new Glob('packages/tools/*/package.json').scanSync('.')) { const dir = resolve(file, '..'); const run = Bun.spawnSync(['bun', 'run', 'build'], { cwd: dir, env: { ...process.env, NODE_ENV: 'production' }, stdio: ['inherit', 'inherit', 'inherit'] }); if (run.exitCode) process.exit(run.exitCode); }\""

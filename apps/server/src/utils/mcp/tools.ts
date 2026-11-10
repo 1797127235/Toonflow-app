@@ -44,13 +44,22 @@ async function resolveTarget(target: z.infer<typeof targetSchema> = {}, requireD
 }
 
 function wrapTool(name: string, description: string, schema: object, execute: (args: Record<string, unknown>, target: z.infer<typeof targetSchema>, signal: AbortSignal) => Promise<unknown>): McpTool {
-  const argsSchema = schema as { properties?: Record<string, unknown>; required?: string[] };
+  const argsSchema = schema as { properties?: Record<string, unknown>; required?: string[]; $defs?: Record<string, unknown>; definitions?: Record<string, unknown>; $schema?: string };
   const properties = argsSchema.properties ?? {};
   const required = (argsSchema.required ?? []).filter(key => key in properties);
   return {
     name, description,
     // 业务参数直接平铺，工具声明与内置 agent 一致；target 只在需要指定页面时出现。
-    inputSchema: { type: "object", properties: { target: targetInputSchema, ...properties }, required, additionalProperties: false },
+    // ACT: $ref 与定义段必须同层，只取 properties 会让 #/definitions/... 悬空（nodeTools 参数校验失败）。
+    inputSchema: {
+      ...(argsSchema.$schema ? { $schema: argsSchema.$schema } : {}),
+      type: "object",
+      properties: { target: targetInputSchema, ...properties },
+      required,
+      additionalProperties: false,
+      ...(argsSchema.$defs ? { $defs: argsSchema.$defs } : {}),
+      ...(argsSchema.definitions ? { definitions: argsSchema.definitions } : {}),
+    },
     async execute(input, signal) {
       const { target = {}, ...args } = (input && typeof input === "object" ? input : {}) as Record<string, unknown>;
       return execute(args, targetSchema.parse(target), signal);

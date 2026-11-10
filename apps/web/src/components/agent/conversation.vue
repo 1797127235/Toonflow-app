@@ -39,7 +39,8 @@
       :stats="stats"
       :contextWindow="contextWindow"
       :showModel="true"
-      v-model:engine="engine"
+      :engine="engine"
+      @update:engine="updateEngine"
       v-model:acpModel="acpModel"
       :acpModels="acpModels"
       :acpModelsLoading="acpModelsLoading"
@@ -137,6 +138,18 @@ async function loadAcpModels() {
 watch([engine, () => workspaceStore.project?.directory], ([value]) => { if (value === "acp") void loadAcpModels(); }, { immediate: true });
 const createCanvasContext = inject<(() => CanvasContext | undefined) | undefined>("canvas", undefined);
 const messages = ref<AgentMessage[]>((props.initialSession?.messages ?? []).map(message => ({ ...message })));
+// 会话一旦发过消息就绑定 agent；同一份文件混两种历史会让恢复和模型归属错乱。
+const boundEngine = ref<"builtin" | "acp">(props.initialSession?.kind === "acp" ? "acp" : "builtin");
+// 会话一旦发出过消息就锁定 agent：内置与 ACP 的历史结构不同，互相续聊会串味。
+function updateEngine(value: "builtin" | "acp") {
+  if (value === boundEngine.value) return;
+  if (!messages.value.length) {
+    boundEngine.value = value;
+    engine.value = value;
+    return;
+  }
+  ElMessage.warning("该对话已使用其他 Agent，请新建对话后再切换");
+}
 const stream = createConversationStream(messages);
 const remoteRunning = ref(props.initialSession?.running ?? false);
 const remoteRunId = ref(props.initialSession?.runId);
@@ -240,9 +253,12 @@ async function refreshSession(signal?: AbortSignal) {
   remoteRunning.value = !!data.data.running;
   if (!data.data.running) {
     stream.finish();
-    messages.value = data.data.messages.map(message => ({ ...message }));
-    stats.value = data.data.stats;
-    contextUsage.value = data.data.contextUsage;
+    // ACP 每轮结束才落盘；流式期间不覆盖本地内容，保证与 pi 的实际回复一致。
+    if (engine.value !== "acp") {
+      messages.value = data.data.messages.map(message => ({ ...message }));
+      stats.value = data.data.stats;
+      contextUsage.value = data.data.contextUsage;
+    }
   }
 }
 
@@ -251,7 +267,7 @@ async function stopRun(runId?: string) {
     const response = await fetch("/api/acp/cancel", {
       method: "POST",
       headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
-      body: JSON.stringify({ directory }), keepalive: true, signal: AbortSignal.timeout(30000),
+      body: JSON.stringify({ directory, sessionFile: props.sessionFile }), keepalive: true, signal: AbortSignal.timeout(30000),
     });
     if (!response.ok) throw new Error("停止失败，请重试");
     return;
@@ -388,6 +404,7 @@ async function sendMessage(source?: AgentMessage) {
   let ownsStream = !remoteRunning.value;
   let forwarded = false;
   if (!source) {
+    boundEngine.value = engine.value;
     messages.value.push(userMessage);
     if (ownsStream) messages.value.push(reply);
   }
@@ -405,11 +422,14 @@ async function sendMessage(source?: AgentMessage) {
       method: "POST",
       headers: { "Accept-Language": locale.value, "Content-Type": "application/json", "x-toonflow-workspace": "1" },
       body: JSON.stringify(engine.value === "acp"
-        ? { directory, prompt, modelId: acpModel.value || undefined, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })) }
+        ? { directory, sessionFile: props.sessionFile, prompt, modelId: acpModel.value || undefined, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })) }
         : { prompt, mentions, attachments: attachments.map(({ name, path, mimeType }) => ({ name, path, mimeType })), directory, providerId: model?.providerId ?? "", modelId: model?.modelId ?? "", thinkingLevel: reasoningEffort.value || undefined, sessionFile: props.sessionFile, resendFrom, canvas: canvasContext ? { id: canvasContext.id, tools: canvasContext.tools } : undefined }),
       signal: transportController.signal,
     }).then(response => {
       remoteRunId.value = response.headers.get("X-Toonflow-Agent-Run") ?? undefined;
+      // 新对话由服务端建文件，文件名通过响应头回传；已有会话时值相同。
+      const file = response.headers.get("X-Toonflow-Session-File");
+      if (file && file !== props.sessionFile) emit("session", file);
       return response;
     });
     const response = await responsePromise;
@@ -478,9 +498,11 @@ async function sendMessage(source?: AgentMessage) {
       emit("event", { type: "subAgentEvent", file: props.sessionFile, event: { type: "error", message } });
     }
   } finally {
+    let cancelFailed = false;
     if (!completed && responsePromise) {
       try { await cancelRun(); }
       catch (error) {
+        cancelFailed = true;
         remoteRunning.value = !!remoteRunId.value;
         reply.error = `后台停止未确认：${error instanceof Error ? error.message : "请重试停止"}`;
       }
@@ -495,6 +517,11 @@ async function sendMessage(source?: AgentMessage) {
     }
     if (ownsStream && !forwarded) stream.finish();
     compacting.value = false;
+    // 主动停止或异常结束时清掉占用；取消失败则保留 remoteRunId，方便再次点停止。
+    if (!completed && !cancelFailed) {
+      remoteRunId.value = undefined;
+      remoteRunning.value = false;
+    }
     busy.value = false;
     cancelCurrent = undefined;
   }

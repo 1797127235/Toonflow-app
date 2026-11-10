@@ -103,7 +103,7 @@
 - **旁路**：不要把 ACP 塞进 `apps/server/src/agent/runtime/index.ts` 的 `run()`。
 - **两个平面零耦合**：ACP 只管会话、流式、模型；ops 只管能力。两边**不互相 import**，唯一连接是 `session/new` 参数里的 MCP 配置（数据，不是代码依赖）。
 - **契约单一**：registry 是能力的唯一定义；MCP 工具声明从它派生，禁止另写一份。
-- **标准通道**：工具只走 `session/new.mcpServers`；不落盘、不注入 prompt、不开第二通道。
+- **标准通道**：工具只走 `session/new.mcpServers`；不落盘、不用 prompt 传工具清单与 schema、不开第二通道；行为约定经 pi 原生提示词参数下发。
 - **事件归一**：服务端把 ACP `session/update` 译成现有 `AgentEvent`，前端尽量少改。
 - **进程边界**：一个 ACP 会话对应一条适配器连接；停止 = `session/cancel` + 必要时杀进程树。
 - **产品边界**：与 A2A「连接远程 Agent」、MCP、安装团队并列，文案使用「本机 Coding Agent / ACP」。
@@ -575,7 +575,7 @@ ACT 注释建议（实现时）：
 
 ## 8. 已定事项
 
-1. **工具通道**：只走 ACP `session/new.mcpServers` + 本机 stdio MCP（server 名 `laywork`）。适配器补丁随应用发布，用户零配置；不写 pi 任何配置文件、不注入 prompt、不做第二通道（§3.5、§3.7）。
+1. **工具通道**：只走 ACP `session/new.mcpServers` + 本机 stdio MCP（server 名 `laywork`）。适配器补丁随应用发布，用户零配置；不写 pi 任何配置文件、不用 prompt 传工具清单与 schema、不做第二通道（§3.5、§3.7）。
 2. **能力契约**：单一 `registry`；MCP 工具声明与内置 tools 均从它派生，不维护第二份。
 3. **`user.ask`**：作为操作平面的 `interactive` 能力提供，复用现有 `askUser` 插件与卡片；超时由 `timeoutClass` 统一（§3.6）。
 4. **同工作区**：允许建多个 ACP 会话，但同时只跑一个活跃 run；跨内置 / ACP 双向 409（§3.11）。

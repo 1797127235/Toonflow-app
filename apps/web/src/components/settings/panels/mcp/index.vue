@@ -17,9 +17,9 @@
       <template v-else-if="status">
         <div class="connectionState">
           <el-tag :type="status.enabled ? 'success' : 'info'" effect="plain">{{ status.enabled ? "已开启" : "已关闭" }}</el-tag>
-          <span v-if="status.enabled">{{ status.connections.length }} 个界面已连接</span>
+          <span v-if="status.connections.length">{{ status.connections.length }} 个界面已连接</span>
         </div>
-        <ul v-if="status.enabled && status.connections.length" class="connectionList">
+        <ul v-if="status.connections.length" class="connectionList">
           <li v-for="connection in status.connections" :key="connection.id">
             <span>{{ connection.state.directory || "首页" }}</span>
             <small v-if="connection.state.directory">{{ connection.state.panel === "document" ? "文档" : "画布" }}</small>

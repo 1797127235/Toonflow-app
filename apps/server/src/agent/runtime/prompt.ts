@@ -52,7 +52,7 @@ export const defaultSystemPrompt = `你是 Laywork 的 AI 创作搭档，在无�
 
 export const maxSystemPromptLength = 50000;
 
-type PromptTool = Pick<ToolDefinition, "name" | "description" | "promptSnippet" | "promptGuidelines">;
+export type PromptTool = Pick<ToolDefinition, "name" | "description" | "promptSnippet" | "promptGuidelines">;
 
 type SystemPromptOptions = {
   systemPrompt?: string;

@@ -9,7 +9,7 @@
  * 生命周期：一个 createAcpClient 对应一个长驻子进程（pi-acp → 它再拉起 pi），
  * 目录级复用与回收由 acp/pi/runtime.ts 负责；本文件只保证"进程没了，所有等待都立刻失败"。
  */
-import { spawn, type ChildProcess } from "node:child_process";
+import { spawn, execFileSync, type ChildProcess } from "node:child_process";
 import { Readable, Writable } from "node:stream";
 import { client, ndJsonStream, type ActiveSession, type ContentBlock, type SessionUpdate } from "@agentclientprotocol/sdk";
 
@@ -21,6 +21,26 @@ export type AcpSession = { sessionId: string; configOptions: unknown[]; startupI
 
 /** 普通请求的超时。session/new 实测 4 秒左右，60 秒足够覆盖冷启动与磁盘抖动。 */
 const requestTimeout = 60_000;
+
+/**
+ * 桌面端从图形界面启动时 PATH 只有系统目录，npx、node、pi 都在登录 shell 的 PATH 里；
+ * 不补的话 pi-acp 直接 spawn ENOENT，表面表现为请求被中止。只解析一次，失败就用原 PATH。
+ */
+const loginPath = (() => {
+  try {
+    // -i 是必要的：nvm 这类工具在 ~/.bashrc 里初始化，非交互 shell 读不到。
+    const output = execFileSync(process.env.SHELL || "/bin/sh", ["-lic", 'printf %s "$PATH"'], { encoding: "utf8", timeout: 10_000, stdio: ["ignore", "pipe", "ignore"] });
+    return output.trim();
+  } catch {
+    return "";
+  }
+})();
+
+/** 子进程环境：调用方给的值优先，PATH 由当前 PATH 与登录 PATH 合并而成。 */
+function spawnEnv(env: Record<string, string>) {
+  const candidates = [...(process.env.PATH ?? "").split(":"), ...loginPath.split(":"), "/usr/local/bin", "/usr/bin", "/bin"];
+  return { ...process.env, PATH: [...new Set(candidates.filter(Boolean))].join(":"), ...env };
+}
 
 const liveChildren = new Set<ChildProcess>();
 // 应用退出时同步杀掉 pi-acp，避免残留进程；只注册一次。
@@ -40,13 +60,14 @@ function withTimeout<T>(promise: Promise<T>, method: string) {
 export function createAcpClient(options: { command: string; args: string[]; cwd: string; env: Record<string, string> }) {
   const child: ChildProcess = spawn(options.command, options.args, {
     cwd: options.cwd,
-    env: { ...process.env, ...options.env },
+    env: spawnEnv(options.env),
     stdio: ["pipe", "pipe", "pipe"],
   });
   liveChildren.add(child);
   child.once("exit", () => liveChildren.delete(child));
 
-  let closed = false;
+  /** 第一次关闭的原因（进程退出 / spawn 失败）；为 undefined 表示还活着。 */
+  let closedReason: Error | undefined;
   /** sessionId → SDK 的活跃会话；它的 nextUpdate() 队列消费 session/update。 */
   const sessions = new Map<string, ActiveSession>();
   /** sessionId → 正在执行的 prompt。aborted 标记"已请求取消但引擎还没收尾"。 */
@@ -65,10 +86,13 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
   const connection = client({ name: "laywork" }).connect(stream);
   const agent = connection.agent;
 
+  /** 进程已经没了就别再发请求：SDK 只会回一句无信息量的 AbortError。 */
+  const ensureAlive = () => { if (closedReason) throw closedReason; };
+
   /** 进入"已关闭"状态：通知订阅者、唤醒等待、清掉活跃会话。SDK 会自己拒绝挂起的请求。 */
   const fail = (reason: Error) => {
-    if (closed) return;
-    closed = true;
+    if (closedReason) return;
+    closedReason = reason;
     signalClosed();
     for (const session of sessions.values()) session.dispose();
     sessions.clear();
@@ -91,6 +115,7 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
      * 引擎要读写文件就用自己的工具（pi 有内置 read/write），省掉一整套反向请求实现。
      */
     async initialize() {
+      ensureAlive();
       return await withTimeout(agent.request("initialize", { protocolVersion: 1, clientCapabilities: { fs: { readTextFile: false, writeTextFile: false } } }), "initialize");
     },
     /**
@@ -100,6 +125,7 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
      * startupInfo 是 pi 的启动摘要（"pi v1.5.0 … ## Skills"），mapEvents 需要原文做前缀丢弃。
      */
     async newSession(cwd: string) {
+      ensureAlive();
       const session = await withTimeout(agent.buildSession(cwd).start(), "session/new");
       const meta = session.meta as { piAcp?: { startupInfo?: string | null } } | null | undefined;
       sessions.set(session.sessionId, session);
@@ -109,8 +135,26 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
         startupInfo: meta?.piAcp?.startupInfo ?? undefined,
       };
     },
+    /**
+     * 恢复会话。pi-acp 在 session/load 返回前同步回放历史，此时尚未 attach，
+     * SDK 的路由会把回放更新丢弃（历史一律从会话文件读），返回后再 attach 接收实时更新。
+     */
+    async loadSession(cwd: string, sessionId: string) {
+      ensureAlive();
+      const response = await withTimeout(agent.request("session/load", { sessionId, cwd, mcpServers: [] }), "session/load");
+      // ACT: SDK v1 未公开 load 的会话接管入口（attachSession 是 private），恢复必须借它把 update 队列接回来。
+      const attach = (agent as unknown as { attachSession: (response: { sessionId: string }) => ActiveSession }).attachSession;
+      sessions.set(sessionId, attach.call(agent, { sessionId }));
+      // load 的响应同样带 configOptions，恢复后模型选择器要靠它显示当前模型。
+      return { sessionId, configOptions: (response as { configOptions?: unknown[] }).configOptions ?? [] };
+    },
+    /** 本进程是否已持有该会话（决定能否直接复用）。 */
+    hasSession(sessionId: string) {
+      return sessions.has(sessionId);
+    },
     /** 切换模型 / 思考档位。configId 由 configOptions 给出（pi 是 "model" 与 "thought_level"）。 */
     async setConfigOption(sessionId: string, configId: string, value: string) {
+      ensureAlive();
       return await withTimeout(agent.request("session/set_config_option", { sessionId, configId, value }), "session/set_config_option");
     },
     /**
@@ -119,6 +163,7 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
      * - 取消只发 session/cancel 通知（协议没有"强制杀"），真正的收尾是引擎返回 stopReason。
      */
     async prompt(sessionId: string, blocks: PromptBlock[], onUpdate: (update: SessionUpdate) => void, signal: AbortSignal) {
+      ensureAlive();
       const session = sessions.get(sessionId);
       if (!session) throw new Error("ACP 会话不存在");
       const active = activePrompts.get(sessionId);
@@ -156,22 +201,29 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
     cancel(sessionId: string) {
       const active = activePrompts.get(sessionId);
       if (active) active.aborted = true;
-      if (!closed) void agent.notify("session/cancel", { sessionId });
+      if (!closedReason) void agent.notify("session/cancel", { sessionId });
+    },
+    /** 不知道是哪个会话时的兜底：取消本进程所有正在执行的 prompt。 */
+    cancelAll() {
+      for (const [sessionId, active] of activePrompts) {
+        active.aborted = true;
+        if (!closedReason) void agent.notify("session/cancel", { sessionId });
+      }
     },
     /** 订阅进程退出；已经关闭时立刻回调一次，方便调用方无差别使用。 */
     onExit(listener: (reason: Error) => void) {
-      if (closed) { listener(new Error("pi-acp 已退出")); return () => {}; }
+      if (closedReason) { listener(closedReason); return () => {}; }
       exitListeners.add(listener);
       return () => { exitListeners.delete(listener); };
     },
     dispose() {
-      // 先让等待方失败，再杀进程；只置 closed 会让 prompt 一直等到进程真的退出。
+      // 先让等待方失败，再杀进程；只置标记会让 prompt 一直等到进程真的退出。
       fail(new Error("ACP 会话已关闭"));
       liveChildren.delete(child);
       child.kill("SIGTERM");
     },
     /** 进程是否还活着（用于判断缓存条目能不能复用）。 */
-    get alive() { return !closed; },
+    get alive() { return !closedReason; },
     /** 是否有 prompt 在跑（runtime.ts 的闲置回收靠它避开正在执行的会话）。 */
     get busy() { return activePrompts.size > 0; },
   };

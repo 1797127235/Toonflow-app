@@ -26,6 +26,7 @@ export type AgentHistory = { file: string; name: string; modified: string; messa
 export type AgentConversation = {
   file: string;
   name: string;
+  kind?: "acp" | "builtin";
   messages: AgentMessage[];
   providerId?: string;
   modelId?: string;

@@ -19,7 +19,7 @@
 3. 协议或适配器客观不支持的项，必须在 §功能对等矩阵中标「不支持」并写明原因，**不允许静默缺失**。
 4. 首轮交付判据 = 矩阵中所有「必须」项通过；「受限」项须在 UI 有明确提示且行为可预期。
 
-**非目标：** 做 ACP Agent 对外暴露；接入 Claude Code / Codex 等（第二轮）；Client 侧 `fs/*` `terminal/*` 委托；用 Toonflow provider 给外部 pi 配 Key；Web/远程一键用用户本机 pi；给 pi 提供第二条工具通道（CLI、prompt 注入、写配置文件均不做）。
+**非目标：** 做 ACP Agent 对外暴露；接入 Claude Code / Codex 等（第二轮）；Client 侧 `fs/*` `terminal/*` 委托；用 Toonflow provider 给外部 pi 配 Key；Web/远程一键用用户本机 pi；给 pi 提供第二条工具通道（CLI、prompt 注入工具清单、写配置文件均不做）。
 
 ## 架构：能力契约单一事实源 + 标准 MCP 通道
 
@@ -48,7 +48,7 @@ dispatcher.invoke(op, input)
 
 1. `registry` 只描述能力：名称、描述、入参/出参 schema、是否需要页面、超时类别、授权要求。不含传输、进程、HTTP 概念。
 2. `dispatcher` 是唯一执行入口；`callControl` 只在 dispatcher 之下出现一次，MCP server 不得直连页面。
-3. 对 pi 只有**一条**工具通道：`session/new.mcpServers`。不写 `~/.pi/agent/mcp.json`、不写 `.pi/mcp.json`、不注入 prompt 说明、不提供 CLI。
+3. 对 pi 只有**一条工具通道**：`session/new.mcpServers`。不写 `~/.pi/agent/mcp.json`、不写 `.pi/mcp.json`、不注入工具清单或 schema、不提供 CLI。系统提示词、技能清单与全局规范属行为约定而非工具通道，经 pi 原生 `--system-prompt` / `--append-system-prompt` 参数下发。
 4. 工具 schema 只存在一份：`apps/server/src/agent/ops/mcpAdapter.ts` 是唯一生成者；`apps/server/src/utils/mcp/tools.ts` 只调用它，不再手写声明。
 5. ACP 模块不 import 操作平面的实现文件；两者唯一的耦合是建会话时把 MCP 配置当作**数据**放进 `session/new` 参数。
 6. MCP server 不含业务判断：只做协议编解码、调 dispatcher、把结果与错误码翻译成 MCP 响应。
@@ -146,8 +146,10 @@ dispatcher.invoke(op, input)
 | 应用级操作 | `app_operations`、`app_call` | 必须 |
 | 子 Agent 委派 | `agent_run`（委托内置 Agent） | 受限：可委派，无子 Agent 面板事件 |
 | 提问（question） | `user_ask`（`timeoutClass: interactive`） | 必须 |
-| 长期记忆 | Toonflow memory 工具不外露；由 pi 自身记忆机制负责 | 受限：不注入，行为由 pi 决定 |
-| 技能 / 规则 | `AGENTS.md` 由 pi 自读；工作区 `skill/` 与全局 `skills/` 是否被 pi 扫描**待验证**（Plan P6） | 受限：不读则把技能文本注入首条 prompt |
+| 长期记忆 | Toonflow memory 文档只读注入追加提示词段；memory 工具不外露 | 对等（只读，无写入工具；开关沿用个性化设置） |
+| 技能 / 规则 | Laywork 提示词、`available_skills` 清单与全局协作规范经 pi 原生 `--system-prompt` / `--append-system-prompt` 注入；`AGENTS.md` 仍由 pi 自读 | 对等：清单进提示词，正文按需 `read`（Plan P6 结论：pi 不扫描 Laywork 技能目录，故不用首条 prompt 兜底） |
+| 系统提示词（默认 / 用户自定义） | `apps/server/src/agent/acp/pi/acpContext.ts` 用同一个 `createAgentContext` 渲染后写入提示词文件，由 `piCommand.sh` 传入 | 必须 |
+| 全局协作规范 | personalization 全局 AGENTS.md 并入追加提示词段 | 必须 |
 | 权限审批 | `pi-acp` **未实现** `session/request_permission`；pi 无逐次审批 | **不支持**（无相关接口与 UI） |
 | 子 Agent 进度面板 | 无对应事件流 | **不支持**（并入工具卡片） |
 
@@ -385,7 +387,7 @@ acp: {
 
 ## 已定事项
 
-1. **工具通道**：只走 ACP `session/new.mcpServers` + 本机 MCP server（stdio）。不写 pi 任何配置文件、不注入 prompt、不做 CLI。适配器补丁随应用发布。
+1. **工具通道**：只走 ACP `session/new.mcpServers` + 本机 MCP server（stdio）。不写 pi 任何配置文件、不用 prompt 传工具清单或 schema、不做 CLI；行为约定经 pi 原生 `--system-prompt` / `--append-system-prompt` 下发。适配器补丁随应用发布。
 2. **能力契约**：单一 registry；MCP 工具声明与内置 tools 均从它派生，不维护第二份。
 3. **`user.ask`**：作为操作平面的 `interactive` 类别提供，复用现有 `askUser` 插件与卡片；MCP 调用阻塞等待答案，超时按类别处理。
 4. **同工作区**：严格串行。另一侧有活跃 run 时返回 409，停止后可立即重试。

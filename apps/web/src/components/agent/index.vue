@@ -26,7 +26,7 @@
       :active="visible && item.key === conversationKey"
       :initialSession="item.session"
       :sessionFile="item.file"
-      v-model:engine="engine"
+      v-model:engine="item.engine"
       :disabled="loading || !initialized"
       @session="setSessionFile(item, $event)"
       @event="receiveAgentEvent"
@@ -48,7 +48,7 @@ import conversation from "./conversation.vue";
 
 const visible = defineModel<boolean>({ default: false });
 const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
-type OpenConversation = { key: number; name: string; file?: string; parentFile?: string; subAgents: AgentSubAgent[]; session: AgentConversation | null };
+type OpenConversation = { key: number; name: string; file?: string; parentFile?: string; subAgents: AgentSubAgent[]; session: AgentConversation | null; engine: "builtin" | "acp" };
 // ACT: 会话实例保留到工作区关闭，让切换后的回复继续接收流式内容。
 const conversations = ref<OpenConversation[]>([]);
 const conversationKey = ref(0);
@@ -76,7 +76,7 @@ function showConversation(session: AgentConversation | null, activate = true) {
     return existing;
   }
   const key = ++nextConversationKey;
-  const item = { key, name: session?.name || "新对话", file: session?.file, parentFile: session?.parentFile, subAgents: session?.subAgents ?? [], session };
+  const item = { key, name: session?.name || "新对话", file: session?.file, parentFile: session?.parentFile, subAgents: session?.subAgents ?? [], session, engine: session?.kind === "acp" ? "acp" : engine.value };
   conversations.value.push(item);
   if (activate) conversationKey.value = key;
   return conversations.value[conversations.value.length - 1]!;
@@ -161,7 +161,9 @@ async function newConversation() {
     if (currentRequest !== requestId) return;
     const session = data.data;
     history.value.unshift({ file: session.file, name: session.name, modified: new Date().toISOString(), messageCount: 0 });
-    showConversation(session);
+    const opened = showConversation(session);
+    // 新对话的文件是刚建的，按当前选择的 agent 打开，而不是按会话文件的默认类型。
+    opened.engine = engine.value;
     initialized.value = true;
   } catch (error) {
     if (currentRequest === requestId) ElMessage.error(axios.isAxiosError(error)
@@ -284,6 +286,10 @@ async function removeConversation(file: string) {
   }
 }
 
+watch(() => selectedConversation.value?.engine, value => {
+  // 当前会话的 agent 作为新对话的默认值，避免在 ACP 会话里新建又跳回内置。
+  if (value) engine.value = value;
+}, { immediate: true });
 watch(() => workspaceStore.project?.directory, directory => {
   requestId++;
   history.value = [];
