@@ -315,7 +315,8 @@ watch(() => props.directory, async (directory, _previous, onCleanup) => {
     let entries = await listCanvases(directory, "", false, controller.signal);
     let loaded = entries.canvases;
     if (cancelled) return;
-    if (!loaded.length && !entries.folders.length) {
+    // 进入目录时根层没有画布就建一块空的；不扫描子目录，画布默认只组织在根层。
+    if (!loaded.length) {
       try {
         loaded = [await createCanvasFile(directory, "画布1")];
       } catch (err) {
