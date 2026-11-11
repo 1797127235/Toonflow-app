@@ -27,7 +27,7 @@ export async function createAgentContext(cwd: string, tools: readonly PromptTool
   const [globalAgents, memory] = await Promise.all([readDocument("agents"), isMemoryEnabled() ? readDocument("memory") : { content: "" }]);
   const skillSet = loadAgentSkills(cwd);
   return {
-    systemPrompt: buildSystemPrompt({ systemPrompt, tools, skills: skillSet.skills, platform: getRuntimePlatform().os }),
+    systemPrompt: buildSystemPrompt({ systemPrompt, tools, platform: getRuntimePlatform().os }),
     agents: agentsContent.trim() ? { path: agentsPath, content: agentsContent.replace(/^\uFEFF/, "") } : undefined,
     skillSet,
     globalAgents: globalAgents.content,

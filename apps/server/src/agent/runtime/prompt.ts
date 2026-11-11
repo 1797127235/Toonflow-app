@@ -1,4 +1,4 @@
-import type { Skill, ToolDefinition } from "@earendil-works/pi-coding-agent";
+import type { ToolDefinition } from "@earendil-works/pi-coding-agent";
 
 export const defaultSystemPrompt = `你是 Laywork 的 AI 创作搭档，在无限画布上帮助用户完成文字、图片、视频、音频和其他创作。与用户共用当前项目，通过本轮可用工具操作文档、画布与媒体；也可以直接回答问题。
 
@@ -13,8 +13,7 @@ export const defaultSystemPrompt = `你是 Laywork 的 AI 创作搭档，在无�
 - 需要按既定方法制作、修改或继续项目时，按技能描述选择最少且匹配的项并读取正文后再执行；不等用户点名或输入 /skill。普通聊天、咨询，或用户明确只要对话文字时，直接交付文字，不启动制作、不操作画布。
 - 具体结构、阶段、模板与确认节奏以当前技能为准；已明确的风格与素材继续沿用，不机械补齐无关文档或重跑完整流程。编辑技能本身时只处理技能，不顺带启动制作。
 - 若本轮有 skillOperator，先用 action=list 查询实际技能目录，再用 action=read 和返回的 name、scope 读取正文及资料。运行时位置以目录返回为准，不把源码路径当安装路径，不绕过关闭的读取权限。
-{{#skills}}- 没有 skillOperator 时，检查 available_skills，使用 read 读取匹配项 location 指向的 SKILL.md；不能只凭名称和描述开始执行。
-{{/skills}}- 技能标记 disableModelInvocation=true 时，仅在用户明确指定后使用。技能缺失、正文不可读或本轮没有读取能力时，简短说明具体缺项，继续可独立完成的部分，不假称已启用技能。
+- 技能标记 disableModelInvocation=true 时，仅在用户明确指定后使用。技能缺失、正文不可读或本轮没有读取能力时，简短说明具体缺项，继续可独立完成的部分，不假称已启用技能。
 - references 只按当前问题读取；相对链接以所在文档目录解析，去掉章节锚点，使用 skillOperator 时再换算成技能根目录下的 path。跨技能引用先查实际目录与版本；不猜路径，不一次读完全部资料。当前上下文中已完整读取且适用的正文可复用，目录和旧摘要不能代替正文。
 
 ## 推进工作
@@ -57,12 +56,11 @@ export type PromptTool = Pick<ToolDefinition, "name" | "description" | "promptSn
 type SystemPromptOptions = {
   systemPrompt?: string;
   tools: readonly PromptTool[];
-  skills?: readonly Pick<Skill, "disableModelInvocation">[];
   platform: string;
   now?: Date;
 };
 
-export function buildSystemPrompt({ systemPrompt, tools, skills = [], platform, now = new Date() }: SystemPromptOptions) {
+export function buildSystemPrompt({ systemPrompt, tools, platform, now = new Date() }: SystemPromptOptions) {
   const toolGroups = new Map<string, string[]>();
   for (const tool of tools) {
     const summary = tool.promptSnippet?.trim() || tool.description.trim();
@@ -72,8 +70,6 @@ export function buildSystemPrompt({ systemPrompt, tools, skills = [], platform, 
 
   const guidelines = [...new Set(tools.flatMap(tool => tool.promptGuidelines ?? []).map(text => text.trim()).filter(Boolean))];
   const values: Record<string, string | boolean> = {
-    // 技能目录由 SDK 注入，技能操作器启用时使用工具自身的规则。
-    skills: !tools.some(tool => tool.name === "skillOperator") && skills.some(skill => !skill.disableModelInvocation) && tools.some(tool => tool.name === "read"),
     tools: toolLines.join("\n"),
     guidelines: guidelines.map(text => `- ${text}`).join("\n"),
     environment: JSON.stringify({
