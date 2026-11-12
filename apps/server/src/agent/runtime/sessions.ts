@@ -190,20 +190,22 @@ export async function forkAgentConversation(cwd: string, path: string, entryId: 
     }
     const forkFile = history.createBranchedSession(entry.parentId);
     if (!forkFile) throw Object.assign(new Error("分支对话失败"), { status: 500 });
-    const fork = SessionManager.open(forkFile, dirname(forkFile), cwd);
+    // createBranchedSession 已把 history 切换到新分支文件；重新 open 空文件会重建 session 头，
+    // 导致 header id 与文件名不一致，直接复用当前实例。
     // 停止可能让同批 toolCall 缺结果：只在新文件补齐，避免分叉上下文悬空调用。
-    const results = new Set(fork.getBranch().flatMap(item => item.type === "message" && item.message.role === "toolResult" ? [item.message.toolCallId] : []));
-    for (const item of fork.getBranch()) {
+    const results = new Set(history.getBranch().flatMap(item => item.type === "message" && item.message.role === "toolResult" ? [item.message.toolCallId] : []));
+    for (const item of history.getBranch()) {
       if (item.type !== "message" || item.message.role !== "assistant") continue;
       for (const part of item.message.content) {
         if (part.type !== "toolCall" || results.has(part.id)) continue;
         results.add(part.id);
-        fork.appendMessage({ role: "toolResult", toolCallId: part.id, toolName: part.name, content: [{ type: "text", text: "Operation aborted" }], isError: true, timestamp: Date.now() });
+        history.appendMessage({ role: "toolResult", toolCallId: part.id, toolName: part.name, content: [{ type: "text", text: "Operation aborted" }], isError: true, timestamp: Date.now() });
       }
     }
-    fork.appendSessionInfo(name);
+    history.appendSessionInfo(name);
     // 历史列表只列根会话：剥掉新文件头的 parentSession，只重写自己的新文件。
-    const forkEntries = parseSessionEntries(await readFile(forkFile, "utf8"));
+    // SDK 在分支路径里没有对话消息时不落盘，先读盘会 ENOENT，直接用内存条目重写。
+    const forkEntries = [history.getHeader()!, ...history.getEntries()];
     const forkHeader = forkEntries[0];
     if (forkHeader?.type === "session") delete forkHeader.parentSession;
     await writeWorkspaceFile(forkFile, forkEntries.map(item => JSON.stringify(item)).join("\n") + "\n");
@@ -229,7 +231,10 @@ export async function getAgentSession(cwd: string, path: string) {
   const active = getActiveAgentSession(path);
   const entries = active
     ? [active.history.getHeader()!, ...active.history.getEntries()]
-    : parseSessionEntries(await readFile(path, "utf8"));
+    : parseSessionEntries(await readFile(path, "utf8").catch((error: NodeJS.ErrnoException) => {
+      if (error.code === "ENOENT") throw Object.assign(new Error("会话不存在，请重新打开对话"), { status: 404 });
+      throw error;
+    }));
   if (entries[0]?.type !== "session") throw Object.assign(new Error("会话文件无效"), { status: 400 });
   const partial = active?.session?.agent.state.streamingMessage;
   if (partial?.role === "assistant") entries.push({
