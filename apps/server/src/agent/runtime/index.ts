@@ -422,7 +422,8 @@ export async function run(
         history.appendModelChange(providerId, modelId);
         history.appendThinkingLevelChange(effectiveThinkingLevel);
         history.appendCustomEntry("toonflowReasoning", { thinkingLevel: thinkingLevel ?? null });
-        session.agent.state.messages = history.buildSessionContext().messages;
+        // SessionManager 是上下文唯一事实源，改分支后由 SDK 重建 agent 上下文，直接赋值不再有效。
+        session.refreshContext();
         userMessageId = history.getBranch().findLast((entry) => entry.type === "message" && entry.message.role === "user")?.id;
       }
       send({ type: "session", file: basename(history.getSessionFile()!), runId });
@@ -435,7 +436,7 @@ export async function run(
         : mentionPrompt(prompt, mentions);
       // SDK 仅以空格分隔技能名；兼容换行输入与追加的附件说明。
       await session.prompt(content.replace(/^(\/skill:\S+)\s+/, "$1 "), {
-        // SDK 0.85.1 在启动 core 前同步调用此 hook，防止初始化期间停止后重新启动。
+        // SDK 在启动 core 前同步调用此 hook，防止初始化期间停止后重新启动。
         preflightResult(ok) { if (ok) runSignal.throwIfAborted(); },
       });
       if (compactionError) throw new Error(compactionError);
@@ -457,7 +458,7 @@ export async function run(
           history.branch(resumeLeafId);
           // 分支指针本身不落盘，追加当前模型配置以保存恢复位置。
           history.appendModelChange(providerId, modelId);
-          session.agent.state.messages = history.buildSessionContext().messages;
+          session.refreshContext();
         }
         // ACT: 只记录有首个内容增量的生成耗时，旧历史和未计时输出不参与速度统计。
         if (timing.decodeMs > 0) history.appendCustomEntry("toonflowTiming", timing);

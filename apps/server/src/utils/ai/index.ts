@@ -2,7 +2,7 @@ import { openAICompletionsApi } from "@earendil-works/pi-ai/api/openai-completio
 import { openAIResponsesApi } from "@earendil-works/pi-ai/api/openai-responses.lazy";
 import { anthropicMessagesApi } from "@earendil-works/pi-ai/api/anthropic-messages.lazy";
 import { getBuiltinModels, getBuiltinProviders } from "@earendil-works/pi-ai/providers/all";
-import { getSupportedThinkingLevels, type Context, type KnownApi, type Model, type ThinkingLevelMap } from "@earendil-works/pi-ai";
+import { getSupportedThinkingLevels, normalizeContext, type Context, type KnownApi, type Model, type ThinkingLevelMap } from "@earendil-works/pi-ai";
 import { defaultThinkingLevels, thinkingLevels, type ThinkingLevel } from "@/lib/modelReasoning";
 import { z } from "zod";
 import conf from "@/utils/conf";
@@ -201,7 +201,7 @@ export function streamAi(
     maxTokens: configuredModel.maxOutputTokens,
   };
   const files = createFileTransport({ ...provider, apiUrl: baseUrl }, { signal });
-  return aiApis[provider.protocol].streamSimple(model, context, {
+  return aiApis[provider.protocol].streamSimple(model, normalizeContext(context), {
     apiKey: provider.apiKey,
     signal,
     fetch: files.fetch,

@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
-    "@earendil-works/pi-agent-core": "0.85.1",
-    "@earendil-works/pi-ai": "0.85.1",
+    "@earendil-works/pi-agent-core": "1.5.2",
+    "@earendil-works/pi-ai": "1.5.2",
     "@form-create/element-ui": "^3",
     "@markmend/ast": "1.1.0",
     "@tabler/icons-vue": "^3.46.0",

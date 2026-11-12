@@ -79,7 +79,11 @@ export async function runSubAgent(options: SubAgentModel & {
     }));
     configureAgentRequests(session, undefined, signal);
     signal.throwIfAborted();
-    session.agent.shouldStopAfterTurn = () => Boolean(inputRequired?.());
+    session.agent.finishTurn = ({ message }) => {
+      // error/aborted 本就是硬退出，保持 SDK 默认处理。
+      if (message.stopReason === "error" || message.stopReason === "aborted") return;
+      if (inputRequired?.()) return { action: "end" };
+    };
     session.subscribe(event => {
       if (signal.aborted) return;
       if (event.type === "message_start" && event.message.role === "assistant") onProgress?.("正在处理");

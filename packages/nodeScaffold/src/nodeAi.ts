@@ -416,10 +416,14 @@ export function useNodeAi() {
     }));
     let turns = 0;
     const messages = await runAgentLoop([{ role: "user", content: prompt, timestamp: Date.now() }], {
-      systemPrompt: systemPrompt ?? "", messages: [], tools,
+      // 系统提示词放进转录首位系统消息；工具声明由循环同步进转录。
+      messages: systemPrompt ? [{ role: "system", content: systemPrompt, timestamp: Date.now() }] : [], tools,
     }, {
       model, convertToLlm: messages => messages as Message[], toolExecution: "sequential",
-      shouldStopAfterTurn: ({ message }) => ++turns >= 40 || message.stopReason === "length",
+      finishTurn: ({ message }) => {
+        if (message.stopReason === "error" || message.stopReason === "aborted") return;
+        return ++turns >= 40 || message.stopReason === "length" ? { action: "end" } : undefined;
+      },
     }, event => {
       callSignal.throwIfAborted();
       if (event.type === "tool_execution_start") onEvent?.({ type: "toolStart", id: event.toolCallId, name: event.toolName, args: event.args });

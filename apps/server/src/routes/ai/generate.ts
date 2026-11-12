@@ -7,7 +7,27 @@ import { translateError, translateMessage, validationOptions } from "@/lib/i18n"
 
 const textPart = z.object({ type: z.literal("text"), text: z.string(), textSignature: z.string().optional() });
 const imagePart = z.object({ type: z.literal("image"), data: z.string(), mimeType: z.string().startsWith("image/") });
+const toolSchema = z.object({
+  name: z.string().regex(/^[a-z][a-zA-Z0-9]{0,63}$/),
+  description: z.string().min(1).max(10000),
+  parameters: z.record(z.string(), z.json()).refine(value => value.type === "object" && JSON.stringify(value).length <= 100000, "工具参数必须是 JSON 对象结构，且不超过 100 KB"),
+  constrainedSampling: z.union([
+    z.literal(false),
+    z.object({ type: z.literal("json_schema"), strict: z.enum(["prefer", "require"]) }),
+    z.object({ type: z.literal("grammar"), variants: z.object({ openai_lark: z.string().optional(), openai_regex: z.string().optional() }) }),
+  ]).optional(),
+});
+
 const messageSchema: z.ZodType<Message> = z.discriminatedUnion("role", [
+  // 系统消息承载提示词与工具声明（新版 SDK 转录格式）；旧版 systemPrompt/tools 字段仍兼容。
+  z.looseObject({
+    role: z.literal("system"),
+    content: z.union([z.string().max(100000), z.array(textPart).max(1000)]),
+    sections: z.record(z.string(), z.union([z.string(), z.null()])).optional(),
+    toolsAdded: z.array(toolSchema).max(32).optional(),
+    toolsRemoved: z.array(z.object({ name: z.string().min(1).max(64) })).max(32).optional(),
+    timestamp: z.number().nonnegative(),
+  }),
   z.object({
     role: z.literal("user"), content: z.union([z.string(), z.array(z.union([textPart, imagePart])).max(1000)]),
     timestamp: z.number().nonnegative(),
@@ -39,16 +59,7 @@ const messageSchema: z.ZodType<Message> = z.discriminatedUnion("role", [
 const contextSchema: z.ZodType<Context> = z.object({
   systemPrompt: z.string().max(100000).optional(),
   messages: z.array(messageSchema).min(1).max(2000),
-  tools: z.array(z.object({
-    name: z.string().regex(/^[a-z][a-zA-Z0-9]{0,63}$/),
-    description: z.string().min(1).max(10000),
-    parameters: z.record(z.string(), z.json()).refine(value => value.type === "object" && JSON.stringify(value).length <= 100000, "工具参数必须是 JSON 对象结构，且不超过 100 KB"),
-    constrainedSampling: z.union([
-      z.literal(false),
-      z.object({ type: z.literal("json_schema"), strict: z.enum(["prefer", "require"]) }),
-      z.object({ type: z.literal("grammar"), variants: z.object({ openai_lark: z.string().optional(), openai_regex: z.string().optional() }) }),
-    ]).optional(),
-  })).max(32).refine(tools => new Set(tools.map(tool => tool.name)).size === tools.length, "工具名称不能重复").optional(),
+  tools: z.array(toolSchema).max(32).refine(tools => new Set(tools.map(tool => tool.name)).size === tools.length, "工具名称不能重复").optional(),
 }).refine(context => Buffer.byteLength(JSON.stringify(context)) <= 8000000, "模型上下文不能超过 8 MB");
 
 const inputSchema = z.object({
