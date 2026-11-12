@@ -5,6 +5,9 @@ type NodeComponent = Exclude<NodeTypesObject[string], string>;
 
 const components = shallowReactive(new Map<string, NodeComponent>());
 const requests = new Map<string, Promise<NodeComponent>>();
+// ACT: 超时只释放重试槽位，不 reject；脚本晚到仍会回填组件，避免超时误杀后无法恢复。
+// 弱机器上大画布首次加载可能接近 20s，阈值取宽，宁可多等也不要误报错误。
+const loadTimeout = 20000;
 
 export function getNodeIcon(type?: string): Component | undefined {
   if (!type?.startsWith("remote-")) return;
@@ -48,10 +51,18 @@ export function loadNodeComponent(name: string, url: string, force = false): Pro
       };
       document.head.append(script);
     });
-  })().then(component => {
+  })().then((component) => {
     components.set(name, component);
     return component;
-  }).finally(() => requests.delete(name));
-  requests.set(name, request);
-  return request;
+  });
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const tracked = request.finally(() => {
+    clearTimeout(timer);
+    if (requests.get(name) === tracked) requests.delete(name);
+  });
+  requests.set(name, tracked);
+  timer = setTimeout(() => {
+    if (requests.get(name) === tracked) requests.delete(name);
+  }, loadTimeout);
+  return tracked;
 }

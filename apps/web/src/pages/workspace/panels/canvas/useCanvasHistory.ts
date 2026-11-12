@@ -46,7 +46,10 @@ export function useCanvasHistory(flow: ReturnType<typeof useVueFlow>, binding: (
     for (const id of edgeReferences.keys()) if (!edgeIds.has(id)) edgeReferences.delete(id);
   }
 
-  const record = debounce(commit, 0);
+  // ACT: 分组期间不排历史任务，松手或批量结束后由 commit 统一补一次。
+  const record = debounce(() => {
+    if (!grouping.value) commit();
+  }, 0);
 
   function restoreFields(element: Node | Edge, snapshot: Node | Edge, runtimeFields: Set<string>) {
     for (const key of Object.keys(element)) {

@@ -207,6 +207,10 @@ const nodeTypes = shallowRef<NodeTypesObject>({ canvasGroup: markRaw(groupNode) 
 const nodeConfigs = shallowRef<Record<string, Record<string, unknown>>>({});
 const nodeOptions = ref<{ type: string; label: string }[]>([]);
 const nodeLoads = shallowReactive(new Map<string, Promise<void>>());
+const nodeLoadTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const nodeLoadTimeout = 24000;
+const nodeListTimeout = 30000;
+let nodeListTimer: ReturnType<typeof setTimeout> | undefined;
 const nodeReloads = new Set<string>();
 const nodeErrors = ref<Record<string, string>>({});
 const availableNodes = computed(() => nodeOptions.value.filter(node => nodeTypes.value[node.type] && !nodeErrors.value[node.type]));
@@ -236,7 +240,12 @@ const nodeDocument: NodeDocumentContext = { targets: shallowReactive(new Map()),
 const canvasDirty = ref(false);
 const canvasSaveError = ref("");
 const documentObservers = new Set<() => void>();
-onScopeDispose(() => { for (const release of documentObservers) release(); });
+onScopeDispose(() => {
+  for (const release of documentObservers) release();
+  clearTimeout(nodeListTimer);
+  for (const timer of nodeLoadTimers.values()) clearTimeout(timer);
+  nodeLoadTimers.clear();
+});
 provide("nodeDocument", nodeDocument);
 let dragCopy: ReturnType<InstanceType<typeof selectionToolbar>["startDragCopy"]>;
 flow.onNodeDragStart(({ event, nodes }) => {
@@ -254,6 +263,8 @@ flow.onNodeDragStop(({ nodes }) => {
   dragCopy = undefined;
   if (copy) copy.finish();
   else finishGroupDrag(flow.getNodes.value, nodes);
+  // ACT: 拖动过程不逐帧写保存修订号，松手后在这里统一提交一次。
+  scheduleCanvasChange();
 });
 const canvasHistory = useCanvasHistory(flow, () =>
   project.value?.directory && canvasId.value ? JSON.stringify([project.value.directory, canvasId.value]) : ""
@@ -630,7 +641,10 @@ watch(
           Object.keys(element)
             .filter((key) => !runtimeFields.has(key))
             .map((key) => Reflect.get(element, key)),
-        scheduleCanvasChange,
+        () => {
+          if (isNode(element) && element.dragging) return;
+          scheduleCanvasChange();
+        },
         { deep: true, flush: "post" }
       );
       const stopData = watch(() => element.data, scheduleCanvasSave, { deep: true, flush: "post" });
@@ -1109,6 +1123,8 @@ async function loadNode(name: string, url: string, force = false): Promise<void>
   delete nodeErrors.value[nodeType];
   const nodeLoad = loadNodeComponent(name, url, force)
     .then((remoteNode) => {
+      // ACT: 超时后加载仍可能晚到，此时恢复为可渲染状态。
+      delete nodeErrors.value[nodeType];
       // 同类型节点共享组件，运行错误由每个节点自己的边界显示。
       nodeTypes.value = { ...nodeTypes.value, [nodeType]: markRaw(remoteNode) };
     })
@@ -1116,8 +1132,22 @@ async function loadNode(name: string, url: string, force = false): Promise<void>
       nodeErrors.value[nodeType] = error instanceof Error ? error.message : String(error);
       throw error;
     })
-    .finally(() => nodeLoads.delete(nodeType));
+    .finally(() => {
+      clearTimeout(nodeLoadTimers.get(nodeType));
+      nodeLoadTimers.delete(nodeType);
+      if (nodeLoads.get(nodeType) === nodeLoad) nodeLoads.delete(nodeType);
+    });
   nodeLoads.set(nodeType, nodeLoad);
+  // ACT: 超时后主动退出加载态并展示错误卡片，避免一次未收敛的加载让节点永久停在骨架。
+  nodeLoadTimers.set(
+    nodeType,
+    setTimeout(() => {
+      if (nodeLoads.get(nodeType) !== nodeLoad) return;
+      nodeLoads.delete(nodeType);
+      nodeErrors.value[nodeType] = "节点加载超时，请点击重试";
+      if (import.meta.env.DEV) console.warn("[canvas] 节点加载超时", { nodeType });
+    }, nodeLoadTimeout)
+  );
   return nodeLoad;
 }
 
@@ -1126,6 +1156,10 @@ async function loadRemoteNodes(reloadName?: string) {
   const requestId = ++loadRequest;
   const signal = canvasController.signal;
   nodeListLoading.value = true;
+  clearTimeout(nodeListTimer);
+  nodeListTimer = setTimeout(() => {
+    if (requestId === loadRequest) nodeListLoading.value = false;
+  }, nodeListTimeout);
   try {
     const { data } = await axios.get<{ code: number; data: { name: string; displayName: string; url: string; enabled?: boolean; config?: Record<string, unknown> }[] }>(
       "/api/nodes/get",
@@ -1169,6 +1203,7 @@ async function loadRemoteNodes(reloadName?: string) {
   } catch (error) {
     if (requestId === loadRequest) console.error("获取远端节点列表失败", error);
   } finally {
+    clearTimeout(nodeListTimer);
     if (requestId === loadRequest) nodeListLoading.value = false;
   }
 }
