@@ -152,6 +152,65 @@ export async function renameAgentSession(cwd: string, path: string, name: string
   }
 }
 
+export async function forkAgentConversation(cwd: string, path: string, entryId: string) {
+  if (getActiveAgentSession(path)) throw Object.assign(new Error("对话运行中，请稍后再分支"), { status: 409 });
+  const release = lockWorkspaceFiles([path]);
+  try {
+    let entries: ReturnType<typeof parseSessionEntries>;
+    try {
+      // SDK 解析会跳过损坏行；分支前先逐行校验，损坏文件直接拒绝。
+      const raw = await readFile(path, "utf8");
+      for (const line of raw.split("\n")) if (line.trim()) JSON.parse(line);
+      entries = parseSessionEntries(raw);
+    } catch { throw Object.assign(new Error("会话文件无效"), { status: 400 }); }
+    if (entries[0]?.type !== "session") throw Object.assign(new Error("会话文件无效"), { status: 400 });
+    const history = SessionManager.open(path, dirname(path), cwd);
+    if (getSubAgentInfo(history)) throw Object.assign(new Error("子会话不支持分支"), { status: 400 });
+    const entry = history.getBranch().find(item => item.id === entryId);
+    if (!entry || entry.type !== "message" || entry.message.role !== "user") throw Object.assign(new Error("消息不在当前对话中"), { status: 400 });
+    const source = await getAgentSession(cwd, path);
+    const question = source.messages.find(item => item.role === "user" && item.id === entryId);
+    const draft = { prompt: question?.content ?? "", attachments: question?.attachments };
+    const name = `${source.name}（分支）`;
+    // 首条提问没有前缀历史：建新空对话，并继承源对话的模型与思考配置。
+    if (!entry.parentId) {
+      const created = await createAgentConversation(cwd);
+      const forkPath = resolve(dirname(path), created.file);
+      const releaseFork = lockWorkspaceFiles([forkPath]);
+      try {
+        const fork = SessionManager.open(forkPath, dirname(forkPath), cwd);
+        fork.appendSessionInfo(name);
+        if (source.providerId && source.modelId) fork.appendModelChange(source.providerId, source.modelId);
+        if (source.thinkingLevel) {
+          fork.appendCustomEntry("toonflowReasoning", { thinkingLevel: source.thinkingLevel });
+          fork.appendThinkingLevelChange(source.thinkingLevel);
+        }
+      } finally { releaseFork(); }
+      return { session: await getAgentSession(cwd, forkPath), ...draft };
+    }
+    const forkFile = history.createBranchedSession(entry.parentId);
+    if (!forkFile) throw Object.assign(new Error("分支对话失败"), { status: 500 });
+    const fork = SessionManager.open(forkFile, dirname(forkFile), cwd);
+    // 停止可能让同批 toolCall 缺结果：只在新文件补齐，避免分叉上下文悬空调用。
+    const results = new Set(fork.getBranch().flatMap(item => item.type === "message" && item.message.role === "toolResult" ? [item.message.toolCallId] : []));
+    for (const item of fork.getBranch()) {
+      if (item.type !== "message" || item.message.role !== "assistant") continue;
+      for (const part of item.message.content) {
+        if (part.type !== "toolCall" || results.has(part.id)) continue;
+        results.add(part.id);
+        fork.appendMessage({ role: "toolResult", toolCallId: part.id, toolName: part.name, content: [{ type: "text", text: "Operation aborted" }], isError: true, timestamp: Date.now() });
+      }
+    }
+    fork.appendSessionInfo(name);
+    // 历史列表只列根会话：剥掉新文件头的 parentSession，只重写自己的新文件。
+    const forkEntries = parseSessionEntries(await readFile(forkFile, "utf8"));
+    const forkHeader = forkEntries[0];
+    if (forkHeader?.type === "session") delete forkHeader.parentSession;
+    await writeWorkspaceFile(forkFile, forkEntries.map(item => JSON.stringify(item)).join("\n") + "\n");
+    return { session: await getAgentSession(cwd, forkFile), ...draft };
+  } finally { release(); }
+}
+
 export async function listAgentSessions(cwd: string, directory: string) {
   const files = new Set((await readdir(directory, { withFileTypes: true })).filter((item) => item.isFile()).map((item) => item.name));
   const sessions = await SessionManager.list(cwd, directory);

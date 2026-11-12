@@ -28,20 +28,22 @@
       :sessionFile="item.file"
       v-model:engine="item.engine"
       :disabled="loading || !initialized"
+      :forkingId="forkingId"
       @session="setSessionFile(item, $event)"
       @event="receiveAgentEvent"
-      @sent="updateConversationName(item, $event)" />
+      @sent="updateConversationName(item, $event)"
+      @fork="forkConversation(item, $event)" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch, type ComponentPublicInstance } from "vue";
+import { computed, nextTick, onBeforeUnmount, ref, watch, type ComponentPublicInstance } from "vue";
 import axios from "axios";
 import { translate } from "@toonflow/i18n/vue";
 import { ElMessage } from "element-plus";
 import { useWorkspaceStore } from "@/stores/workspace";
 import useWorkspaceFiles from "@/lib/workspaceFiles";
-import type { AgentConversation, AgentHistory } from "./types";
+import type { AgentAttachment, AgentConversation, AgentHistory, AgentMessage } from "./types";
 import type { AgentEvent, AgentSubAgent } from "@toonflow/server/agent/types";
 import agentMenu from "./menu.vue";
 import conversation from "./conversation.vue";
@@ -63,6 +65,7 @@ const workspaceStore = useWorkspaceStore();
 const history = ref<AgentHistory[]>([]);
 const loading = ref(false);
 const historyLoading = ref(false);
+const forkingId = ref<string>();
 const initialized = ref(false);
 let requestId = 0;
 let nextConversationKey = 0;
@@ -172,6 +175,39 @@ async function newConversation() {
   } finally {
     if (currentRequest === requestId) loading.value = false;
   }
+}
+
+async function forkConversation(item: OpenConversation, message: AgentMessage) {
+  const directory = workspaceStore.project?.directory;
+  const entryId = message.entryId ?? message.id;
+  if (!directory || !item.file || loading.value || historyLoading.value || forkingId.value) return;
+  const currentRequest = ++requestId;
+  loading.value = true;
+  forkingId.value = entryId;
+  let openedKey: number | undefined;
+  let draft: { prompt: string; attachments?: AgentAttachment[] } | undefined;
+  try {
+    const { data } = await axios.post<{ code: number; data: { session: AgentConversation; prompt: string; attachments?: AgentAttachment[] }; message?: string }>("/api/agent/fork", {
+      directory, sessionFile: item.file, entryId,
+    }, { headers: { "x-toonflow-workspace": "1" } });
+    if (data.code !== 200) throw new Error(data.message || "分支对话失败");
+    if (currentRequest !== requestId) return;
+    const { session, prompt, attachments } = data.data;
+    history.value.unshift({ file: session.file, name: session.name, modified: new Date().toISOString(), messageCount: session.messages.length });
+    openedKey = showConversation(session).key;
+    initialized.value = true;
+    draft = { prompt, attachments };
+  } catch (error) {
+    if (currentRequest === requestId) ElMessage.error(axios.isAxiosError(error)
+      ? error.response?.data?.message || "分支对话失败"
+      : error instanceof Error ? error.message : "分支对话失败");
+  } finally {
+    if (currentRequest === requestId) loading.value = false;
+    forkingId.value = undefined;
+  }
+  if (!draft || openedKey === undefined || currentRequest !== requestId) return;
+  await nextTick();
+  conversationRefs.get(openedKey)?.fillPrompt(draft.prompt, draft.attachments);
 }
 
 async function readConversation(directory: string, file: string) {

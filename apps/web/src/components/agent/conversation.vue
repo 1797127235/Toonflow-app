@@ -11,10 +11,13 @@
       :compacting="compacting"
       :editingId="editingId"
       :voiceActive="voiceActive"
+      :canFork="!initialSession?.parentFile"
+      :forkingId="forkingId"
       @fillPrompt="input?.fillPrompt($event)"
       @copy="copyMessage"
       @edit="input?.editMessage($event)"
-      @cancelEdit="input?.cancelEdit()" />
+      @cancelEdit="input?.cancelEdit()"
+      @fork="emit('fork', $event)" />
     <div v-if="compacting" class="compactionStatus" role="status">
       <el-icon class="is-loading" aria-hidden="true"><icon-loader-2 :size="14" /></el-icon>
       <span>正在压缩上下文…</span>
@@ -66,9 +69,9 @@ import type { CanvasContext } from "@toonflow/tool-canvas/runtime";
 import messageList from "./conversation/messageList.vue";
 import messageInput from "./conversation/messageInput.vue";
 
-const props = defineProps<{ active: boolean; initialSession: AgentConversation | null; sessionFile?: string; disabled: boolean }>();
+const props = defineProps<{ active: boolean; initialSession: AgentConversation | null; sessionFile?: string; disabled: boolean; forkingId?: string }>();
 const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
-const emit = defineEmits<{ session: [file: string]; sent: [prompt: string]; event: [event: AgentEvent] }>();
+const emit = defineEmits<{ session: [file: string]; sent: [prompt: string]; event: [event: AgentEvent]; fork: [message: AgentMessage] }>();
 const workspaceStore = useWorkspaceStore();
 const directory = workspaceStore.project?.directory;
 const acpModels = ref<{ value: string; label: string }[]>([]);
@@ -197,7 +200,15 @@ function receiveEvent(event: AgentEvent) {
   applyEvent(event);
 }
 
-defineExpose({ receiveEvent });
+// 分支预填：输入编辑器异步初始化，等 ready 再写入，避免新对话挂载瞬间丢草稿。
+const forkDraft = ref<{ prompt: string; attachments?: AgentAttachment[] }>();
+watch([forkDraft, () => input.value?.ready], async ([draft, ready]) => {
+  if (!draft || !ready || !input.value) return;
+  forkDraft.value = undefined;
+  await input.value.fillPrompt(draft.prompt, draft.attachments);
+}, { flush: "post", immediate: true });
+
+defineExpose({ receiveEvent, fillPrompt: (prompt: string, attachments?: AgentAttachment[]) => { forkDraft.value = { prompt, attachments }; } });
 
 function submitMessage() {
   return sendMessage(editingId.value ? messages.value.find(item => item.id === editingId.value) : undefined);
