@@ -1,7 +1,7 @@
 # ACP Client 首轮计划：接入 pi
 
-状态：设计稿，尚未实现。
-目标：Toonflow 作为 **ACP Client**，在桌面端工作区内嵌跑 **pi**，且在该会话里达到与内置 Agent **功能对等**的画布协作能力（见 `docs/acpClientPiSpec.md` §功能对等矩阵）。
+状态：已实现（2026-11-08，commit 5108985 / 505eaf8 / 16f88cf）。实际落地改用上游 pi-acp（npx）+ piCommand 脚本 + piBridge 扩展，未建本文的 vendored fork 与 ops/ 操作平面；本文保留作设计参考。
+目标：Toonflow 作为 **ACP Client**，在桌面端工作区内嵌跑 **pi**，且在该会话里达到与内置 Agent **功能对等**的画布协作能力（见 `docs/acpPi/spec.md` §功能对等矩阵）。
 不替代现有内置 Agent（`@earendil-works/pi-coding-agent` 进程内 `run()`）；二者并行，会话与进程隔离。
 
 相关背景：
@@ -44,7 +44,7 @@
 
 ### 1.3 成功标准
 
-等同于 `acpClientPiSpec.md` §Success Criteria（14 条）。**仅「能聊天 + 能改文件」不构成完成**：矩阵中「必须」项全部通过才算首轮完成。
+等同于 `docs/acpPi/spec.md` §Success Criteria（14 条）。**仅「能聊天 + 能改文件」不构成完成**：矩阵中「必须」项全部通过才算首轮完成。
 
 ### 1.4 用户在哪选择「外部 pi」（已定）
 

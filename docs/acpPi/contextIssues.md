@@ -1,7 +1,7 @@
 # ACP 外部 Agent 上下文注入问题清单
 
 状态：已修复（2026-11-08）。提示词、技能清单与全局规范改用 pi 原生提示词参数注入，见文末「修复记录」。基于 2026-11-08 工作区代码与本机 `pi@1.5.0` 实测核查。
-关联文档：`docs/acpClientPiSpec.md`（功能对等矩阵）、`docs/acpClientPiPlan.md`（P6 / M8 验证项）。
+关联文档：`docs/acpPi/spec.md`（功能对等矩阵）、`docs/acpPi/plan.md`（P6 / M8 验证项）。
 
 ## 结论摘要
 

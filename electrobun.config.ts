@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import type { ElectrobunConfig } from "./.hutch/devkit/api/config/ElectrobunConfig";
 
 const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? "macX64" : "macArm64")
@@ -6,12 +5,8 @@ const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? 
 
 function appVersion() {
   if (process.env.appVersion) return process.env.appVersion;
-  // ACT: 当前分支的版本是 git 标签，不能沿用配置里旧的 2.0.0。
-  try {
-    const tag = execFileSync("git", ["describe", "--tags", "--abbrev=0"], { cwd: import.meta.dirname, encoding: "utf8" }).trim().replace(/^v/, "");
-    if (/^\d+\.\d+\.\d+$/.test(tag)) return tag;
-  } catch { /* 没有标签时不用过期的发布号。 */ }
-  return "0.0.0";
+  // 本地维护版本号；git 标签来自上游历史，脱钩后不再作为版本来源。
+  return "0.0.2";
 }
 
 export default {

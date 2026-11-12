@@ -1,6 +1,6 @@
 # C2A 图片与视频模型测试用例
 
-配套文档：`docs/c2aProviderTestPlan.md`（环境、成本策略、已通过的实测记录）
+配套文档：`docs/c2aProvider/testPlan.md`（环境、成本策略、已通过的实测记录）
 被测对象：`packages/providers/src/media/c2a.ts`（运行时 `data/providers/c2a.ts`）
 范围：6 个图片模型 + 16 个视频模型，以及素材网关、业务链路、参数边界。
 
@@ -33,7 +33,7 @@
 - 素材：
   - 图 `data/workspaces/艾雷教堂/assets/generated/image6b860b8f-cd34-48b2-b7cb-475d530d22a4.png`（2048×1152，1.7 MB）
   - 视频 `data/workspaces/狗跳舞/assets/69f80c53-d530-4abd-b304-e63707165b0e/source.mp4`（748 KB）
-- 请求模板见 `docs/c2aProviderTestPlan.md` §3。除非特别说明，视频一律用**该模型允许的最小时长 + 最便宜分辨率**。
+- 请求模板见 `docs/c2aProvider/testPlan.md` §3。除非特别说明，视频一律用**该模型允许的最小时长 + 最便宜分辨率**。
 
 ---
 
