@@ -88,7 +88,7 @@ import useVoiceInput from "./useVoiceInput";
 import xSender, { type AnyTagProps } from "x-sender";
 import "x-sender/lib/XSender.css";
 
-const props = defineProps<{ active: boolean; disabled: boolean; busy: boolean; stopping?: boolean; remoteRunning: boolean; deletingId?: string; directory?: string; contextUsage?: AgentContext; stats?: AgentStats; contextWindow: number; showModel?: boolean; acpModels?: { value: string; label: string }[]; acpModelsLoading?: boolean; acpModelsError?: string }>();
+const props = defineProps<{ active: boolean; disabled: boolean; busy: boolean; stopping?: boolean; remoteRunning: boolean; directory?: string; contextUsage?: AgentContext; stats?: AgentStats; contextWindow: number; showModel?: boolean; acpModels?: { value: string; label: string }[]; acpModelsLoading?: boolean; acpModelsError?: string }>();
 const emit = defineEmits<{ submit: []; stop: [] }>();
 const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
 const acpModel = defineModel<string>("acpModel", { default: "" });
@@ -126,7 +126,7 @@ const senderHeight = ref(44);
 const senderMaxHeight = ref(Math.max(44, window.innerHeight / 2));
 let senderResize: { pointerId: number; y: number; height: number } | undefined;
 const contextMenuVisible = ref(false);
-const locked = computed(() => props.disabled || props.busy || props.stopping || props.deletingId !== undefined || restoringAttachment.value || voiceActive.value);
+const locked = computed(() => props.disabled || props.busy || props.stopping || restoringAttachment.value || voiceActive.value);
 const { voiceSupported, voiceState, voiceText, voiceActive, voiceButtonLabel, voiceLevel, armVoiceInput, startVoiceInput, clearVoicePress, cancelVoiceInput } = useVoiceInput({
   getSender: () => sender,
   active: () => props.active,
@@ -267,7 +267,7 @@ async function restoreEditingDraft() {
 }
 
 async function cancelEdit() {
-  if (props.busy || props.deletingId !== undefined || voiceActive.value) return;
+  if (props.busy || voiceActive.value) return;
   clearVoicePress();
   await restoreEditingDraft();
 }

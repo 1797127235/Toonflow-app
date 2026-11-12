@@ -2,7 +2,7 @@ import { z } from "zod";
 import { basename, dirname, resolve } from "node:path";
 import { readFile, readdir } from "@toonflow/file";
 import { calculateContextTokens, estimateTokens, getLastAssistantUsage, parseSessionEntries, SessionManager } from "@earendil-works/pi-coding-agent";
-import type { AgentSession, FileEntry, SessionEntry } from "@earendil-works/pi-coding-agent";
+import type { AgentSession, SessionEntry } from "@earendil-works/pi-coding-agent";
 import type { AgentContextSegment, AgentEvent, AgentMention, AgentSubAgent, AgentToolCall } from "@/agent/runtime/types";
 import { loadContextPrefix } from "@/agent/runtime/contextUsage";
 import { agentMentionsSchema } from "@/agent/runtime/mentions";
@@ -123,105 +123,6 @@ export async function reportToParent(cwd: string, parentFile: string, file: stri
   return details.id;
 }
 
-export async function deleteAgentMessage(cwd: string, path: string, options: { entryIds?: string[]; replyTo?: string }) {
-  if (Boolean(options.entryIds) === Boolean(options.replyTo)) {
-    throw Object.assign(new Error("请选择要删除的消息"), { status: 400 });
-  }
-  const release = lockWorkspaceFiles([path]);
-  try {
-    // ACT: 删除会重写 JSONL，必须拒绝损坏行，不能沿用 SDK 会跳过损坏行的读取器。
-    let entries: FileEntry[];
-    try {
-      entries = (await readFile(path, "utf8"))
-        .split("\n")
-        .filter((line) => line.trim())
-        .map((line) => JSON.parse(line));
-    } catch (error) {
-      if (!(error instanceof SyntaxError)) throw error;
-      throw Object.assign(new Error("会话文件损坏，无法删除消息"), { status: 400 });
-    }
-    if (entries[0]?.type !== "session") throw Object.assign(new Error("会话文件无效"), { status: 400 });
-    const entrySchema = z.object({ type: z.string(), id: z.string().min(1), parentId: z.string().nullable(), timestamp: z.string() });
-    const knownIds = new Set<string>();
-    for (const entry of entries.slice(1)) {
-      const parsed = entrySchema.safeParse(entry);
-      if (!parsed.success || knownIds.has(parsed.data.id) || (parsed.data.parentId !== null && !knownIds.has(parsed.data.parentId))) {
-        throw Object.assign(new Error("会话记录结构无效，无法删除消息"), { status: 400 });
-      }
-      knownIds.add(parsed.data.id);
-    }
-    const history = SessionManager.inMemory(cwd, undefined, entries);
-    const branch = history.getBranch();
-    const isUserEntry = (entry: SessionEntry) =>
-      (entry.type === "message" && entry.message.role === "user") || (entry.type === "custom" && entry.customType === "toonflowDeletedUser");
-    let targets = branch.filter((entry) => options.entryIds?.includes(entry.id));
-    if (options.replyTo) {
-      const index = branch.findIndex((entry) => entry.id === options.replyTo && isUserEntry(entry));
-      if (index < 0) throw Object.assign(new Error("消息不在当前对话中，请重新打开对话"), { status: 400 });
-      const nextUser = branch.findIndex((entry, position) => position > index && isUserEntry(entry));
-      targets = branch
-        .slice(index + 1, nextUser < 0 ? undefined : nextUser)
-        .filter((entry) => entry.type === "message" && entry.message.role === "assistant");
-    }
-    if (
-      options.entryIds &&
-      (new Set(options.entryIds).size !== targets.length ||
-        targets.some((entry) => entry.type !== "message" || (entry.message.role !== "user" && entry.message.role !== "assistant")))
-    ) {
-      throw Object.assign(new Error("消息不在当前对话中，请重新打开对话"), { status: 400 });
-    }
-    if (!targets.length) return await getAgentSession(cwd, path);
-
-    const removedIds = new Set(targets.map((entry) => entry.id));
-    const toolCallIds = new Set(
-      targets.flatMap((entry) =>
-        entry.type === "message" && entry.message.role === "assistant"
-          ? entry.message.content.filter((part) => part.type === "toolCall").map((part) => part.id)
-          : []
-      )
-    );
-    const affectedIds = new Set(removedIds);
-    const timedTurns = new Map<string, boolean>();
-    for (const entry of history.getEntries()) {
-      if ((entry.parentId && affectedIds.has(entry.parentId)) || (entry.type === "branch_summary" && affectedIds.has(entry.fromId))) {
-        affectedIds.add(entry.id);
-      }
-      const timingChanged = !isUserEntry(entry) && (removedIds.has(entry.id) || Boolean(entry.parentId && timedTurns.get(entry.parentId)));
-      timedTurns.set(entry.id, timingChanged);
-      if (
-        (entry.type === "message" && entry.message.role === "toolResult" && toolCallIds.has(entry.message.toolCallId)) ||
-        (entry.type === "custom" &&
-          ["toonflowAttachments", "toonflowUserMessage"].includes(entry.customType) &&
-          removedIds.has((entry.data as { messageId?: string } | undefined)?.messageId ?? "")) ||
-        (entry.type === "custom" && entry.customType === "toonflowTiming" && timingChanged) ||
-        ((entry.type === "compaction" || entry.type === "branch_summary") && affectedIds.has(entry.id)) ||
-        (entry.type === "label" && removedIds.has(entry.targetId))
-      ) {
-        removedIds.add(entry.id);
-      }
-    }
-    // ACT: 清除正文并保留树节点，避免分支、叶指针和实时回复的 user 锚点失效；摘要也不能带回已删内容。
-    entries = [
-      entries[0],
-      ...history.getEntries().map((entry) =>
-        removedIds.has(entry.id)
-          ? {
-              type: "custom" as const,
-              id: entry.id,
-              parentId: entry.parentId,
-              timestamp: new Date().toISOString(),
-              customType: isUserEntry(entry) ? "toonflowDeletedUser" : "toonflowDeletedEntry",
-            }
-          : entry
-      ),
-    ];
-    await writeWorkspaceFile(path, entries.map((entry) => JSON.stringify(entry)).join("\n") + "\n");
-    return await getAgentSession(cwd, path);
-  } finally {
-    release();
-  }
-}
-
 export async function createAgentConversation(cwd: string, child?: Omit<AgentSubAgent, "file" | "status">) {
   const { path: directory } = await resolveWorkspacePath(cwd, ".agent/sessions", true);
   const history = SessionManager.create(cwd, directory, child ? { parentSession: child.parentFile } : undefined);
@@ -296,7 +197,6 @@ export async function getAgentSession(cwd: string, path: string) {
   );
   let replyTo: string | undefined;
   const entriesMessages = branch.flatMap<SessionMessage>((entry) => {
-    if (entry.type === "custom" && entry.customType === "toonflowDeletedUser") replyTo = entry.id;
     if (entry.type === "custom_message" && entry.customType === "subAgentReport") {
       const details = entry.details as { id?: string; file: string; name: string; content?: string };
       const content = details.content ?? (typeof entry.content === "string" ? entry.content : getToolResultText(entry.content));
@@ -473,14 +373,8 @@ export function getAgentContext(history: SessionManager, contextWindow = 0, pref
   const usage = getLastAssistantUsage(recent);
   const messages = history.buildSessionContext().messages;
   const usageIndex = messages.findLastIndex((message) => message.role === "assistant" && message.usage === usage);
-  const deletedAfterReply = branch.some(
-    (entry) =>
-      entry.type === "custom" &&
-      (entry.customType === "toonflowDeletedUser" || entry.customType === "toonflowDeletedEntry") &&
-      Date.parse(entry.timestamp) >= (messages[usageIndex]?.timestamp ?? 0)
-  );
   // ACT: 压缩后先按摘要与保留消息估算，首条新回复后再使用模型 usage。模型 usage 已包含当轮静态提示，对话段取剩余量。
-  const includesStaticPrompt = Boolean(usage && usageIndex >= 0 && !deletedAfterReply);
+  const includesStaticPrompt = Boolean(usage && usageIndex >= 0);
   const measured = includesStaticPrompt
     ? calculateContextTokens(usage!) + messages.slice(usageIndex + 1).reduce((total, message) => total + estimateTokens(message), 0)
     : messages.reduce((total, message) => total + estimateTokens(message), 0);

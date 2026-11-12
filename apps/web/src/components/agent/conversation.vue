@@ -10,12 +10,10 @@
       :remoteRunning="remoteRunning"
       :compacting="compacting"
       :editingId="editingId"
-      :deletingId="deletingId"
       :voiceActive="voiceActive"
       @fillPrompt="input?.fillPrompt($event)"
       @copy="copyMessage"
       @edit="input?.editMessage($event)"
-      @delete="deleteMessage"
       @cancelEdit="input?.cancelEdit()" />
     <div v-if="compacting" class="compactionStatus" role="status">
       <el-icon class="is-loading" aria-hidden="true"><icon-loader-2 :size="14" /></el-icon>
@@ -33,7 +31,6 @@
       :busy="busy || !!remoteRunId"
       :stopping="stopping"
       :remoteRunning="remoteRunning"
-      :deletingId="deletingId"
       :directory="directory"
       :contextUsage="contextUsage"
       :stats="stats"
@@ -158,11 +155,10 @@ const stats = ref(props.initialSession?.stats);
 const contextUsage = ref(props.initialSession?.contextUsage);
 const busy = ref(false);
 const compacting = ref(false);
-const deletingId = ref<string>();
 const restoringAttachment = ref(false);
 const input = ref<InstanceType<typeof messageInput>>();
 const voiceActive = ref(false);
-const locked = computed(() => props.disabled || busy.value || stopping.value || !!remoteRunId.value || deletingId.value !== undefined || restoringAttachment.value || voiceActive.value);
+const locked = computed(() => props.disabled || busy.value || stopping.value || !!remoteRunId.value || restoringAttachment.value || voiceActive.value);
 const editingId = ref<string>();
 let cancelCurrent: (() => Promise<void>) | undefined;
 const pendingMessage = props.initialSession?.parentFile ? undefined : workspaceStore.pendingAgentMessage;
@@ -213,33 +209,6 @@ async function copyMessage(content: string) {
     ElMessage.success("已复制");
   } catch {
     ElMessage.error("复制失败，请重试");
-  }
-}
-
-async function deleteMessage(item: AgentMessage) {
-  if (locked.value || remoteRunning.value || item.streaming || item.report) return;
-  deletingId.value = item.id;
-  try {
-    if (item.entryId || item.replyTo) {
-      if (!directory || !props.sessionFile) throw new Error("请重新打开对话后再删除");
-      const { data } = await axios.delete<{ code: number; data: AgentConversation; message?: string }>("/api/agent/message", {
-        data: {
-          directory, sessionFile: props.sessionFile,
-          ...(item.replyTo ? { replyTo: item.replyTo } : { entryIds: [item.entryId!] }),
-        },
-        headers: { "x-toonflow-workspace": "1" },
-      });
-      if (data.code !== 200) throw new Error(data.message || "删除消息失败");
-      stats.value = data.data.stats;
-      contextUsage.value = data.data.contextUsage;
-    }
-    messages.value = messages.value.filter(message => message.id !== item.id &&
-      !(item.replyTo && message.role === "assistant" && !message.report && message.replyTo === item.replyTo));
-  } catch (error) {
-    const message = axios.isAxiosError<{ message?: string }>(error) ? error.response?.data?.message : undefined;
-    ElMessage.error(message || (error instanceof Error ? error.message : "删除消息失败"));
-  } finally {
-    deletingId.value = undefined;
   }
 }
 
