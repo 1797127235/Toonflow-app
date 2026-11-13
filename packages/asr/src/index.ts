@@ -57,7 +57,7 @@ export function isBrowserAudioAsrSupported() {
   const userAgent = window.navigator.userAgent;
   if (/Android|iPhone|iPad|iPod|Mobile/i.test(userAgent)) return false;
   const version = userAgent.match(/(?:Chrome|Chromium)\/(\d+)/)?.[1];
-  // ACT: Chromium 135 门槛仅防止旧实现忽略轨道后录麦克风，不保证宿主识别服务可用；后续有原生能力检测时替换 UA 判断。
+  // Chromium 135 门槛仅防止旧实现忽略轨道后录麦克风，不保证宿主识别服务可用；后续有原生能力检测时替换 UA 判断。
   return !!version && Number(version) >= 135;
 }
 
@@ -90,7 +90,7 @@ export function createBrowserAsr(options: BrowserAsrOptions = {}) {
     if (cancelled) return;
     let finalText = "";
     let interimText = "";
-    // ACT: 每次重建本轮完整结果，避免临时结果修订时重复追加文字。
+    // 每次重建本轮完整结果，避免临时结果修订时重复追加文字。
     for (let index = 0; index < event.results.length; index++) {
       const result = event.results[index];
       if (result.isFinal) finalText += result[0].transcript;

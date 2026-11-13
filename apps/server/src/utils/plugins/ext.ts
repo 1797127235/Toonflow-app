@@ -69,7 +69,7 @@ export function validateExtConfig(rules: z.infer<typeof configRulesSchema>, conf
     } else if (rule.type === "switch" && value !== (props.activeValue ?? true) && value !== (props.inactiveValue ?? false)) {
       message = t`${label}的开关值无效`;
     }
-    // ACT: 仅校验已支持的标准控件；自定义控件保留其值，新增控件时再补对应规则。
+    // 仅校验已支持的标准控件；自定义控件保留其值，新增控件时再补对应规则。
     if (message) throw Object.assign(new Error(message), { status: 400 });
   }
   return parsed;

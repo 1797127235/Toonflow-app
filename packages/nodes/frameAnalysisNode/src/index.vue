@@ -124,7 +124,7 @@ type PromptModel = NonNullable<InstanceType<typeof promptInput>["$props"]["model
 type AnalysisState = AnalysisSettings & { source?: NodeMediaValue; lastResult?: AnalysisResult; resultSource?: string };
 
 const { id, node, nodeProps, outputs, ai, nodeEvent, files, ffmpeg: loadFfmpeg, updateNodeInternals } = useNode({ label: "逐帧拉片" });
-// ACT: 拉片结果由独立素材节点承载，本节点仅保留视频输入；迁移旧版遗留输出。
+// 拉片结果由独立素材节点承载，本节点仅保留视频输入；迁移旧版遗留输出。
 outputs.value = {};
 node.data.outputs = outputs.value;
 const nodeData = node.data as typeof node.data & { frameAnalysis?: AnalysisState };
@@ -220,7 +220,7 @@ nodeEvent.on("save", async reason => {
   if (player.value?.capturing) throw new Error("截图保存中，请稍后切换画布或删除节点");
   await cancelAndWait();
 });
-// ACT: 结果文件由多个生成节点及撤销历史引用，删除本节点仅停止任务，保留已提交素材。
+// 结果文件由多个生成节点及撤销历史引用，删除本节点仅停止任务，保留已提交素材。
 nodeEvent.on("delete", cancelAndWait);
 nodeEvent.on("copy", () => ({ frameAnalysis: { ...settings, source: uploadedSource.value, lastResult: lastResult.value, resultSource: resultSource.value } }));
 

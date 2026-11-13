@@ -89,7 +89,7 @@ async function pressKey(page: Page, key: string, signal: AbortSignal) {
 async function readUserAgent(browser: Browser) {
   const page = await browser.newPage();
   try {
-    // ACT: 从浏览器自身的可信页面读取真实客户端提示，空白页拿不到这些信息；不访问外站或硬编码版本、平台。
+    // 从浏览器自身的可信页面读取真实客户端提示，空白页拿不到这些信息；不访问外站或硬编码版本、平台。
     await page.goto("chrome://version/", { waitUntil: "domcontentloaded" });
     return await page.evaluate(async () => {
       const data = (navigator as Navigator & {
@@ -122,7 +122,7 @@ export function createBrowserRuntime() {
         try { subscriber.listener(event); } catch { session.subscribers.delete(subscriber); }
         continue;
       }
-      // ACT: 每个订阅者只保留最新一帧；HTTP 写入背压由宿主流接口继续合并。
+      // 每个订阅者只保留最新一帧；HTTP 写入背压由宿主流接口继续合并。
       subscriber.frame = event;
       if (subscriber.scheduled) continue;
       subscriber.scheduled = true;

@@ -49,7 +49,7 @@ async function verifyChain(actualRoot: string, start: string, target: string, fi
   }
 }
 
-// ACT: 安装/导出与编辑器共用段名规则，各自保留路径规范化方式。
+// 安装/导出与编辑器共用段名规则，各自保留路径规范化方式。
 export function isSafeSegment(part: string) {
   return !!part && part !== "." && part !== ".."
     && !/[\\/<>:"|?*\x00-\x1f]/.test(part) && !/[. ]$/.test(part)
@@ -85,7 +85,7 @@ export async function uninstall(name: string) {
       throw Object.assign(new Error("目录中包含其他技能，不能整体卸载"), { status: 409 });
     }
   }
-  // ACT: 非标准目录布局仅删除主文件，保留可能与其他技能共享的目录。
+  // 非标准目录布局仅删除主文件，保留可能与其他技能共享的目录。
   await rm(isDirectorySkill ? baseDir : mainTarget, { recursive: isDirectorySkill });
   conf.set("disabledSkills", conf.get("disabledSkills", []).filter(item => item !== name));
 }

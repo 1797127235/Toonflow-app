@@ -78,7 +78,7 @@ export function createSceneDetector(options: SceneDetectorOptions) {
     if (method === "content") return threshold;
     const sortedScores = recentScores.map((entry) => entry.score).sort((left, right) => left - right);
     const median = sortedScores.length ? sortedScores[Math.floor(sortedScores.length / 2)] : 0;
-    // ACT: 以近 1.2 秒的中位数估计运动背景，最多保留 180 帧；不是学习模型。
+    // 以近 1.2 秒的中位数估计运动背景，最多保留 180 帧；不是学习模型。
     return Math.max(4, median) * threshold;
   }
 

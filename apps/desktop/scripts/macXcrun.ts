@@ -7,7 +7,7 @@ if (args[0] !== "stapler" || !["staple", "validate"].includes(args[1] ?? "")) {
   process.exit(await child.exited);
 }
 
-// ACT: Hutch 0.24.3 没有票据网络重试；仅重试这两个幂等命令，上游支持后可移除转发。
+// Hutch 0.24.3 没有票据网络重试；仅重试这两个幂等命令，上游支持后可移除转发。
 for (let attempt = 1; attempt <= 4; attempt++) {
   const result = Bun.spawnSync(command, { stdin: "inherit", stdout: "pipe", stderr: "pipe" });
   process.stdout.write(result.stdout);

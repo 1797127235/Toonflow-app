@@ -17,7 +17,7 @@ export default Router().put("/", validateFields({
   if (!u.workspace.isLocalWorkspaceRequest(req)) return res.status(403).json(error("请在桌面端或服务器本机管理 A2A 设置", null, 403));
   const { enabled, providerId, modelId, thinkingLevel } = req.body;
   let directory = req.body.directory as string;
-  // ACT: 关闭入口不依赖旧目录或模型仍存在；重新开启时再次严格校验。
+  // 关闭入口不依赖旧目录或模型仍存在；重新开启时再次严格校验。
   if (enabled) {
     getAgentModelConfiguration(providerId, modelId, thinkingLevel);
     directory = await u.a2aSettings.resolveA2aWorkspace(directory);

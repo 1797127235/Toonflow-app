@@ -26,7 +26,7 @@ export default Router().post("/", validateFields(inputSchema.shape), async (req,
   let created: Awaited<ReturnType<typeof lstat>> | undefined;
   let release: (() => void) | undefined;
   try {
-    // ACT: 复用内存 ZIP 校验，压缩包和解压内容各限 512 MB、2 万条目；更大项目需改为流式暂存与解压。
+    // 复用内存 ZIP 校验，压缩包和解压内容各限 512 MB、2 万条目；更大项目需改为流式暂存与解压。
     const maxBytes = 512 * 1024 * 1024;
     const bytes = await u.workspaceDownload.downloadPublicFile(input.url, { signal, maxBytes, label: "项目包", httpsOnly: true });
     signal.throwIfAborted();
@@ -39,7 +39,7 @@ export default Router().post("/", validateFields(inputSchema.shape), async (req,
     const paths = [...files.keys()];
     const hasCanvas = paths.some(path => {
       const content = files.get(path)!;
-      // ACT: 只解析非素材目录内不超过 20 MB 的画布候选；包内所有文件仍原样保存，避免为识别项目解析超大 JSON。
+      // 只解析非素材目录内不超过 20 MB 的画布候选；包内所有文件仍原样保存，避免为识别项目解析超大 JSON。
       if (path.split("/").some(part => part.toLowerCase() === "assets") || !/\.json$/i.test(path) || content.byteLength > 20 * 1024 * 1024) return false;
       try {
         const canvas = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(content));

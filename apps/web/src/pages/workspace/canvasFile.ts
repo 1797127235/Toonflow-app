@@ -17,7 +17,7 @@ export function getCanvasAssetDirectories(nodes: CanvasAssetNode[], retainedNode
       for (const item of Object.values(value)) pending.push(item);
     }
   }
-  // ACT: 仅清理节点所属目录，不把引用路径当作目录归属，避免误删 assets/generated 等共享目录。
+  // 仅清理节点所属目录，不把引用路径当作目录归属，避免误删 assets/generated 等共享目录。
   return [...new Set(nodes.map(node => node.id))]
     .filter(id => id && !/[<>:"/\\|?*\x00-\x1f]/.test(id) && !/[. ]$/.test(id)
       && !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(id) && !retained.has(id.toLowerCase()))
@@ -31,7 +31,7 @@ export async function isCanvasFile(files: Pick<ReturnType<typeof useWorkspaceFil
     const header = await files.readText(path, headerBytes, signal);
     signal?.throwIfAborted();
     if (!/^\s*\{/.test(header)) return false;
-    // ACT: 自有保存格式将标记置于根对象首字段；其他顺序完整解析，避免嵌套标记误判。
+    // 自有保存格式将标记置于根对象首字段；其他顺序完整解析，避免嵌套标记误判。
     if (/^\s*\{\s*"toonflowCanvas"\s*:\s*true\s*[,}]/.test(header)) return true;
     try {
       return JSON.parse(header.trimStart())?.toonflowCanvas === true;
@@ -45,7 +45,7 @@ export async function isCanvasFile(files: Pick<ReturnType<typeof useWorkspaceFil
   } catch (error) {
     signal?.throwIfAborted();
     if (error instanceof SyntaxError) return false;
-    // ACT: 扫描期间已消失或不可作为文件读取的条目跳过，权限及其他 IO 错误继续抛出。
+    // 扫描期间已消失或不可作为文件读取的条目跳过，权限及其他 IO 错误继续抛出。
     if (axios.isAxiosError(error) && [400, 404].includes(error.response?.status ?? 0)) return;
     throw error;
   }

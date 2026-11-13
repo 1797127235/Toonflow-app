@@ -235,7 +235,7 @@ function loadThumbnails() {
   canvas.height = 96;
   const context = canvas.getContext("2d");
   if (!context) return void stopThumbnails();
-  // ACT: 只采样 10 张小图，缩略图数量与内存不随视频时长增长，不生成逐帧缓存。
+  // 只采样 10 张小图，缩略图数量与内存不随视频时长增长，不生成逐帧缓存。
   const seekFrame = () => {
     clearTimeout(thumbnailTimer);
     thumbnailTimer = window.setTimeout(stopThumbnails, 15000);

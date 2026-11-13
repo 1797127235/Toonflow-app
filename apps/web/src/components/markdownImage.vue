@@ -15,13 +15,13 @@ const imageUrl = ref("");
 const error = ref("");
 const remoteImage = computed(() => /^(?:https?:)?\/\//i.test(props.image.node.url));
 const workspaceImage = computed(() => remoteImage.value || (!!props.image.node.url && !/^(?:[a-z][a-z\d+.-]*:|[\\/]|#)/i.test(props.image.node.url)));
-// ACT: 工作区图在拿到 blob 前不要把空 url 交给库；库把「无 url」当成永久 loading。
+// 工作区图在拿到 blob 前不要把空 url 交给库；库把「无 url」当成永久 loading。
 const pending = computed(() => workspaceImage.value && !imageUrl.value && !error.value);
 const resolvedNode = computed(() => workspaceImage.value
   ? { ...props.image.node, url: imageUrl.value, loading: false }
   : props.image.node);
 const { parsedNodes, provideContext } = useContext();
-// ACT: 落盘图片按单张预览；多图切换需集中维护解析后的地址，避免重新请求原网址或相对路径。
+// 落盘图片按单张预览；多图切换需集中维护解析后的地址，避免重新请求原网址或相对路径。
 provideContext({ parsedNodes: computed(() => workspaceImage.value ? [resolvedNode.value] : parsedNodes.value) });
 
 function preloadImage(url: string, signal: AbortSignal) {
@@ -64,7 +64,7 @@ watch([() => props.directory, () => props.image.node.url] as const, async ([dire
   imageUrl.value = "";
   if (!url || !workspaceImage.value) return;
   error.value = "";
-  // ACT: 即使 AST 仍标 loading，只要 url 已完整就解析；勿因 loading 标志永久跳过取图。
+  // 即使 AST 仍标 loading，只要 url 已完整就解析；勿因 loading 标志永久跳过取图。
   let cancelled = false;
   let release = () => {};
   const controller = new AbortController();

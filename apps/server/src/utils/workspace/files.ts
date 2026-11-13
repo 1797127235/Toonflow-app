@@ -28,7 +28,7 @@ export async function copyWorkspaceFile(source: string, target: string) {
       },
     });
   } catch (cause) {
-    // ACT: 失败保留已复制内容，不递归回滚删除可能被外部加入文件的目标目录。
+    // 失败保留已复制内容，不递归回滚删除可能被外部加入文件的目标目录。
     throw Object.assign(new Error(`复制未完成，已复制的内容保留在 ${target}。${cause instanceof Error ? cause.message : "请检查文件权限后重试"}`, { cause }), { code: "ECOPYINCOMPLETE" });
   }
 }
@@ -46,7 +46,7 @@ export async function renameWorkspaceFile(source: string, target: string) {
     return;
   }
   await copyFile(source, target, constants.COPYFILE_EXCL);
-  // ACT: 目标完整写入后才移除源文件；移除失败只回滚本次目标。
+  // 目标完整写入后才移除源文件；移除失败只回滚本次目标。
   try { await unlink(source); }
   catch (err) {
     await unlink(target).catch(error => console.warn(`重命名回滚失败：${target}`, error));
@@ -81,7 +81,7 @@ export async function resolveWorkspacePath(root: string, path: string, allowMiss
   return { directory: root, path: actual };
 }
 
-// ACT: 桌面和独立 Server 均为单进程；锁防止并发文件操作互相覆盖。
+// 桌面和独立 Server 均为单进程；锁防止并发文件操作互相覆盖。
 const busyFiles = new Set<string>();
 export function lockWorkspaceFiles(paths: string[]) {
   const keys = paths.map(path => process.platform === "win32" ? resolve(path).toLowerCase() : resolve(path));

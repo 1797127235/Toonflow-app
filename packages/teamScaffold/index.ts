@@ -54,7 +54,7 @@ async function publishDirectory(root: string, name: string, files: Record<string
     if (moved) await rm(backup, { recursive: true });
     return true;
   } finally {
-    // ACT: 临时目录名由本次构建生成；旧安装只在新目录替换成功后删除。
+    // 临时目录名由本次构建生成；旧安装只在新目录替换成功后删除。
     if (dirname(staging) !== root) throw new Error("团队暂存目录越界");
     await rm(staging, { recursive: true, force: true });
   }

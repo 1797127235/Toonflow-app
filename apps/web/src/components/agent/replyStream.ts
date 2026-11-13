@@ -41,7 +41,7 @@ export function createReplyStream(reply: AgentMessage) {
   let thinkingStartedAt = 0;
   let thinkingDuration = 0;
   const pendingContent = new Map<Exclude<AgentMessagePart, { type: "tool" }>, string>();
-  // ACT: 合并 50 ms 内的文本增量，避免 Markdown 每个 token 都重新解析全文；结束时立即补齐。
+  // 合并 50 ms 内的文本增量，避免 Markdown 每个 token 都重新解析全文；结束时立即补齐。
   const flushContent = throttle(() => {
     for (const [part, content] of pendingContent) part.content = content;
     pendingContent.clear();

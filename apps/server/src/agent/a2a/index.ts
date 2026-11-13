@@ -24,7 +24,7 @@ export function createA2aRouter() {
       if (!team.enabled) { res.sendStatus(404); return; }
       const card = createTeamAgentCard(team.manifest, `${getA2aUrl(req)}/${name}`);
       if (!endpoint || endpoint.signal !== configurationSignal) {
-        // ACT: 任务由 SDK 保存在单进程内存；仅等待补充的协调者额外保留 Pi 上下文，重启后需重新发起任务。
+        // 任务由 SDK 保存在单进程内存；仅等待补充的协调者额外保留 Pi 上下文，重启后需重新发起任务。
         const pending = new Map<string, { runner: Awaited<ReturnType<typeof createTeamRunner>>; userId: string }>();
         const execute = async (request: TeamA2aRequest) => {
           try {

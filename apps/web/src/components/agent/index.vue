@@ -51,11 +51,11 @@ import conversation from "./conversation.vue";
 const visible = defineModel<boolean>({ default: false });
 const engine = defineModel<"builtin" | "acp">("engine", { default: "builtin" });
 type OpenConversation = { key: number; name: string; file?: string; parentFile?: string; subAgents: AgentSubAgent[]; session: AgentConversation | null; engine: "builtin" | "acp" };
-// ACT: 会话实例保留到工作区关闭，让切换后的回复继续接收流式内容。
+// 会话实例保留到工作区关闭，让切换后的回复继续接收流式内容。
 const conversations = ref<OpenConversation[]>([]);
 const conversationKey = ref(0);
 const selectedConversation = computed(() => conversations.value.find(item => item.key === conversationKey.value));
-// ACT: 新对话是现有自动命名逻辑使用的保留值；仅翻译显示，不改变存储或比较值。
+// 新对话是现有自动命名逻辑使用的保留值；仅翻译显示，不改变存储或比较值。
 const name = computed(() => {
   const value = selectedConversation.value?.name;
   return value && value !== "新对话" ? value : translate("新对话");

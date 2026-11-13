@@ -41,7 +41,7 @@ async function refreshMediaModels(previousSettings: Record<string, unknown> | un
   const configs = previousSettings?.mediaProviderConfigs as Record<string, { apiKey?: unknown }> | undefined;
   if (!apiKey || (previousSettings && apiKey === normalizeApiKey(configs?.[tfRouterMedia.id]?.apiKey))) return;
   let provider: Awaited<ReturnType<typeof refreshMediaProviderModels>> | undefined;
-  // ACT: 同一供应商文件按类型串行保存，避免多个刷新读取相同版本后互相冲突。
+  // 同一供应商文件按类型串行保存，避免多个刷新读取相同版本后互相冲突。
   for (const type of ["video", "image", "audio"] as const) {
     if (getMediaProviderApiKey(tfRouterMedia.id) !== apiKey) break;
     try { provider = await refreshMediaProviderModels(`${tfRouterMedia.id}.ts`, undefined, type, apiKey); }
@@ -67,7 +67,7 @@ export async function refreshProviderModels(previousSettings?: Record<string, un
 }
 
 export default function initializeProviderModels() {
-  // ACT: 每个进程启动时仅尝试一次；失败保留已有模型，下次启动再更新。
+  // 每个进程启动时仅尝试一次；失败保留已有模型，下次启动再更新。
   return initialization ??= refreshProviderModels().then(result => {
     result.modelRefreshErrors?.forEach(error => console.warn(error));
   });

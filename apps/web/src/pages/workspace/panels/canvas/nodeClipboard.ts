@@ -22,7 +22,7 @@ async function accessClipboard(entry?: ClipboardEntry) {
     return await new Promise<ClipboardEntry | undefined>((resolve, reject) => {
       const transaction = database.transaction("nodes", entry ? "readwrite" : "readonly");
       const store = transaction.objectStore("nodes");
-      // ACT: 只保留最近一次快照；旧命令失效，不累计复制历史。
+      // 只保留最近一次快照；旧命令失效，不累计复制历史。
       const request = entry ? store.put(entry, "latest") : store.get("latest");
       transaction.oncomplete = () => resolve(entry ?? request.result);
       transaction.onabort = () => reject(transaction.error ?? new Error("节点剪贴数据读写失败"));
@@ -41,7 +41,7 @@ export async function copyNodesToClipboard(nodes: Node[], edges: Edge[], directo
   if (!nodes.length || nodes.some(node => !node.type)) throw new Error("节点类型无效");
   const command = `toonflow:paste-node:${crypto.randomUUID()}`;
   const ids = new Set(nodes.map(node => node.id));
-  // ACT: 与画布序列化一样移除运行态字段，保留分组、尺寸及节点自定义持久配置。
+  // 与画布序列化一样移除运行态字段，保留分组、尺寸及节点自定义持久配置。
   const snapshot = JSON.parse(JSON.stringify({
     nodes: nodes.map(node => {
       const { computedPosition, handleBounds, selected, dimensions, isParent, resizing, dragging, events, initialized, ...saved } = node as GraphNode & { initialized?: boolean };

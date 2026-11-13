@@ -14,7 +14,7 @@ import { getConfiguredModel } from "@/utils/ai";
  */
 export function getAgentModelConfiguration(providerId: string, modelId: string, thinkingLevel?: ThinkingLevel) {
   const configured = getConfiguredModel(providerId, modelId);
-  // ACT: 旧版用 off 保存默认档位；模型未声明关闭能力时按默认处理，显式支持 off 的模型仍可关闭。
+  // 旧版用 off 保存默认档位；模型未声明关闭能力时按默认处理，显式支持 off 的模型仍可关闭。
   if (thinkingLevel === "off" && !configured.model.reasoningLevels.includes("off")) thinkingLevel = undefined;
   if (thinkingLevel !== undefined && !configured.model.reasoningLevels.includes(thinkingLevel)) {
     throw Object.assign(new Error(`模型 ${configured.model.label} 不支持推理等级 ${thinkingLevel}`), { status: 400, code: "UNSUPPORTED_REASONING_EFFORT" });

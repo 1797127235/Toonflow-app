@@ -61,7 +61,7 @@ export function saveImportedMcpServers(inputs: McpServerConfig[], bundleId?: str
   if (!imported.length || imported.length + servers.length > 128) {
     throw Object.assign(new Error("请导入至少一个 MCP 服务，服务总数不能超过 128 个"), { status: 400 });
   }
-  // ACT: 整批校验后一次存盘，任一配置无效时不留下部分导入结果。
+  // 整批校验后一次存盘，任一配置无效时不留下部分导入结果。
   conf.set({
     mcpServers: [...servers, ...imported],
     ...(bundleId ? { mcpBundles: { ...conf.get("mcpBundles", {}), [imported[0]!.id]: bundleId } } : {}),
@@ -121,7 +121,7 @@ export async function setMcpServerEnabled(id: string, enabled: boolean) {
 export async function removeMcpServer(id: string) {
   const servers = conf.get("mcpServers", []);
   if (!servers.some(server => server.id === id)) throw Object.assign(new Error("MCP 配置不存在，请刷新后重试"), { status: 404 });
-  // ACT: 包文件删除失败时保留已停用的配置，用户可重试，Agent 不会重新启动正在删除的服务。
+  // 包文件删除失败时保留已停用的配置，用户可重试，Agent 不会重新启动正在删除的服务。
   conf.set("mcpServers", servers.map(server => server.id === id ? { ...server, enabled: false } : server));
   await closeServer(id);
   await removeMcpBundle(id);
@@ -211,7 +211,7 @@ export async function createMcpAgentTools(): Promise<ToolDefinition[]> {
             if (part.type === "image") return { type: "image" as const, data: part.data, mimeType: part.mimeType };
             return { type: "text" as const, text: JSON.stringify(part) };
           });
-          // ACT: Pi 只把抛出的错误记为工具失败；MCP isError 不能作为普通成功结果返回。
+          // Pi 只把抛出的错误记为工具失败；MCP isError 不能作为普通成功结果返回。
           if (result.isError) throw new Error(content.filter(part => part.type === "text").map(part => part.text).join("\n") || `MCP ${server.name} 工具执行失败`);
           if (!content.length && result.structuredContent !== undefined) content.push({ type: "text", text: JSON.stringify(result.structuredContent) });
           return { content, details: { serverId: server.id, toolName: definition.name, structuredContent: result.structuredContent } };
@@ -220,7 +220,7 @@ export async function createMcpAgentTools(): Promise<ToolDefinition[]> {
     } catch (error) {
       const loadError = getMcpError(error, server);
       serverStates.set(server.id, { status: "error", loadError });
-      // ACT: 单个外部服务离线时保留其他工具，并向 Agent 明确提供故障原因。
+      // 单个外部服务离线时保留其他工具，并向 Agent 明确提供故障原因。
       return [{
         name: toolName(server.id, "connectionError"), label: `${server.name} · 连接失败`,
         description: `MCP ${server.name} 当前无法连接：${loadError}。请告知用户在设置的插件市场中检查此 MCP。`,

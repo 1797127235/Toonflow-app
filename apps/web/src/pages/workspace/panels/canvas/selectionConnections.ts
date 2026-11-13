@@ -15,7 +15,7 @@ export function getSelectionConnections(
   const pendingEdges = [...edges];
   const connections: Connection[] = [];
 
-  // ACT: 少量节点端口用回溯避免贪心误配；组合数很大时再改用约束匹配。
+  // 少量节点端口用回溯避免贪心误配；组合数很大时再改用约束匹配。
   function match(index: number): boolean {
     if (index === sources.length) return true;
     const source = sources[index]!;

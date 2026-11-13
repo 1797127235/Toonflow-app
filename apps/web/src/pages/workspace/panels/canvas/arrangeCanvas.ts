@@ -64,7 +64,7 @@ export async function arrangeCanvas(flow: ReturnType<typeof useVueFlow>, signal?
   let x = 0;
   let y = 0;
   let rowHeight = 0;
-  // ACT: 以连通分组分行排布，保持每条流程完整；不追求全局最紧凑的矩形装箱。
+  // 以连通分组分行排布，保持每条流程完整；不追求全局最紧凑的矩形装箱。
   const positions = groups.flatMap(group => {
     if (x > 0 && x + group.width > rowWidth) {
       x = 0;

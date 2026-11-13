@@ -42,7 +42,7 @@ async function readCanvas(directory: string, canvasId: string) {
   })();
   const entry = { revision, bytes: info.size, value };
   canvasCache.set(path, entry);
-  // ACT: 离线画布仅在服务端解析；最多缓存两份、源文件合计 256 MB，每次查询重新核对 mtime/size。
+  // 离线画布仅在服务端解析；最多缓存两份、源文件合计 256 MB，每次查询重新核对 mtime/size。
   while (canvasCache.size > 2 || [...canvasCache.values()].reduce((total, entry) => total + entry.bytes, 0) > 256 * 1024 * 1024) {
     canvasCache.delete(canvasCache.keys().next().value!);
   }

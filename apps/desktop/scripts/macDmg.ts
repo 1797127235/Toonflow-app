@@ -37,7 +37,7 @@ async function createDmg(args: string[]) {
   if (!source || !output || formatIndex < 0 || volumeIndex < 0 || !volumeName || basename(volumeName) !== volumeName || [".", ".."].includes(volumeName)) {
     throw new Error("缺少或无效的 macOS 安装镜像参数。");
   }
-  // ACT: 保留 /Volumes 供 Finder 解析背景别名，用独立挂载路径隔离每次构建，卷名仍保持不变。
+  // 保留 /Volumes 供 Finder 解析背景别名，用独立挂载路径隔离每次构建，卷名仍保持不变。
   const mountPath = join("/Volumes", `${volumeName}-${crypto.randomUUID()}`);
   if (existsSync(mountPath)) throw new Error(`请先推出同名安装镜像再打包：${mountPath}`);
   const apps = readdirSync(source).filter(name => name.endsWith(".app"));
@@ -46,7 +46,7 @@ async function createDmg(args: string[]) {
   mkdirSync(background, { recursive: true });
   if (!existsSync(join(source, "Applications"))) throw new Error("macOS 安装镜像缺少 Applications 快捷方式。");
 
-  // ACT: 使用 macOS 自带 AppKit 绘制文字和箭头，不引入图片或 DMG 构建依赖。
+  // 使用 macOS 自带 AppKit 绘制文字和箭头，不引入图片或 DMG 构建依赖。
   await run(["/usr/bin/osascript", "-l", "JavaScript", "-", join(background, "install.png")], `
 ObjC.import("AppKit");
 function run(args) {

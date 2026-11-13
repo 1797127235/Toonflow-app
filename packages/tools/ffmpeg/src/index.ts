@@ -36,7 +36,7 @@ const plugin: ToolPlugin = {
       let details: unknown;
       let error: Error | undefined;
       let filenames: unknown;
-      // ACT: 复用节点已有的 JSON 调用桥接，不在工具层重写参数、输出位置或原生执行规则。
+      // 复用节点已有的 JSON 调用桥接，不在工具层重写参数、输出位置或原生执行规则。
       await executeRemoteFfmpeg(ffmpeg, {
         directory: context.cwd,
         requestId: crypto.randomUUID(),

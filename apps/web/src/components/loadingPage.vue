@@ -20,7 +20,7 @@ const props = defineProps<{ active: boolean }>();
 const visible = defineModel<boolean>("visible", { default: false });
 const drawn = defineModel<boolean>("drawn", { default: false });
 const logoDocument = new DOMParser().parseFromString(logoRaw, "image/svg+xml");
-// ACT: 仅拆分当前 Logo 的绝对 M 轮廓；相对路径需解析命令，填充始终复用原图。
+// 仅拆分当前 Logo 的绝对 M 轮廓；相对路径需解析命令，填充始终复用原图。
 for (const [index, path] of [...logoDocument.querySelectorAll("path")].entries()) {
   const contours = path.getAttribute("d")!.match(/M[^M]*/g)!;
   path.replaceWith(...contours.map(contour => {

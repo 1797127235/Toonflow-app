@@ -73,7 +73,7 @@ export function registerDownloads() {
     if (pending.has(link) || link.getAttribute("aria-disabled") === "true") return;
     pending.add(link);
     link.dispatchEvent(new CustomEvent("downloadstate", { detail: true }));
-    // ACT: 捕获同源下载以兼容已安装节点；Android 先暂存内容，再交给系统文件选择器。
+    // 捕获同源下载以兼容已安装节点；Android 先暂存内容，再交给系统文件选择器。
     void saveFile(() => axios.get<Blob>(url.href, { responseType: "blob" }).then(({ data }) => data), link.download || "download").catch(error => {
       ElMessage.error(axios.isAxiosError<{ message?: string }>(error) ? error.response?.data?.message || error.message : error instanceof Error ? error.message : "保存文件失败");
     }).finally(() => {

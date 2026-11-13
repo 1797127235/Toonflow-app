@@ -60,11 +60,11 @@ export async function executeRemoteFfmpeg(
       };
       const fail = (error: unknown, ...args: unknown[]) => finish("error", [serializeError(error), ...args]);
       const cancel = () => {
-        // ACT: kill 只发送信号；等原生完成事件再返回，调用方才能安全清理输出文件。
+        // kill 只发送信号；等原生完成事件再返回，调用方才能安全清理输出文件。
         if (!queryNames.has(operation.method)) command.kill("SIGKILL");
       };
       signal.addEventListener("abort", cancel, { once: true });
-      // ACT: 取消可能早于 spawn；保留监听，准备阶段结束后立即终止，且接住迟到的 error。
+      // 取消可能早于 spawn；保留监听，准备阶段结束后立即终止，且接住迟到的 error。
       command.on("start", (...args) => {
         if (signal.aborted) command.kill("SIGKILL");
         else send("start", args);
@@ -77,7 +77,7 @@ export async function executeRemoteFfmpeg(
       try {
         signal.throwIfAborted();
         if (queryNames.has(operation.method)) {
-          // ACT: fluent 未公开查询子进程；取消后等查询回调释放文件，不等待查询不会触发的 start。
+          // fluent 未公开查询子进程；取消后等查询回调释放文件，不等待查询不会触发的 start。
           invoke(command, operation, [(error: unknown, data: unknown) => error ? fail(error) : finish("result", [data])]);
         } else {
           invoke(command, operation);

@@ -178,7 +178,7 @@ type AudioRequest = MediaRequest & {
 
 /**
  * 三种生成函数统一返回最终媒体数组，不能返回任务 ID 或原始平台响应。
- * ACT: 本层只约定完整结果；供应商内部处理轮询/流读取，失败时抛出异常。
+ * 本层只约定完整结果；供应商内部处理轮询/流读取，失败时抛出异常。
  */
 type GenerateMedia<TRequest, TConfig = Record<string, unknown>> = (
   this: ProviderContext<TConfig>,

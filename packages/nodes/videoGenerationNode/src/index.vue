@@ -152,7 +152,7 @@ const generationState = useNodeGeneration(outputs, () => generationController?.a
 const { generating } = generationState;
 let generation: Promise<void> | undefined;
 let modelsRequest: Promise<void> | undefined;
-// ACT: 供应商未声明视频比例范围，沿用界面的通用比例，具体支持范围由供应商校验。
+// 供应商未声明视频比例范围，沿用界面的通用比例，具体支持范围由供应商校验。
 const ratioOptions = ["16:9", "9:16", "1:1", "4:3", "3:4"];
 const selectedModel = computed(() => models.value.find((item) => JSON.stringify([item.providerId, item.modelId]) === data.value.model));
 const selectedMode = computed(() => selectedModel.value?.mode?.find((item) => JSON.stringify(item) === data.value.mode) as NodeVideoRequest["mode"]);
@@ -183,11 +183,11 @@ function getDurations(choice: NodeMediaModel) {
 }
 
 function getResolutions(choice: NodeMediaModel, duration?: number) {
-  // ACT: 当前视频分辨率使用 p 单位；出现其他单位时再统一换算。
+  // 当前视频分辨率使用 p 单位；出现其他单位时再统一换算。
   return [...new Set((choice.durationResolutionMap ?? []).filter((item) => item.duration.includes(duration!)).flatMap((item) => item.resolution))]
     .sort((left, right) => (Number.parseFloat(left) || Infinity) - (Number.parseFloat(right) || Infinity));
 }
-// ACT: 引用改变时只替换不适用的模式；普通媒体优先作为参考，避免自动变成首尾帧。
+// 引用改变时只替换不适用的模式；普通媒体优先作为参考，避免自动变成首尾帧。
 watch([selectedModel, matchingModes, () => data.value.mode], ([choice, matches]) => {
   if (!choice || matches.some((item) => JSON.stringify(item) === data.value.mode)) return;
   const modes = choice.mode ?? [];
@@ -196,7 +196,7 @@ watch([selectedModel, matchingModes, () => data.value.mode], ([choice, matches])
     ?? modes.find((item) => JSON.stringify(item) === data.value.mode) ?? modes.find(Array.isArray) ?? modes[0];
   data.value.mode = mode === undefined ? "" : JSON.stringify(mode);
 }, { flush: "sync" });
-// ACT: 参数在节点内归一化，未选中、未挂载底部设置时也可由 Agent 直接生成。
+// 参数在节点内归一化，未选中、未挂载底部设置时也可由 Agent 直接生成。
 watch([selectedModel, () => data.value.duration], ([choice]) => {
   if (!choice) return;
   const durations = getDurations(choice);
@@ -279,7 +279,7 @@ async function replaceOutput(event: Event) {
       await workspace.remove(url);
       return;
     }
-    // ACT: 保留历史输出文件，避免破坏撤销记录和复制节点的引用。
+    // 保留历史输出文件，避免破坏撤销记录和复制节点的引用。
     outputs.value.video = { dataType: "VIDEO", value: { url, mimeType: file.type } };
   } catch (error) {
     showNodeError(error, "视频替换失败");
@@ -294,7 +294,7 @@ function loadModels() {
   modelsRequest = ai.getMediaModels().then((items) => {
     if (disposed || generating.value || deleting.value) return;
     models.value = items.filter((item) => item.type === "video");
-    // ACT: 只给空配置选默认模型，保留暂时不可用的旧选择及其参数。
+    // 只给空配置选默认模型，保留暂时不可用的旧选择及其参数。
     if (!data.value.model) {
       const first = models.value[0];
       data.value.model = first ? JSON.stringify([first.providerId, first.modelId]) : "";
@@ -319,7 +319,7 @@ async function startGeneration() {
   const workspace = files.getWorkspaceFiles();
   const controller = new AbortController();
   generationController = controller;
-  // ACT: 工具立即返回，任务由节点持有，停止或卸载时取消。
+  // 工具立即返回，任务由节点持有，停止或卸载时取消。
   generation = generationState.run(() => workspace
     .list()
     .then(({ directory }) => {

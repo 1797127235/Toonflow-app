@@ -141,7 +141,7 @@ internal static class updateHelper
         }
         finally
         {
-            // ACT: 无触发器的一次性任务清理失败不能撤销更新；保留任务到结束也能阻止同一任务重复启动。
+            // 无触发器的一次性任务清理失败不能撤销更新；保留任务到结束也能阻止同一任务重复启动。
             if (planPath != null && args[0] == "--apply-scheduled-update")
             {
                 try { deleteScheduledTask(planPath); }
@@ -186,7 +186,7 @@ internal static class updateHelper
 
     private static void spawnScheduledUpdate(string executable, string planPath, bool quiet)
     {
-        // ACT: breakaway 成功仍可能留在外层 Job，统一由当前用户的任务服务启动；不提权、不设置触发器。
+        // breakaway 成功仍可能留在外层 Job，统一由当前用户的任务服务启动；不提权、不设置触发器。
         string taskName = scheduledTaskName(planPath);
         string stage = "identity", sid = "unknown";
         bool administratorToken = false;
@@ -252,7 +252,7 @@ internal static class updateHelper
             catch (Exception error)
             {
                 int code = error.HResult & 0xffff;
-                // ACT: Windows 退出后的短暂占用只等待 10 秒；权限配置错误或持续占用仍交给事务回滚。
+                // Windows 退出后的短暂占用只等待 10 秒；权限配置错误或持续占用仍交给事务回滚。
                 if (!(error is IOException || error is UnauthorizedAccessException) || (code != 5 && code != 32 && code != 33)
                     || timer.Elapsed.TotalSeconds >= 10) throw;
                 Thread.Sleep(200);
@@ -330,7 +330,7 @@ internal static class updateHelper
         IntPtr handle = process.Handle;
         if (transaction == null)
         {
-            // ACT: 回滚版本可能尚不支持就绪协议，保留旧启动器的短暂退出检查。
+            // 回滚版本可能尚不支持就绪协议，保留旧启动器的短暂退出检查。
             if (process.WaitForExit(1000) && process.ExitCode != 0) throw new InvalidOperationException("恢复旧版本后无法启动 Laywork。");
             return;
         }
@@ -357,7 +357,7 @@ internal static class updateHelper
 
     private static void stopApp(Process process)
     {
-        // ACT: 仅终止本次启动的进程树；已退出时的残余占用交由有界 Move 失败保护备份，不按名称终止其他实例。
+        // 仅终止本次启动的进程树；已退出时的残余占用交由有界 Move 失败保护备份，不按名称终止其他实例。
         if (!process.HasExited)
         {
             string taskkill = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "System32", "taskkill.exe");

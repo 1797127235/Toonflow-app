@@ -275,7 +275,7 @@ function renderView(activeRenderer: three.WebGLRenderer, applyCorrections = !sho
   const perspectiveY = applyCorrections && perspectiveEnabled.value ? verticalPerspective.value / 160 : 0;
   const rotation = applyCorrections && perspectiveEnabled.value ? three.MathUtils.degToRad(levelRotation.value) : 0;
   if (!coefficient && !perspectiveX && !perspectiveY && !rotation) { activeRenderer.render(scene, camera); return; }
-  // ACT: 手动几何校正不能修复 AI 生成的重复物体；接缝仅在两端窄带融合，不推测缺失内容。
+  // 手动几何校正不能修复 AI 生成的重复物体；接缝仅在两端窄带融合，不推测缺失内容。
   // 各源图变换保持单调和首尾周期；透视、旋转、径向叠加使用保守裁边，避免黑边和采样折返。
   const cosine = Math.abs(Math.cos(rotation));
   const sine = Math.abs(Math.sin(rotation));

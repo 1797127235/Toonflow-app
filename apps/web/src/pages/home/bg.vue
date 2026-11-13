@@ -86,7 +86,7 @@ function resize() {
   fogLayer.width = Math.ceil(width / fogPixelSize);
   fogLayer.height = Math.ceil(height / fogPixelSize);
   fogPixels = fogContext!.createImageData(fogLayer.width, fogLayer.height);
-  // ACT: 保留最多 30000 个点的雾带密度；颗粒尺寸单独控制，避免随大屏点距一起变粗。
+  // 保留最多 30000 个点的雾带密度；颗粒尺寸单独控制，避免随大屏点距一起变粗。
   step = Math.max(4, Math.sqrt(width * height / 30000));
   points = [];
   for (let x = step / 2; x < width && points.length < 30000; x += step) {
@@ -159,7 +159,7 @@ function draw() {
     fogPixels.data[pixelIndex] = Math.min(0.95, (ny < 1 ? 0.08 : 0) + mist * 0.3 + haloStrength * 1.1 + hover * 0.2)
       * (1 - ink) * Math.min(1, (size / fogPixelSize) ** 2) * 255;
   }
-  // ACT: 点阵统一写入离屏掩膜后批量绘制，避免逐点调用 Canvas fillRect。
+  // 点阵统一写入离屏掩膜后批量绘制，避免逐点调用 Canvas fillRect。
   fogContext.putImageData(fogPixels, 0, 0);
   context.drawImage(fogLayer, 0, 0, width, height);
   context.globalCompositeOperation = "source-in";

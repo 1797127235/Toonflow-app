@@ -319,7 +319,7 @@ watch([() => props.context.text, () => props.context.active, () => props.context
   const editable = active && !loading && currentMode === "rich";
   if (editor.value && editor.value.isEditable !== editable) editor.value.setEditable(editable, false);
   if (!ready || !active || loading || currentMode !== "rich") return;
-  // ACT: 可见富文本仍同步解析完整正文，确保输入前没有陈旧副本；大文档默认原文，手动开启富文本仍有全文解析成本。
+  // 可见富文本仍同步解析完整正文，确保输入前没有陈旧副本；大文档默认原文，手动开启富文本仍有全文解析成本。
   if (!editor.value) {
     editor.value = new Editor({ ...editorOptions, content: parseMarkdownContent(text) });
     displayedText = text;
@@ -396,7 +396,7 @@ function queueImages(files: File[]) {
         const to = path.split("/");
         while (from.length && to.length && from[0] === to[0]) { from.shift(); to.shift(); }
         const src = "../".repeat(from.length) + to.join("/");
-        // ACT: 使用完成时的正文和光标保留并发输入；关闭后保留已落盘附件，不自动清理可能被其他文档引用的文件。
+        // 使用完成时的正文和光标保留并发输入；关闭后保留已落盘附件，不自动清理可能被其他文档引用的文件。
         if (mode.value === "source") {
           const input = sourceInput.value;
           if (!input) throw new Error(translate("原文编辑器尚未就绪"));

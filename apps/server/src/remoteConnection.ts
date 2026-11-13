@@ -48,7 +48,7 @@ export async function createRemoteConnection(directory: string, options: {
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
   }
-  // ACT: 切换只写下一次启动配置，当前进程继续使用原目标；重启换端口隔离旧页面和未完成请求。
+  // 切换只写下一次启动配置，当前进程继续使用原目标；重启换端口隔离旧页面和未完成请求。
   const active = connection;
   const appVersion = readAppVersion(options.appVersion);
   let remoteAppVersion = active?.appVersion;
@@ -238,7 +238,7 @@ function remoteProxy(connection: RemoteConnection): express.RequestHandler {
     request.once("aborted", close);
     request.socket.once("close", close);
     response.once("close", close);
-    // ACT: 原始请求/响应流直接管道传输，保留 Range、上传与 Agent/SSE 增量数据，并传播取消。
+    // 原始请求/响应流直接管道传输，保留 Range、上传与 Agent/SSE 增量数据，并传播取消。
     if (request.headers["content-length"] || request.headers["transfer-encoding"]) request.pipe(upstream);
     else upstream.end();
   };

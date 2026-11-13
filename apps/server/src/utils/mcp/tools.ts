@@ -50,7 +50,7 @@ function wrapTool(name: string, description: string, schema: object, execute: (a
   return {
     name, description,
     // 业务参数直接平铺，工具声明与内置 agent 一致；target 只在需要指定页面时出现。
-    // ACT: $ref 与定义段必须同层，只取 properties 会让 #/definitions/... 悬空（nodeTools 参数校验失败）。
+    // $ref 与定义段必须同层，只取 properties 会让 #/definitions/... 悬空（nodeTools 参数校验失败）。
     inputSchema: {
       ...(argsSchema.$schema ? { $schema: argsSchema.$schema } : {}),
       type: "object",
@@ -137,7 +137,7 @@ export async function getMcpTools(): Promise<McpTool[]> {
       return await callControl(connection.id, "askUser", { ...request, toolCallId }, signal ?? new AbortController().signal) as QuestionAnswer;
     },
   };
-  // ACT: 插件损坏时仍保留应用管理工具，允许读取错误并修复插件。
+  // 插件损坏时仍保留应用管理工具，允许读取错误并修复插件。
   const definitions = await createAgentTools(dirname(conf.path), canvasStub, questionContext, false).catch(error => {
     pluginError = error instanceof Error ? error.message : String(error);
     return [];
@@ -153,7 +153,7 @@ export async function getMcpTools(): Promise<McpTool[]> {
       } : undefined;
       const current = (await createAgentTools(directory!, canvas, questionContext, false)).find(tool => tool.name === definition.name);
       if (!current) throw new Error("工具已禁用，或所需 Laywork 页面未连接，请重新读取工具列表");
-      // ACT: 现有插件依赖 createTools 注入的宿主能力；MCP 没有 Pi 对话，访问会话能力时明确报错。
+      // 现有插件依赖 createTools 注入的宿主能力；MCP 没有 Pi 对话，访问会话能力时明确报错。
       const context = new Proxy({ cwd: directory, mode: "rpc", hasUI: false, model: undefined, signal }, {
         get(value, key) { if (Reflect.has(value, key)) return Reflect.get(value, key); throw new Error(t`MCP 不提供内置 Agent 会话能力：${String(key)}`); },
       }) as unknown as ExtensionToolContext;

@@ -43,7 +43,7 @@ export async function runRemoteTeam(options: {
     if (contextId) result.contextId = contextId;
   }
   function artifact(value: Artifact, append = false) {
-    // ACT: 工具只返回有界文本与文件说明，不下载 URL，也不把远端附件写进工作区。
+    // 工具只返回有界文本与文件说明，不下载 URL，也不把远端附件写进工作区。
     if (!artifacts.has(value.artifactId) && artifacts.size >= 128) { truncated = true; return; }
     artifacts.set(value.artifactId, limit(`${append ? artifacts.get(value.artifactId) ?? "" : ""}${partsText(value.parts)}`));
   }

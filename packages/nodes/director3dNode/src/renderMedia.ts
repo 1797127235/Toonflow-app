@@ -64,7 +64,7 @@ export async function renderVideo(scene: SceneDocument, plan: DirectorPlan, aspe
       recorder!.onstop = () => failure ? reject(failure) : resolve();
       signal.addEventListener("abort", cancel, { once: true });
       document.addEventListener("visibilitychange", checkVisibility);
-      // ACT: 使用浏览器原生录制，导出耗时约等于动画时长；离线逐帧编码需换用 WebCodecs 和 MP4 封装器。
+      // 使用浏览器原生录制，导出耗时约等于动画时长；离线逐帧编码需换用 WebCodecs 和 MP4 封装器。
       recorder!.start(1000);
       const started = performance.now();
       const renderFrame = () => {
@@ -74,7 +74,7 @@ export async function renderVideo(scene: SceneDocument, plan: DirectorPlan, aspe
           const time = Math.min(plan.duration, (now - started) / 1000);
           draw(time); onProgress(Math.min(99, Math.floor(time / plan.duration * 100)));
           if (time >= plan.duration) stop();
-          // ACT: 每帧后至少让出 8ms 给输入和弹窗动画，慢设备降低帧率而不追帧。
+          // 每帧后至少让出 8ms 给输入和弹窗动画，慢设备降低帧率而不追帧。
           else frame = window.setTimeout(renderFrame, Math.max(8, 1000 / 30 - (performance.now() - now)));
         } catch (error) { stop(error); }
       };

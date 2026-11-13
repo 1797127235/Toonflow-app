@@ -90,7 +90,7 @@ function normalizeModel(value: AnyTagProps[][]): AnyTagProps[][] {
 }
 
 function releaseNodeFocus(instance: xSender) {
-  // ACT: 1.4.6 的排队输入回调仍会聚焦旧 Write；仅让即将移除的节点失效，库支持取消回调后可移除。
+  // 1.4.6 的排队输入回调仍会聚焦旧 Write；仅让即将移除的节点失效，库支持取消回调后可移除。
   for (const grid of instance.chatEditor.NODES) {
     for (const node of grid.children) {
       if (node.type === "Write" || node.type === "Input") node.focus = () => {};
@@ -121,7 +121,7 @@ function syncModel(value = sender?.getModel() ?? model.value) {
     const task = instance.reset({ chatNode: next, clearHistory: false });
     resetTask = task;
     void task.finally(() => { if (resetTask === task) resetTask = undefined; });
-    // ACT: reset 同步重建 DOM，但下一帧会强制移到末尾；在此恢复选区，并在 reset 完成前抑制该次聚焦。
+    // reset 同步重建 DOM，但下一帧会强制移到末尾；在此恢复选区，并在 reset 完成前抑制该次聚焦。
     const last = instance.chatEditor.NODES.at(-1)?.children.at(-1);
     if (last?.type === "Write") {
       Object.assign(instance.getCurrentNode(), { instance: last, node: last.$el.children[0].firstChild, offset: last.text.length || 1 });
@@ -157,7 +157,7 @@ function getStoredModel(value: AnyTagProps[][]): AnyTagProps[][] {
 
 function updateModel(value: AnyTagProps[][]) {
   const next = getStoredModel(value);
-  // ACT: 旧模型中的预览地址随下次实际编辑清理，避免仅打开文档就触发保存。
+  // 旧模型中的预览地址随下次实际编辑清理，避免仅打开文档就触发保存。
   if (JSON.stringify(getStoredModel(model.value)) !== JSON.stringify(next)) model.value = next;
   text.value = getPromptText(next);
 }
@@ -210,7 +210,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     keyboardWrapFun: event => event.key === "Enter" && !event.isComposing,
   });
   sender = instance;
-  // ACT: 弹窗只移动现有编辑器，保留参考标签、光标与撤销记录。
+  // 弹窗只移动现有编辑器，保留参考标签、光标与撤销记录。
   const stopExpandedWatch = watch([expanded, expandedTarget], async ([visible, target]) => {
     instance.bus.emit(xSender.EventSet.EVENT_COMMON_DIALOG_CLOSE);
     instance.updateConfig({ chatStyle: { minHeight: visible ? "100%" : "70px", maxHeight: visible ? "100%" : "180px" } });
@@ -220,7 +220,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     popup.style.zIndex = String(nextZIndex());
   });
   const editor = instance.chatElement.richText;
-  // ACT: 1.4.6 未检查卸载节点和空 Range 矩形；只适配当前实例，升级到库内修复后可移除。
+  // 1.4.6 未检查卸载节点和空 Range 矩形；只适配当前实例，升级到库内修复后可移除。
   const chatEditor = instance.chatEditor as typeof instance.chatEditor & {
     focusFirst(): void;
     focusLast(): void;
@@ -255,7 +255,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
   editor.setAttribute("aria-multiline", "true");
   instance.bus.on("textPrompt", xSender.EventSet.EVENT_COMMON_CHANGE, () => syncModel());
   syncModel(initialModel);
-  // ACT: XSender 1.4.6 默认复制标签名称；复用库截取的选区模型，仅覆盖纯文本，保留富文本粘贴。
+  // XSender 1.4.6 默认复制标签名称；复用库截取的选区模型，仅覆盖纯文本，保留富文本粘贴。
   const copyText = (event: ClipboardEvent) => {
     const copied = event.clipboardData?.getData("application/chat-nodes");
     if (copied) event.clipboardData?.setData("text/plain", getPromptText(JSON.parse(copied)));
@@ -275,7 +275,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
       instance.bus.emit(xSender.EventSet.EVENT_COMMON_DIALOG_CLOSE);
     }
   };
-  // ACT: XSender 1.4.6 的候选默认插入 Mention；捕获选择事件改用公开 setHtml，库支持自定义渲染后可替换。
+  // XSender 1.4.6 的候选默认插入 Mention；捕获选择事件改用公开 setHtml，库支持自定义渲染后可替换。
   popup.addEventListener("click", selectReference, true);
   document.addEventListener("pointerdown", closeOutside, true);
   onCleanup(() => {
@@ -287,7 +287,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     editor.removeEventListener("cut", copyText);
     document.removeEventListener("pointerdown", closeOutside, true);
     popup.removeEventListener("click", selectReference, true);
-    // ACT: 1.4.6 的 destroy 会删除排队回调仍需用到的字段；先走公开清理事件，库修复后可直接 destroy。
+    // 1.4.6 的 destroy 会删除排队回调仍需用到的字段；先走公开清理事件，库修复后可直接 destroy。
     instance.bus.offKeyEvent("textPrompt");
     instance.bus.emit(xSender.EventSet.EVENT_COMMON_DIALOG_CLOSE);
     instance.updateConfig({ mentionConfig: { dialogTitle: "选择参考", callEvery: false, options: [] } });
@@ -319,7 +319,7 @@ function handleMentionKey(event: KeyboardEvent) {
     sender.bus.emit(xSender.EventSet.EVENT_COMMON_DIALOG_CLOSE);
     return;
   }
-  // ACT: 1.4.6 的候选键盘监听在 window，会被骨架截断；只适配当前实例，库支持局部键盘 API 后可替换。
+  // 1.4.6 的候选键盘监听在 window，会被骨架截断；只适配当前实例，库支持局部键盘 API 后可替换。
   const items = Array.from(dialog.querySelectorAll<HTMLElement>(".chat-mention-dialog-item")).filter(item => item.getClientRects().length);
   if (!items.length) return;
   const active = Math.max(0, items.findIndex(item => item.classList.contains("active")));

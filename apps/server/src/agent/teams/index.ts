@@ -51,7 +51,7 @@ export async function createTeamRunner(options: SubAgentModel & {
     memberTools.set(memberName, [...available.values()].filter(tool => !member.tools || member.tools.includes(tool.name)));
     instructions.set(memberName, new TextDecoder("utf-8", { fatal: true }).decode(files.get(member.instructions)));
   }
-  // ACT: 协调成员保留内存历史供 A2A 补充输入；本地调用结束即释放，不创建额外对话文件。
+  // 协调成员保留内存历史供 A2A 补充输入；本地调用结束即释放，不创建额外对话文件。
   const history = SessionManager.inMemory(cwd);
 
   return {

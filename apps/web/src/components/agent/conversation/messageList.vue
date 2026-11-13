@@ -133,7 +133,7 @@ const atLatestMessage = ref(true);
 let messageListInitialized = false;
 let messageScrollOffset = 0;
 const messageKeys = computed(() => displayedMessages.value.map(item => item.id));
-// ACT: 只常驻当前轮的实时画面，历史浏览器消息仍按需挂载，避免长对话累积连接和 DOM。
+// 只常驻当前轮的实时画面，历史浏览器消息仍按需挂载，避免长对话累积连接和 DOM。
 const retainedMessages = computed(() => displayedMessages.value.flatMap((item, index) => item.streaming || item.id === props.editingId || item.id === browserMessages.value.liveMessageId ? [index] : []));
 const messageVirtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>(computed(() => {
   const keys = messageKeys.value;
@@ -150,9 +150,9 @@ const messageVirtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>(comput
     scrollEndThreshold: 48,
     useAnimationFrameWithResizeObserver: true,
     useCachedMeasurements: !props.active,
-    // ACT: 实时行读取当前高度，避免延后执行的观察记录覆盖本轮同步测量；历史行仍使用缓存。
+    // 实时行读取当前高度，避免延后执行的观察记录覆盖本轮同步测量；历史行仍使用缓存。
     measureElement: (element, entry, instance) => props.active && element.dataset.liveMessage ? element.offsetHeight : measureElement(element, entry, instance),
-    // ACT: v-show 隐藏时保留视口与行高，避免零尺寸清空正在输入的工具表单。
+    // v-show 隐藏时保留视口与行高，避免零尺寸清空正在输入的工具表单。
     observeElementRect: (instance, onChange) => observeElementRect(instance, rect => { if (rect.height) onChange(rect); }),
     rangeExtractor: range => [...new Set([...defaultRangeExtractor(range), ...retained])].sort((left, right) => left - right),
     onChange(instance) {

@@ -15,7 +15,7 @@ let reloadQueue = Promise.resolve();
 
 function removeRuntime(file?: string) {
   if (!file) return;
-  // ACT: 文件按端口复用；只清理自己的记录，不能删除接替此端口的另一个实例。
+  // 文件按端口复用；只清理自己的记录，不能删除接替此端口的另一个实例。
   try {
     if (JSON.parse(readFileSync(file, "utf8")).pid === process.pid) rmSync(file, { force: true });
   } catch (error) {
@@ -64,7 +64,7 @@ export function stopMcpRuntime() {
 }
 
 export function reloadMcpRuntime() {
-  // ACT: 设置保存和跨进程 watch 共用串行重载，避免同时抢端口；不重启宿主服务。
+  // 设置保存和跨进程 watch 共用串行重载，避免同时抢端口；不重启宿主服务。
   reloadQueue = reloadQueue.catch(() => {}).then(async () => {
     const current = runtime;
     if (!current) return;
@@ -82,7 +82,7 @@ export function reloadMcpRuntime() {
     server.on("connection", socket => { sockets.add(socket); socket.once("close", () => sockets.delete(socket)); });
     let file: string | undefined;
     try {
-      // ACT: 单机多开最多尝试 32 个相邻端口；直接 listen，避免探测后端口被抢占。
+      // 单机多开最多尝试 32 个相邻端口；直接 listen，避免探测后端口被抢占。
       for (let port = preferredPort; port <= Math.min(preferredPort + 31, 65535); port++) {
         if (port === current.port) {
           current.preferredPort = preferredPort;
@@ -126,7 +126,7 @@ export function ensureAgentMcpStdio() {
     removeAgentRuntime();
     return { command: current.command, args: [current.entry, "--runtime", current.file] };
   }
-  // ACT: 内置 pi 使用单独的本机凭证。桌面端默认没打开外部 MCP，对外配置文件不会生成，stdio 会是空的。
+  // 内置 pi 使用单独的本机凭证。桌面端默认没打开外部 MCP，对外配置文件不会生成，stdio 会是空的。
   // 同用户可读这份 0600 文件，并在进程存活期间访问回环端口；设置里的开关仍只控制对外复制的配置。
   const file = resolve(dirname(current.file), "mcpAgentRuntime.json");
   writeAtomicSync(file, JSON.stringify({ pid: process.pid, url: current.url, token: createAgentMcpToken() }), { mode: 0o600 });

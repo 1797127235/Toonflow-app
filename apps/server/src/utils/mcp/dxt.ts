@@ -60,7 +60,7 @@ function invalid(message: string, status = 400): never {
 
 function systemVariables(): Variables {
   const userHome = homedir();
-  // ACT: 使用宿主默认用户目录；重定向目录可在导入表单改写，后续可接入宿主已知文件夹接口。
+  // 使用宿主默认用户目录；重定向目录可在导入表单改写，后续可接入宿主已知文件夹接口。
   return {
     HOME: userHome,
     DESKTOP: join(userHome, "Desktop"),
@@ -151,7 +151,7 @@ function resolveConfig(manifest: Manifest, variables: Variables) {
 
 export function inspectDxt(fileName: string, content: string) {
   const { manifest, userConfig } = readDxt(fileName, content);
-  // ACT: 预览只检查模板与声明，不启动包内代码，不要求用户此时已填写必填项。
+  // 预览只检查模板与声明，不启动包内代码，不要求用户此时已填写必填项。
   resolveConfig(manifest, {
     ...systemVariables(), __dirname: "",
     ...Object.fromEntries(userConfig.map(option => [`user_config.${option.key}`, option.multiple ? [] : ""])),
@@ -165,7 +165,7 @@ function userVariables(options: ReturnType<typeof readDxt>["userConfig"], values
     const value = Object.hasOwn(values, option.key) ? values[option.key] : option.default;
     if (value === undefined) {
       if (option.required) invalid(`请填写 DXT 配置：${option.title}`);
-      // ACT: 可选项未填写时传空值，不把清单声明的可选项变成必填项。
+      // 可选项未填写时传空值，不把清单声明的可选项变成必填项。
       return [[`user_config.${option.key}`, option.multiple ? [] : ""]];
     }
     const valid = option.multiple ? Array.isArray(value) && value.every(item => typeof item === "string")

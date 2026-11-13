@@ -74,7 +74,7 @@ export function createTurnRecorder(send: (event: AgentEvent) => void) {
   };
 }
 
-// ACT: ACP 不透出 token 与真实模型，占位值只用于让会话文件能被内置读取逻辑解析。
+// ACP 不透出 token 与真实模型，占位值只用于让会话文件能被内置读取逻辑解析。
 const acpUsage = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, totalTokens: 0, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } };
 
 export async function appendAcpTurn(path: string, cwd: string, turn: AcpTurn) {

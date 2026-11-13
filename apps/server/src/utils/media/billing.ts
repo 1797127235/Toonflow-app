@@ -16,7 +16,7 @@ type Account = BalanceSnapshot & {
 };
 
 const unitSchema = z.string().trim().min(1).max(64);
-// ACT: 已安装的旧供应商仍可返回数值报价，统一转换为展示文本。
+// 已安装的旧供应商仍可返回数值报价，统一转换为展示文本。
 const priceSchema = z.object({ price: z.string().trim().min(1), tips: z.string() }).or(
   z.object({ amount: z.number().finite().nonnegative(), unit: unitSchema })
     .transform(({ amount, unit }) => ({ price: `${amount} ${unit}`, tips: "以实际扣费为准" })),
@@ -26,7 +26,7 @@ const balanceSchema = z.object({
   keyBalance: z.number().finite().nullable().optional(),
   totalConsumption: z.number().finite().optional(), totalRecharge: z.number().finite().optional(),
 });
-// ACT: 单进程内存余额快照；生成结束后向供应商刷新，多进程部署时需共享刷新状态。
+// 单进程内存余额快照；生成结束后向供应商刷新，多进程部署时需共享刷新状态。
 const accounts = new Map<string, Account>();
 const prices = new Map<string, { expires: number; value: Promise<ProviderPrice | null> }>();
 const accountSecret = randomBytes(32);
@@ -114,7 +114,7 @@ function getAccount(provider: RuntimeProvider) {
 export async function getProviderBalance(providerId: string, apiKey?: string): Promise<BalanceSnapshot> {
   const source = await getMediaProvider(providerId).then(info => info.source).catch((error: { status?: number }) => {
     if (providerId !== "tfRouter" || error.status !== 404) throw error;
-    // ACT: 仅配置文本 TF-Router 的账户也可查余额；缺省查询方法由加载器补齐，不安装媒体文件。
+    // 仅配置文本 TF-Router 的账户也可查余额；缺省查询方法由加载器补齐，不安装媒体文件。
     return 'export default { id: "tfRouter", label: "TF-router", rules: [], models: [] };';
   });
   const configs = conf.get("settings", {}).mediaProviderConfigs as Record<string, Record<string, unknown>> | undefined;
@@ -133,7 +133,7 @@ export async function getProviderPrice(provider: RuntimeProvider, request: Provi
   const key = createHash("sha256").update(accountId(provider)).update(provider.sourceRevision).update(JSON.stringify(request)).digest("hex");
   const cached = prices.get(key);
   if (cached) return cached.value;
-  // ACT: 报价缓存仅保留哈希与结果，最多 500 项 / 30 秒；不缓存媒体内容。
+  // 报价缓存仅保留哈希与结果，最多 500 项 / 30 秒；不缓存媒体内容。
   if (prices.size >= 500) prices.delete(prices.keys().next().value!);
   const entry = { expires: now + 30000, value: Promise.resolve<ProviderPrice | null>(null) };
   entry.value = (async () => {
@@ -142,7 +142,7 @@ export async function getProviderPrice(provider: RuntimeProvider, request: Provi
       const price = await waitForQuery(Promise.resolve().then(() => provider.getPrice!.call(context, request)), context.signal);
       return price === null ? null : priceSchema.parse(price);
     } catch (error) {
-      // ACT: 上游未部署估价或暂时失败时短缓存错误，调用方可显示失败，生成单独降级。
+      // 上游未部署估价或暂时失败时短缓存错误，调用方可显示失败，生成单独降级。
       entry.expires = Date.now() + 5000;
       throw new Error(provider.tool.errorMessage(error) || "价格查询失败");
     }

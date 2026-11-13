@@ -65,7 +65,7 @@ async function readResult<T>(response: Response): Promise<T> {
   return result.data;
 }
 
-// ACT: 独立 UMD 各有模块作用域，共用宿主缓存；模型设置保存后失效，不按节点重复请求。
+// 独立 UMD 各有模块作用域，共用宿主缓存；模型设置保存后失效，不按节点重复请求。
 const modelCacheKey = Symbol.for("toonflow.nodeModels");
 const modelCacheHost = globalThis as typeof globalThis & { [modelCacheKey]?: Map<string, Promise<unknown[]>> };
 const modelCache = modelCacheHost[modelCacheKey] ??= new Map<string, Promise<unknown[]>>();
@@ -93,7 +93,7 @@ type MediaTaskResult = { code: number; data: (NodeImageResult | NodeVideoResult 
 type PendingMediaTask = { directory: string; failedAt?: number; finish: (result: MediaTaskResult) => void; fail: (error: unknown) => void };
 const mediaTasksKey = Symbol.for("toonflow.nodeMediaTasks");
 const mediaTasksHost = globalThis as typeof globalThis & { [mediaTasksKey]?: ReturnType<typeof createMediaTasks> };
-// ACT: 图片、视频等独立 UMD 共用短轮询；每批最多 100 项，不按节点占用长连接。
+// 图片、视频等独立 UMD 共用短轮询；每批最多 100 项，不按节点占用长连接。
 const mediaTasks = mediaTasksHost[mediaTasksKey] ??= createMediaTasks();
 
 function createMediaTasks() {
@@ -153,7 +153,7 @@ function createMediaTasks() {
             for (const id of batch) {
               const task = pending.get(id);
               if (!task) continue;
-              // ACT: 状态查询允许 90 秒临时断线，不因几次快速失败取消已经提交的生成。
+              // 状态查询允许 90 秒临时断线，不因几次快速失败取消已经提交的生成。
               task.failedAt ??= Date.now();
               if (task.failedAt + 90000 <= Date.now()) { task.fail(error); cancel(directory, id); }
             }
@@ -250,7 +250,7 @@ async function requestModel(input: NodeAiRequest, context: Context, model: Model
         if (message?.role !== "assistant" || !Array.isArray(message.content)) throw new Error("AI 返回消息不完整，请确认服务端已更新");
         if (message.stopReason === "deferred" || message.stopReason === "pending") throw new Error("AI 返回了未完成的任务");
         if (message.stopReason === "error" || message.stopReason === "aborted") throw new Error(message.errorMessage || "AI 请求失败");
-        // ACT: 增量直接通知 UI；SDK 只消费完整单轮消息，避免每个 token 传输全量快照。
+        // 增量直接通知 UI；SDK 只消费完整单轮消息，避免每个 token 传输全量快照。
         stream.push({ type: "start", partial: { ...message, content: [], stopReason: "pending" } });
         stream.push({ type: "done", reason: message.stopReason, message });
         break;
@@ -293,7 +293,7 @@ export function useNodeAi() {
     const key = JSON.stringify({ ...input, outputDirectory: undefined });
     let entry = prices.get(key);
     if (!entry) {
-      // ACT: 节流状态跨节点面板重建保留；每个节点最多每 2 秒发起一次新报价。
+      // 节流状态跨节点面板重建保留；每个节点最多每 2 秒发起一次新报价。
       const nodeKey = JSON.stringify([input.directory, input.outputDirectory, input.providerId]);
       const delay = (requestedAt.get(nodeKey) ?? 0) + 2000 - now;
       if (delay > 0) {
@@ -317,7 +317,7 @@ export function useNodeAi() {
       const hasReferences = !!(input.images?.length || ("videos" in input && input.videos?.length) || ("audios" in input && input.audios?.length)
         || ("firstFrame" in input && input.firstFrame) || ("lastFrame" in input && input.lastFrame));
       const pending = { expires: Infinity, value: Promise.resolve<NodeMediaPrice | null>(null) };
-      // ACT: 最多缓存 500 条 / 30 秒；参考文件没有前端修订号，只合并进行中的查询，避免同路径覆盖后复用旧价。
+      // 最多缓存 500 条 / 30 秒；参考文件没有前端修订号，只合并进行中的查询，避免同路径覆盖后复用旧价。
       pending.value = fetch("/api/ai/media/price", {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-toonflow-workspace": "1" },

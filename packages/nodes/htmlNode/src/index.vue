@@ -54,7 +54,7 @@ const { node, nodeProps, outputs, files, nodeEvent } = useNode({
   outputs: { html: { dataType: "STRING", value: "" } },
 });
 const sandbox = "allow-scripts allow-forms allow-modals allow-popups";
-// ACT: 裸 SVG 片段在 HTML 里默认 300×150 且贴左上角，包一层容器按卡片尺寸居中缩放；完整 HTML 文档原样渲染。
+// 裸 SVG 片段在 HTML 里默认 300×150 且贴左上角，包一层容器按卡片尺寸居中缩放；完整 HTML 文档原样渲染。
 function toDocument(source: string) {
   if (!/^\s*(?:<\?xml[^>]*\?>\s*)?<svg[\s>]/i.test(source)) return source;
   return `<!DOCTYPE html><html><head><style>html,body{margin:0;height:100%}body{display:flex;align-items:center;justify-content:center}svg{width:100%;height:100%}</style></head><body>${source}</body></html>`;
@@ -184,7 +184,7 @@ async function loadHtml() {
     outputs.value.html.value = value;
     data.value.htmlPath = htmlPath;
     delete data.value.htmlSnapshot;
-    // ACT: 成功落盘后才排除内联正文；迁移失败时画布仍保留原内容。
+    // 成功落盘后才排除内联正文；迁移失败时画布仍保留原内容。
     if (!Object.hasOwn(outputs.value, "toJSON")) Object.defineProperty(outputs.value, "toJSON", { value: () => ({}) });
     htmlSaving = Promise.resolve();
     htmlReady.value = true;

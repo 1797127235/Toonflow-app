@@ -7,7 +7,7 @@ import { promisify } from "node:util";
 import { PATHS } from "electrobun/main";
 
 const execFileAsync = promisify(execFile);
-// ACT: 同一桌面进程只显示一个保存对话框；后续若支持多窗口，可按窗口分别加锁。
+// 同一桌面进程只显示一个保存对话框；后续若支持多窗口，可按窗口分别加锁。
 let dialogOpen = false;
 // 选好路径到实际写入之间用一次性 token 中转，不把绝对路径回传给前端。
 const pendingSaves = new Map<string, { path: string; expiresAt: number }>();

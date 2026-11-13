@@ -1,7 +1,7 @@
 import { dlopen, FFIType, ptr, read } from "bun:ffi";
 import { getSystemErrorName } from "node:util";
 
-// ACT: 移动端沙箱可能禁用硬链接；使用 renameat2 原子发布，不能退化为先检查再覆盖。
+// 移动端沙箱可能禁用硬链接；使用 renameat2 原子发布，不能退化为先检查再覆盖。
 const syscallNumber = process.arch === "arm64" ? 276 : process.arch === "x64" ? 316 : undefined;
 if (syscallNumber === undefined) throw Object.assign(new Error(`不支持的移动端架构：${process.arch}`), { code: "ENOTSUP" });
 const errnoSymbol = process.platform === "android" ? "__errno" : "__errno_location";

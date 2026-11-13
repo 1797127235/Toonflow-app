@@ -66,13 +66,13 @@ import "element-plus/theme-chalk/dark/css-vars.css";
 useMcpControl();
 const workspaceStore = useWorkspaceStore();
 
-// ACT: TDesign 缺少的语言使用英语基底，聊天控件由应用字典补齐。
+// TDesign 缺少的语言使用英语基底，聊天控件由应用字典补齐。
 const tdesignLocales = {
   "zh-CN": tdesignZhCn, "zh-TW": tdesignZhTw, en: tdesignEn, ja: tdesignJa, ru: tdesignRu, vi: tdesignEn, th: tdesignEn, ko: tdesignKo, hi: tdesignEn,
   id: tdesignEn, ms: tdesignEn, fil: tdesignEn, bn: tdesignEn, ur: tdesignEn, ta: tdesignEn, te: tdesignEn, mr: tdesignEn, pa: tdesignEn, ar: tdesignAr, fa: tdesignEn, tr: tdesignEn,
 };
 const elementLocale = computed(() => elementLocales[locale.value]);
-// ACT: TDesign 自带语言包声明为 readonly，而 ConfigProvider 的只读使用接口声明为可写。
+// TDesign 自带语言包声明为 readonly，而 ConfigProvider 的只读使用接口声明为可写。
 const tdesignLocale = computed(() => ({ ...tdesignLocales[locale.value], chat: chatLocale.value }) as unknown as GlobalConfigProvider);
 
 const updateBoxVisible = ref(false);
@@ -90,7 +90,7 @@ watch(desktopUpdateSnapshot, snapshot => {
     const attemptId = snapshot.installFailure.attemptId;
     if (shownInstallAttempts.has(attemptId)) return;
     shownInstallAttempts.add(attemptId);
-    // ACT: 同一 WebView 刷新后仍不重复提醒；退出客户端后新会话可再次提醒。
+    // 同一 WebView 刷新后仍不重复提醒；退出客户端后新会话可再次提醒。
     try {
       const key = `desktopUpdateFailure:${attemptId}`;
       if (sessionStorage.getItem(key)) return;
@@ -116,7 +116,7 @@ watch(desktopUpdateSnapshot, snapshot => {
 function rememberUpdateBox() {
   if (!updateBoxBuild.value) return;
   const buildKey = `${updateBoxBuild.value.version}:${updateBoxBuild.value.hash}`;
-  // ACT: 桌面端启动端口会变化，复用应用设置；展示完成或提前关闭时记录，保存队列内去重。
+  // 桌面端启动端口会变化，复用应用设置；展示完成或提前关闭时记录，保存队列内去重。
   void saveSettings(current => {
     const seenBuilds = Array.isArray(current.updateBoxSeenBuilds) ? current.updateBoxSeenBuilds.filter(value => typeof value === "string") : [];
     return seenBuilds.includes(buildKey) ? undefined : { updateBoxSeenBuilds: [...seenBuilds, buildKey] };
@@ -144,7 +144,7 @@ watchEffect(() => document.documentElement.style.setProperty("--markdown-tooltip
 
 watchEffect(() => {
   if (!isMobile) return;
-  // ACT: 使用 WebView 视口缩放，保持画布触摸坐标和弹出层在同一坐标系。
+  // 使用 WebView 视口缩放，保持画布触摸坐标和弹出层在同一坐标系。
   document.querySelector('meta[name="viewport"]')?.setAttribute("content", `width=device-width, initial-scale=${uiSettings.value.mobileScale / 100}`);
 });
 
@@ -214,7 +214,7 @@ html {
   }
 }
 
-// ACT: RTL 只改变界面阅读方向，画布坐标、代码和技术值保留从左到右。
+// RTL 只改变界面阅读方向，画布坐标、代码和技术值保留从左到右。
 .vue-flow,
 pre,
 code,

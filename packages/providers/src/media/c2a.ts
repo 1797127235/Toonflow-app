@@ -430,7 +430,7 @@ function imageSizeOf(request: ImageRequest): string | undefined {
 function imageFields(request: ImageRequest): Record<string, unknown> {
   // n 固定为 1（Grok Imagine 单次只出一张）；multipart 分支会统一 String() 化。
   const fields: Record<string, unknown> = { model: request.model, prompt: request.prompt, n: 1, response_format: "b64_json" };
-  // ACT: grok-imagine 图片只认 1k/2k；其他尺寸写法交给上游按比例默认。
+  // grok-imagine 图片只认 1k/2k；其他尺寸写法交给上游按比例默认。
   const resolution = /^([12])k$/i.exec((request.size ?? "").trim());
   if (resolution) fields.resolution = `${resolution[1]}k`;
   if (request.ratio) fields.aspect_ratio = request.ratio;
@@ -504,7 +504,7 @@ async function runImage(context: ProviderContext, request: ImageRequest): Promis
   const signal = AbortSignal.any([AbortSignal.timeout(10 * 60_000), ...(context.signal ? [context.signal] : [])]);
   const baseUrl = gateway(context);
 
-  // ACT: 实测 C2A 拒绝 2.5 MB 参考图，压到 512 KB 内最稳；URL 素材不下载不处理。
+  // 实测 C2A 拒绝 2.5 MB 参考图，压到 512 KB 内最稳；URL 素材不下载不处理。
   const shrink = (input: MediaInput) => fitImage(context, input, { capBytes: 512 * 1024 });
   const images = await Promise.all((request.images ?? []).map(shrink));
   const mask = request.mask ? await shrink(request.mask) : undefined;
@@ -520,7 +520,7 @@ async function runImage(context: ProviderContext, request: ImageRequest): Promis
 }
 
 // ─────────────────────────────── 1b. GPT Image ───────────────────────────────
-// ACT: 上游对 1K/2K/4K 档位字符串的支持不一致（sunburst 会忽略、flare 只认字符串），
+// 上游对 1K/2K/4K 档位字符串的支持不一致（sunburst 会忽略、flare 只认字符串），
 // 统一换算成显式 WxH 最稳。4K 上限按模型实测：flare 直接 400，gpt-image-2 会被钳到 2880。
 
 const GPT_IMAGE_SIDE: Record<string, number> = { "1k": 1024, "2k": 2048, "4k": 4096 };
@@ -949,7 +949,7 @@ export default {
 
 参考素材会先在服务端按上游的边长与体积限制缩放压缩，无需手工处理。可用模型取决于 API Key 绑定的分组权限，未开放的分组连 \`/v1/models\` 都查不到；请按实际分组维护模型列表。`,
   rules,
-  // ACT: 宿主解析器只接受 JSON 字面量（禁止展开、计算属性与调用），
+  // 宿主解析器只接受 JSON 字面量（禁止展开、计算属性与调用），
   // 所以这份列表必须与 VIDEO_SPECS 手工保持一致，改一边就要改另一边。
   models: [
     {

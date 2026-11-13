@@ -174,7 +174,7 @@ function changeColor(value: string | null) {
   if (value) updateUiSettings({ primaryColor: value });
 }
 
-// ACT: 圆心固定用视口中心，实际点击坐标由 captureThemeClickPoint 在 change 前写入。
+// 圆心固定用视口中心，实际点击坐标由 captureThemeClickPoint 在 change 前写入。
 let themeClickPoint = { x: innerWidth / 2, y: innerHeight / 2 };
 function captureThemeClickPoint(event: MouseEvent) {
   themeClickPoint = { x: event.clientX, y: event.clientY };

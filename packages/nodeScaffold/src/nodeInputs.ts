@@ -56,7 +56,7 @@ const targetEdgesKey = Symbol.for("toonflow.targetEdges");
 export function useNodeInputs(canvas = useVueFlow()) {
   const flow = canvas as typeof canvas & { [targetEdgesKey]?: ComputedRef<Map<string, Connection[]>> };
   const { nodeLookup } = canvas;
-  // ACT: 按画布共享分组，保留重复边和原顺序；不依赖 VueFlow 会合并重复端点的连接索引。
+  // 按画布共享分组，保留重复边和原顺序；不依赖 VueFlow 会合并重复端点的连接索引。
   const targetEdges = flow[targetEdgesKey] ?? computed(() => Map.groupBy(canvas.getEdges.value, edge => edge.target));
   if (!flow[targetEdgesKey]) Object.defineProperty(flow, targetEdgesKey, { value: targetEdges });
   return {

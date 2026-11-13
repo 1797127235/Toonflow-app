@@ -64,7 +64,7 @@ export async function processAudio(ffmpeg: BrowserFfmpegFactory, source: string,
   if (options.action === "speed") {
     let tempo = options.speed;
     const filters: string[] = [];
-    // ACT: 每级保持在 0.5–2 倍，避免高倍 atempo 跳过采样，并覆盖最低 0.1 倍速度。
+    // 每级保持在 0.5–2 倍，避免高倍 atempo 跳过采样，并覆盖最低 0.1 倍速度。
     while (tempo < 0.5) { filters.push("atempo=0.5"); tempo /= 0.5; }
     while (tempo > 2) { filters.push("atempo=2"); tempo /= 2; }
     command.audioFilters([...filters, `atempo=${tempo}`]).outputOptions("-map", "0:a:0");

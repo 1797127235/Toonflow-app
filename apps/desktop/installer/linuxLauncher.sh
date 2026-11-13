@@ -59,7 +59,7 @@ if [ "$status" -ne 10 ]; then
   exit "$status"
 fi
 
-# ACT: SDK launcher 不转发 URL；启动后通过本机服务交给待确认队列。
+# SDK launcher 不转发 URL；启动后通过本机服务交给待确认队列。
 nohup "$launcher" >/dev/null 2>&1 &
 i=0
 while [ "$i" -lt 180 ]; do

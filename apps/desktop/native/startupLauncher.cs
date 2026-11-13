@@ -25,7 +25,7 @@ internal static class startupLauncher
             detail = "错误码：0x" + exitCode.ToString("X8") + "\r\n" + error.Message;
         }
 
-        // ACT: 更新事务的启动失败交给现有回滚流程，不弹兼容提示或自动改变启动方式。
+        // 更新事务的启动失败交给现有回滚流程，不弹兼容提示或自动改变启动方式。
         if (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("TOONFLOW_UPDATE_TRANSACTION"))) return exitCode;
         if (MessageBox.Show("正常启动方式失败或程序异常退出。\r\n" + detail
             + "\r\n\r\n是否尝试以兼容方式启动？\r\n兼容启动可能会额外出现一个黑色控制台窗口。使用期间请勿关闭该窗口，否则 Laywork 也可能退出。",

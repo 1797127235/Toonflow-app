@@ -4,7 +4,7 @@ import type { AgentEvent } from "@/agent/runtime/types";
 
 type PendingQuestion = { cwd: string; request: QuestionRequest; cancel(): void; finish(result: QuestionAnswer | Error): void };
 
-// ACT: 提问随当前流存活，不设用户答题超时；断开或停止时取消，多进程时需共享通道。
+// 提问随当前流存活，不设用户答题超时；断开或停止时取消，多进程时需共享通道。
 const pendingQuestions = new Map<string, PendingQuestion>();
 
 export function createQuestionContext(cwd: string, send: (event: Extract<AgentEvent, { type: "question" }>) => void, onCancel?: () => void) {

@@ -107,7 +107,7 @@ export function createTeamA2aRouter(options: {
       await running.done;
     },
   };
-  // ACT: SDK 的任务存储和 owner 隔离复用内存实现；服务重启后不恢复任务。
+  // SDK 的任务存储和 owner 隔离复用内存实现；服务重启后不恢复任务。
   // INPUT_REQUIRED 结束当前流，下一条携带 taskId 的消息从 SDK 存储重新进入 execute。
   const handler = new DefaultRequestHandler(options.card, new InMemoryTaskStore(), executor, undefined, undefined, undefined, undefined, undefined, { keepBusAliveStates: [] });
   const cancelTask = handler.cancelTask.bind(handler);

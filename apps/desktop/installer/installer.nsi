@@ -17,7 +17,7 @@ Caption "${appName}"
 BrandingText " "
 OutFile "${outputFile}"
 InstallDir "$LOCALAPPDATA\${appIdentifier}\stable"
-; ACT: SDK 会把 InstallLocation 改成 app 子目录，NSIS 独立保存用户选择的安装根目录。
+; SDK 会把 InstallLocation 改成 app 子目录，NSIS 独立保存用户选择的安装根目录。
 InstallDirRegKey HKCU "${uninstallKey}" "toonflowInstallDirectory"
 
 Icon "${appIcon}"
@@ -78,7 +78,7 @@ checkRunning:
 Function showFinishPage
   ShowWindow $mui.FinishPage.Image ${SW_HIDE}
   System::Store "S"
-  ; ACT: 保留 MUI 控件与完成行为，使用对话框单位适配字体和 DPI。
+  ; 保留 MUI 控件与完成行为，使用对话框单位适配字体和 DPI。
   !insertmacro moveFinishControl $mui.FinishPage.Title 12 10 300 28
   !insertmacro moveFinishControl $mui.FinishPage.Text 12 45 300 40
   !insertmacro moveFinishControl $mui.FinishPage.Run 12 90 300 12
@@ -118,7 +118,7 @@ Section "Install"
   ClearErrors
   CreateDirectory "$INSTDIR"
   IfErrors installFailed
-  ; ACT: NSIS 的 GetFullPathName 要求目录已存在；先创建，再通过临时变量保留失败时的原路径。
+  ; NSIS 的 GetFullPathName 要求目录已存在；先创建，再通过临时变量保留失败时的原路径。
   StrCpy $installStep "确认安装目录"
   GetFullPathName $0 "$INSTDIR"
   IfErrors installFailed
@@ -167,7 +167,7 @@ tarReady:
   IfFileExists "$INSTDIR\app\Resources\app\providers\*.*" 0 +2
     RMDir /r "$INSTDIR\app\Resources\app\providers"
   IfErrors installFailed
-  ; ACT: 仅打包一份 tar，释放应用后保留原文件作为增量更新基线。
+  ; 仅打包一份 tar，释放应用后保留原文件作为增量更新基线。
   nsExec::ExecToStack '"$WINDIR\Sysnative\tar.exe" -xf "$INSTDIR\self-extraction\${appHash}.tar" -C "$INSTDIR\app" --strip-components=1'
   Pop $0
   Pop $1
@@ -213,7 +213,7 @@ tarReady:
   IfErrors installFailed
   CreateShortCut "$DESKTOP\${appName}.lnk" "$INSTDIR\app\Resources\app\startupLauncher.exe" "" "$INSTDIR\app\Resources\app.ico"
   IfErrors 0 installDone
-  ; ACT: 快捷方式不影响程序使用，失败时保留成功安装结果并告知手动启动路径。
+  ; 快捷方式不影响程序使用，失败时保留成功安装结果并告知手动启动路径。
   MessageBox MB_OK|MB_ICONEXCLAMATION "Laywork 已安装，但无法创建桌面快捷方式。可以从以下位置启动：$\r$\n$INSTDIR\app\Resources\app\startupLauncher.exe" /SD IDOK
   Goto installDone
 
@@ -262,7 +262,7 @@ Section "Uninstall"
     IfErrors uninstallFailed
   ${EndIf}
   ClearErrors
-  ; ACT: 清理成功后才移除卸载入口；文件被占用时保留入口供用户重试。
+  ; 清理成功后才移除卸载入口；文件被占用时保留入口供用户重试。
   Delete "$INSTDIR\UninstallNSIS.exe"
   IfErrors uninstallFailed
   Delete "$INSTDIR\toonflow.ini"

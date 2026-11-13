@@ -125,7 +125,7 @@ function updateText(event: Event) {
 await mkdir(extRoot, { recursive: true });
 // 不带 recursive 的 mkdir 在目录已存在时直接失败，绝不覆盖已有扩展。
 await mkdir(target);
-// ACT: 生成到一半失败时保留已创建文件：按目录回滚可能误删期间加入的文件或链接。
+// 生成到一半失败时保留已创建文件：按目录回滚可能误删期间加入的文件或链接。
 await mkdir(resolve(target, "src"));
 // wx（排他写）保证只新建，不覆盖同名文件；生成物冲突时应当报错而不是悄悄改内容。
 for (const [path, content] of Object.entries(files)) await writeFile(resolve(target, path), content, { flag: "wx" });

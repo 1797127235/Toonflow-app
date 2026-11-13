@@ -69,7 +69,7 @@ export function createFfmpeg(directory: string): typeof ffmpeg {
     for (const output of command._outputs) fileArgument(output.target);
   }
 
-  // ACT: 只保护显式文件入口；原始参数、滤镜、清单内的间接 I/O 仍是可信代码，不是进程沙箱。
+  // 只保护显式文件入口；原始参数、滤镜、清单内的间接 I/O 仍是可信代码，不是进程沙箱。
   const proto = Object.create(native) as FfmpegInternals;
   proto.input = proto.addInput = proto.mergeAdd = function(source) {
     return native.input.call(this, fileArgument(source));
@@ -78,7 +78,7 @@ export function createFfmpeg(directory: string): typeof ffmpeg {
     return native.output.call(this, fileArgument(target), options);
   };
   proto.clone = function() {
-    // ACT: fluent 2.3.3 已设置输出时 clone.output() 会抛错；用空输出保留原生“不复制输出”的语义。
+    // fluent 2.3.3 已设置输出时 clone.output() 会抛错；用空输出保留原生“不复制输出”的语义。
     const source = Object.create(this) as FfmpegInternals;
     if (this._outputs[0] && "target" in this._outputs[0]) {
       const empty = factory() as FfmpegInternals;

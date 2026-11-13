@@ -52,7 +52,7 @@ async function explainError() {
   try {
     models.value = await ai.getModels(signal);
     if (!models.value.length) throw new Error("解释错误需要一个可用的文本模型。请先在设置 → 文本模型中添加，再重试 AI 解释。");
-    // ACT: 首次点击只展示模型选择，不猜测哪个供应商可用，也不自动轮询产生额外请求。
+    // 首次点击只展示模型选择，不猜测哪个供应商可用，也不自动轮询产生额外请求。
     const model = selectedModel.value;
     if (!model) {
       modelValue.value = "";
@@ -71,7 +71,7 @@ async function explainError() {
 发生了什么：翻译关键英文错误，用日常用语说明本次操作卡在哪里，必要术语随句解释。
 可能的原因：先说错误已明确指出的原因；没有足够证据时说明无法确定，不罗列无关猜测。
 下一步怎么做：给出 1～2 个与原始错误对应、用户能直接照做的步骤，优先无额外费用的检查；缺少信息时明确需要补充哪条错误详情。`,
-      // ACT: 错误正文最多发送 8000 字符；不发送生成提示词、素材或供应商配置。
+      // 错误正文最多发送 8000 字符；不发送生成提示词、素材或供应商配置。
       prompt: JSON.stringify({ operation: props.context, error: props.message.slice(0, 8000) }),
     });
     signal.throwIfAborted();

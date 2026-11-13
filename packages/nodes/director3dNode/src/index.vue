@@ -74,7 +74,7 @@ const promptModel = computed({ get: () => data.value.promptModel ?? [], set: (va
 const anchors = computed({ get: () => data.value.anchors ?? [], set: (value: CameraAnchor[]) => { data.value.anchors = value; } });
 const prompt = computed({ get: () => data.value.prompt ?? "", set: (value: string) => { data.value.prompt = value; } });
 const model = computed({ get: () => data.value.model ?? "", set: (value: string) => { data.value.model = value; } });
-// ACT: 场景和动画只在节点内部持有，画布数据仅保存文件引用，避免拖动时遍历大量关键帧。
+// 场景和动画只在节点内部持有，画布数据仅保存文件引用，避免拖动时遍历大量关键帧。
 const modelDocument = shallowRef<ModelDocument>({ version: 1, scene: createEmptyScene(), plans: [] });
 const plans = computed(() => modelDocument.value.plans);
 const selectedPlan = computed(() => plans.value.find(plan => plan.id === data.value.selectedPlanId));
@@ -227,7 +227,7 @@ async function exportToCanvas(kind: "image" | "video", key: string, aspect: numb
     workspaceFiles = files.getWorkspaceFiles();
     if (kind === "video") {
       exportNode = addExportNode(selectedPlan.value?.name ?? "视频");
-      // ACT: 导出进度只在当前运行中使用，不能写入画布或复制到另一个节点。
+      // 导出进度只在当前运行中使用，不能写入画布或复制到另一个节点。
       Object.defineProperty(exportNode.data, "exportProgress", { value: 0, writable: true, configurable: true });
       stopWatching = watch([() => findNode(id), exportProgress], ([current, progress]) => {
         if (current !== exportNode) discarded = true;
@@ -290,7 +290,7 @@ async function loadModels() {
     if (disposed) return;
     models.value = available;
     const first = models.value[0];
-    // ACT: 只给空配置选默认模型，保留暂时不可用的旧选择。
+    // 只给空配置选默认模型，保留暂时不可用的旧选择。
     if (!model.value) model.value = first ? JSON.stringify([first.providerId, first.modelId]) : "";
   } catch (error) {
     if (!disposed) ElMessage.error(error instanceof Error ? error.message : "模型加载失败");

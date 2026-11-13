@@ -10,7 +10,7 @@ type MediaTask = {
   result?: ApiResponse<GeneratedMedia[]>;
 };
 
-// ACT: 单进程临时任务，结果结束后保留 5 分钟；重启和结果过期后不恢复。
+// 单进程临时任务，结果结束后保留 5 分钟；重启和结果过期后不恢复。
 const tasks = new Map<string, MediaTask>();
 
 function stop(task: MediaTask, message: string) {
@@ -34,7 +34,7 @@ cleanupTimer.unref();
 export function start(cwd: string, taskId: string, mediaType: "image" | "video" | "audio", request: MediaGenerationRequest) {
   cleanup();
   if (tasks.has(taskId)) throw Object.assign(new Error("生成任务已存在，请勿重复提交"), { status: 409 });
-  // ACT: 最多 1000 个任务；取消后仍等待生成 Promise 收尾，避免忽略取消的供应商绕过上限。
+  // 最多 1000 个任务；取消后仍等待生成 Promise 收尾，避免忽略取消的供应商绕过上限。
   if (tasks.size >= 1000) throw Object.assign(new Error("生成任务过多，请稍后重试"), { status: 429 });
   const task: MediaTask = { cwd, controller: new AbortController(), touchedAt: Date.now() };
   tasks.set(taskId, task);

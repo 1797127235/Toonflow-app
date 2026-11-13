@@ -71,7 +71,7 @@ export async function processVideo(ffmpeg: BrowserFfmpegFactory, source: string,
       .outputOptions("-map", "0:a:0", "-movflags", "+faststart");
   }
   if (needsVideo) {
-    // ACT: 重编码到 H.264，按帧精度截取并兼容播放器；奇数边长只补齐到偶数，不拉伸画面。
+    // 重编码到 H.264，按帧精度截取并兼容播放器；奇数边长只补齐到偶数，不拉伸画面。
     command.output(options.videoPath!).videoCodec("libx264").format("mp4")
       .videoFilters("pad=ceil(iw/2)*2:ceil(ih/2)*2")
       .outputOptions("-map", `0:${video.index}`, "-preset", "fast", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart");

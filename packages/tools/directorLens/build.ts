@@ -1,7 +1,7 @@
 import { copyFile, mkdir } from "@toonflow/file";
 import { resolve } from "node:path";
 
-// ACT: 仅取得外部分发包，原样保留元数据和客户端界面；取得源码后再改用工具脚手架构建。
+// 仅取得外部分发包，原样保留元数据和客户端界面；取得源码后再改用工具脚手架构建。
 const fileName = "directorLens.tool.js";
 const source = resolve(import.meta.dirname, fileName);
 const outputDirectory = resolve(import.meta.dirname, "../../../build/tools");

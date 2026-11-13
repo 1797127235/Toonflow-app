@@ -104,7 +104,7 @@ export async function uninstall(name: string) {
     }
     const { directory, files } = await readFiles(name);
     for (const path of files.keys()) if (path.startsWith("tools/")) delete require.cache[resolve(directory, path)];
-    // ACT: readFiles 已验证实际目录范围与全部条目，单进程锁内删除该团队目录。
+    // readFiles 已验证实际目录范围与全部条目，单进程锁内删除该团队目录。
     await rm(directory, { recursive: true });
     await unlink(resolve(agentsDirectory, `${name}.disabled`)).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; });
   });

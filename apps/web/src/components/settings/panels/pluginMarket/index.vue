@@ -279,7 +279,7 @@ import { installPluginFile } from "../../installPluginFile";
 
 const { visible = true } = defineProps<{ visible?: boolean }>();
 const associationsVisible = ref(false);
-// ACT: Agent 插件市场仍在测试，暂时关闭入口。
+// Agent 插件市场仍在测试，暂时关闭入口。
 const agentMarketEnabled = false;
 const pluginTypes = {
   node: { label: "节点", path: "nodes", icon: IconBox, tagType: "primary" },

@@ -165,7 +165,7 @@ async function loadText(fromDisk = false) {
     outputs.value.text.value = value;
     data.value.textPath = textPath;
     delete data.value.textSnapshot;
-    // ACT: 成功落盘后才排除内联正文；迁移失败时画布仍保留原内容。
+    // 成功落盘后才排除内联正文；迁移失败时画布仍保留原内容。
     if (!Object.hasOwn(outputs.value, "toJSON")) Object.defineProperty(outputs.value, "toJSON", { value: () => ({}) });
     textSaving = Promise.resolve();
     textReady.value = true;

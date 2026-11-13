@@ -6,13 +6,13 @@ import { ar, bn, en, fa, hi, id, ja, ko, ms, ru, ta, th, tr, ur, vi, zhCN, zhTW 
 import { z } from "zod";
 
 const requestLocale = new AsyncLocalStorage<Locale>();
-// ACT: 已安装的 Zod 没有 fil/te/mr/pa，参数校验提示回退英文；应用消息仍使用所选语言。
+// 已安装的 Zod 没有 fil/te/mr/pa，参数校验提示回退英文；应用消息仍使用所选语言。
 const validationLocales = {
   "zh-CN": zhCN(), "zh-TW": zhTW(), en: en(), ja: ja(), ru: ru(), vi: vi(), th: th(), ko: ko(), hi: hi(),
   id: id(), ms: ms(), fil: en(), bn: bn(), ur: ur(), ta: ta(), te: en(), mr: en(), pa: en(), ar: ar(), fa: fa(), tr: tr(),
 };
 let localeFallback = () => detectLocale([Intl.DateTimeFormat().resolvedOptions().locale]);
-// ACT: 仅注册一次分派器；每次校验读取当前异步上下文，绝不按请求改写全局语言。
+// 仅注册一次分派器；每次校验读取当前异步上下文，绝不按请求改写全局语言。
 z.config({ localeError: issue => validationLocales[getLocale()].localeError(issue) });
 
 export function setLocaleFallback(resolve: () => Locale) { localeFallback = resolve; }

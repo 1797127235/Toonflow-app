@@ -29,7 +29,7 @@ async function mountNode() {
     if (active && !disposed && currentRevision === revision) props.context.error = error instanceof Error ? error.message : "节点加载失败";
   } finally {
     mounting = false;
-    // ACT: 切换期间等待旧挂载先释放，再恢复当前视图，避免较晚返回的旧调用覆盖新投射。
+    // 切换期间等待旧挂载先释放，再恢复当前视图，避免较晚返回的旧调用覆盖新投射。
     if (active && !disposed && currentRevision !== revision) void mountNode();
   }
 }

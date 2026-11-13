@@ -20,7 +20,7 @@ function invalid(message: string, status = 400): never {
 }
 
 export function requireNewerVersion(current: unknown, incoming: unknown, label: string) {
-  // ACT: Bun 的比较器接受宽松版本；先限定完整 SemVer，缺失版本不猜测更新顺序。
+  // Bun 的比较器接受宽松版本；先限定完整 SemVer，缺失版本不猜测更新顺序。
   const versions = [current, incoming].map(value => {
     if (typeof value !== "string" || value.length > 256) return;
     const match = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.exec(value.trim());
@@ -117,7 +117,7 @@ export async function installNode(fileName: string, source: string, force = fals
   if (/^\s*(?:<!doctype\s+html\b|<html\b)/i.test(source)) {
     invalid("节点文件实际是 HTML 网页，不是节点脚本，请重新上传构建生成的 .umd.js 文件");
   }
-  // ACT: 仅静态检查脚手架约定和语法，确认安装后由画布加载执行。
+  // 仅静态检查脚手架约定和语法，确认安装后由画布加载执行。
   if (!source.includes("toonflowNodeHost")) invalid("文件不是兼容的 Laywork 节点，请使用节点脚手架构建生成的 .umd.js 文件");
   if (!source.includes(`toonflowNodes.${name}`)) invalid(t`文件名与节点导出名不一致：${fileName} 需要导出 toonflowNodes.${name}，请按实际节点名修改文件名`);
   try { new Bun.Transpiler({ loader: "js" }).scan(source); }
@@ -191,7 +191,7 @@ export async function installTool(fileName: string, source: string, force = fals
       requireNewerVersion(version, metadata.version, `工具“${name}”`);
     }
     await writeWorkspaceFile(path, source, !current);
-    // ACT: Bun 按文件路径缓存模块，URL query 不会使已加载的工具失效。
+    // Bun 按文件路径缓存模块，URL query 不会使已加载的工具失效。
     delete require.cache[path];
   } finally { release(); }
   return { name };
@@ -243,7 +243,7 @@ export function skillZip(bytes: Uint8Array, options: { maxBytes?: number; maxEnt
   const entries: { path: string; directory: boolean; size: number; checksum: number; method: number; start: number; end: number; header: number; mode: number }[] = [];
   let total = 0;
   let offset = start;
-  // ACT: 仅支持普通存储/Deflate ZIP；先验证目录和声明大小，再限量解压，不将压缩包直接释放到磁盘。
+  // 仅支持普通存储/Deflate ZIP；先验证目录和声明大小，再限量解压，不将压缩包直接释放到磁盘。
   for (let index = 0; index < count; index++) {
     if (offset + 46 > end || data.readUInt32LE(offset) !== 0x02014b50) invalid("ZIP 技能包目录无效");
     const flags = data.readUInt16LE(offset + 8);
@@ -313,7 +313,7 @@ async function skillArchive(bytes: Uint8Array) {
     const data = header.subarray(start, start + length);
     return decodeText(data.subarray(0, data.indexOf(0) < 0 ? data.length : data.indexOf(0)));
   }
-  // ACT: Bun.Archive.files() 会略过链接并合并重名；先检查普通 USTAR 头，复杂 PAX/GNU 扩展拒绝安装。
+  // Bun.Archive.files() 会略过链接并合并重名；先检查普通 USTAR 头，复杂 PAX/GNU 扩展拒绝安装。
   for (let offset = 0; offset < tar.length;) {
     const header = tar.subarray(offset, offset + 512);
     if (header.every(byte => byte === 0)) {
@@ -364,7 +364,7 @@ export async function installSkill(fileName: string, bytes: Uint8Array, force = 
   catch { return invalid("SKILL.md 前言格式无效"); }
   const name = frontmatter?.name;
   const description = frontmatter?.description;
-  // ACT: 兼容本地创建的小驼峰名称与既有短横线名称，不修改包内标识。
+  // 兼容本地创建的小驼峰名称与既有短横线名称，不修改包内标识。
   if (typeof name !== "string" || name.length > 64 || !/^[a-z0-9][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*$/.test(name)) invalid("技能 name 必须为不超过 64 字符的小驼峰或短横线名称");
   skillPath(name);
   if (typeof description !== "string" || !description.trim() || description.length > 1024) invalid("技能 description 必须为 1 至 1024 字符");
@@ -403,7 +403,7 @@ export async function installSkill(fileName: string, bytes: Uint8Array, force = 
       await mkdir(dirname(destination), { recursive: true });
       await writeFile(destination, content, { flag: "wx", mode: 0o600 });
     }
-    // ACT: 单进程锁内切换完整目录；旧版留到新版就位，失败时原路恢复。
+    // 单进程锁内切换完整目录；旧版留到新版就位，失败时原路恢复。
     const backup = join(temporary, "previous");
     if (existing) await rename(target, backup);
     try { await rename(staged, target); }

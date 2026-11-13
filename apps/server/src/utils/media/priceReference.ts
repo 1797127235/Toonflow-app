@@ -45,7 +45,7 @@ async function waitForMetadata<T>(value: Promise<T>, signal?: AbortSignal): Prom
 function probePath(config: string) {
   if (probeStatus?.config === config && probeStatus.expires > Date.now()) return probeStatus.value;
   const entry = { config, expires: Infinity, value: Promise.resolve<string | null>(null) };
-  // ACT: 合并在途版本检查，完成后缓存 10 秒；配置变化立即重查，不触发缺工具安装提示。
+  // 合并在途版本检查，完成后缓存 10 秒；配置变化立即重查，不触发缺工具安装提示。
   entry.value = getStatus().then(({ tools }) => tools.ffprobe.error ? null : tools.ffprobe.path).catch(() => null)
     .finally(() => { entry.expires = Date.now() + 10000; });
   probeStatus = entry;
@@ -114,14 +114,14 @@ async function loadPriceReference(cwd: string, reference: MediaReference, mediaT
         if (positive(image.height)) metadata.height = image.height;
       } else Object.assign(metadata, await waitForMetadata(probeMedia(path, mediaType, config, deadline), deadline));
     } catch {
-      // ACT: 缺探测工具、格式不支持或 5 秒内无法探测时保留类型/大小，未知维度不伪造为 0。
+      // 缺探测工具、格式不支持或 5 秒内无法探测时保留类型/大小，未知维度不伪造为 0。
     }
     const latest = await stat(path);
     if (`${latest.mtimeMs}:${latest.ctimeMs}:${latest.size}` !== revision) throw new Error("参考媒体已变化，请重试估价");
     return metadata;
   })();
   const entry = { revision, expires: now + 30000, value };
-  // ACT: 元信息缓存最多 500 项 / 30 秒；每次核对 mtime/ctime/size，不保存素材内容。
+  // 元信息缓存最多 500 项 / 30 秒；每次核对 mtime/ctime/size，不保存素材内容。
   if (references.size >= 500) references.delete(references.keys().next().value!);
   references.set(key, entry);
   void value.catch(() => { if (references.get(key) === entry) references.delete(key); });

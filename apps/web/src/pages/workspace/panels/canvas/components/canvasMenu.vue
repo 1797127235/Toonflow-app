@@ -508,7 +508,7 @@ async function listCanvasEntries(directory: string, path = "", recursive = false
   const files = useWorkspaceFiles(directory);
   const { entries, empty } = await files.list(path, signal);
   const folders: CanvasEntry[] = [];
-  // ACT: 初始化与展开只读当前一层；完整查询仅由搜索、Agent 列举及文件操作显式触发。
+  // 初始化与展开只读当前一层；完整查询仅由搜索、Agent 列举及文件操作显式触发。
   for (let index = 0; index < entries.length; index++) {
     checkCanvasDirectory(directory, signal);
     const entry = entries[index]!;

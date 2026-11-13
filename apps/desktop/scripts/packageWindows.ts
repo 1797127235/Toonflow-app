@@ -28,7 +28,7 @@ const runningChecker = join(nsisDir, "checkRunning.exe");
 const initializeInstallScript = join(nsisDir, "initializeInstall.js");
 
 mkdirSync(webViewDir, { recursive: true });
-// ACT: 安装脚本在临时目录执行，先打包文件层依赖，避免依赖开发目录的 node_modules。
+// 安装脚本在临时目录执行，先打包文件层依赖，避免依赖开发目录的 node_modules。
 const initializeInstallBuild = await Bun.build({
   entrypoints: [join(installerDir, "initializeInstall.ts")],
   outdir: nsisDir,
@@ -67,8 +67,8 @@ copyFileSync(sdkNotice, join(webViewDir, "webView2SdkNotice.txt"));
 await $`${csc} /nologo /target:exe /platform:x64 /optimize+ /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /reference:${webViewCore} /out:${join(webViewDir, "checkWebView2.exe")} ${join(installerDir, "checkWebView2.cs")}`;
 await $`${csc} /nologo /target:exe /platform:x64 /optimize+ /out:${runningChecker} ${join(installerDir, "checkRunning.cs")}`;
 const quotePowerShell = (value: string) => `'${value.replaceAll("'", "''")}'`;
-// ACT: 每次打包刷新微软引导器，验签通过后才替换旧文件，避免长期沿用旧版组件。
-// ACT: 官方短链不可达时，可显式传入它当前重定向的微软 CDN 地址；不关闭 TLS 或复用旧缓存。
+// 每次打包刷新微软引导器，验签通过后才替换旧文件，避免长期沿用旧版组件。
+// 官方短链不可达时，可显式传入它当前重定向的微软 CDN 地址；不关闭 TLS 或复用旧缓存。
 let bootstrapperUrl = new URL(process.env.webView2BootstrapperUrl || "https://go.microsoft.com/fwlink/p/?LinkId=2124703");
 const temporary = `${bootstrapper}.tmp.exe`;
 try {
@@ -117,9 +117,9 @@ const stagingDir = mkdtempSync(join(nsisDir, "payload"));
 const tarFile = join(stagingDir, "app.tar");
 try {
   const manifest = await file(join(artifactDir, "stable-win-x64-update.json")).json();
-  // ACT: 平台、通道和 Hash 由本机 SDK 生成，只检查独立打包时容易遗留的旧版本。
+  // 平台、通道和 Hash 由本机 SDK 生成，只检查独立打包时容易遗留的旧版本。
   if (manifest.version !== desktopConfig.app.version) throw new Error("构建产物版本不一致，请重新构建。");
-  // ACT: NSIS 仅打包原始 tar，安装时释放应用并保留它作为增量更新基线。
+  // NSIS 仅打包原始 tar，安装时释放应用并保留它作为增量更新基线。
   const archive = await file(join(artifactDir, manifest.artifact.file)).arrayBuffer();
   await write(tarFile, Bun.zstdDecompressSync(archive));
   await $`${makensis} /INPUTCHARSET UTF8 /DwebView2Dir=${webViewDir} /DrunningChecker=${runningChecker} /DappIcon=${appIcon} /DappVersion=${

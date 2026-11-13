@@ -30,7 +30,7 @@ if (!existsSync(archivePath)) {
 }
 if (new Bun.CryptoHasher("sha256").update(readFileSync(archivePath)).digest("hex") !== sourceHash) throw new Error("缓存的 ThorVG 源码校验失败");
 await run(["tar", "-xf", archivePath, "-C", workDir]);
-// ACT: 固定 ThorVG 1.1.1 的 CPU/Lottie 源码集合；升级版本时按官方 Meson 清单重新核对。
+// 固定 ThorVG 1.1.1 的 CPU/Lottie 源码集合；升级版本时按官方 Meson 清单重新核对。
 const sourceFolders = ["src/common", "src/renderer", "src/renderer/cpu_engine", "src/loaders/lottie", "src/loaders/raw", "src/bindings/capi"];
 const sourceFiles = sourceFolders.flatMap((folder) => readdirSync(join(sourceDir, folder))
   .filter((name) => name.endsWith(".cpp")).map((name) => join(sourceDir, folder, name)));
@@ -49,7 +49,7 @@ await run(["xcrun", "clang", ...targetFlags, "-dynamiclib", "-Os", "-fobjc-arc",
   "-framework", "AppKit", "-framework", "QuartzCore", "-framework", "CoreGraphics",
   join(packageDir, "native/macSplash.m"), "-Wl,-dead_strip", "-Wl,-install_name,@rpath/nativeSplash.dylib", "-o", join(targetDir, "nativeSplash.dylib")]);
 mkdirSync(outputDir, { recursive: true });
-// ACT: 直接保留链接器产物，不再 strip 或重签；ARM 依赖链接器自带的签名。
+// 直接保留链接器产物，不再 strip 或重签；ARM 依赖链接器自带的签名。
 for (const fileName of ["libthorvg.dylib", "nativeSplash.dylib"]) {
   copyFileSync(join(targetDir, fileName), join(outputDir, fileName));
 }

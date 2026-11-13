@@ -111,7 +111,7 @@ export async function saveAgentImage(cwd: string, image: ImageContent, id: strin
   const folder = await resolveWorkspacePath(cwd, ".agent/attachments", true);
   await mkdir(folder.path, { recursive: true });
   const sourcePath = await saveImageBytes(cwd, source, mimeType, signal);
-  // ACT: 参照 DeepSeek Harness 的单图 1 MiB 目标，复用 Pi 按 2048 边长缩放；编码与像素策略不完全相同。
+  // 参照 DeepSeek Harness 的单图 1 MiB 目标，复用 Pi 按 2048 边长缩放；编码与像素策略不完全相同。
   // 固定策略从原图生成一次，后续读取缓存或引用，不对已发送版本递减压缩。
   const cachePath = await resolveWorkspacePath(cwd, `${sourcePath}.image2048v1.json`, true);
   const saved = await readFile(cachePath.path, { encoding: "utf8", signal }).catch((error: NodeJS.ErrnoException) => {

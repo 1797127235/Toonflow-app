@@ -77,7 +77,7 @@ export default Router().post("/", validateFields(inputSchema.shape), async (req,
   const close = () => { clearInterval(heartbeat); controller.abort(); };
   res.once("close", close);
   req.once("aborted", close);
-  // ACT: 兼容不同运行时的关闭事件；Bun 1.3.14 的静默 SSE 仍可能不通知，不能保证立即停止上游。
+  // 兼容不同运行时的关闭事件；Bun 1.3.14 的静默 SSE 仍可能不通知，不能保证立即停止上游。
   req.socket.once("close", close);
   try {
     const directory = input.references?.some(item => item.dataType !== "STRING")

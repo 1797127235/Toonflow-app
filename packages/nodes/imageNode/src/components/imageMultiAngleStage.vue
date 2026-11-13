@@ -159,7 +159,7 @@ function render() {
     { text: "原图左 · −90°", style: project(new three.Vector3(-distance - 0.25, -0.3, 0)) },
     { text: "原图右 · 90°", style: project(new three.Vector3(distance + 0.25, -0.3, 0)) },
   ];
-  // ACT: 单张图片只表示参考平面，背面用纯色避免镜像误导；主体的新视角仍由生成模型补全。
+  // 单张图片只表示参考平面，背面用纯色避免镜像误导；主体的新视角仍由生成模型补全。
   renderer.render(scene, overview ? overviewCamera : targetCamera);
 }
 
@@ -184,7 +184,7 @@ function startDrag(event: PointerEvent) {
 function moveDrag(event: PointerEvent) {
   if (!drag || drag.pointerId !== event.pointerId || props.disabled) return;
   event.preventDefault();
-  // ACT: 拖动直接映射角度，避免在轨道背面拾取时跳到正面；总览旋转不改变角度约定。
+  // 拖动直接映射角度，避免在轨道背面拾取时跳到正面；总览旋转不改变角度约定。
   setDirection(drag.azimuth + (event.clientX - drag.x) * 0.8, drag.elevation - (event.clientY - drag.y) * 0.6);
 }
 

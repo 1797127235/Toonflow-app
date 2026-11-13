@@ -56,7 +56,7 @@ for (const [brand, names] of Object.entries(aliases)) {
 modelNames.sort((left, right) => right.prefix.length - left.prefix.length);
 
 export function getModelIcon(model: string) {
-  // ACT: 无法凭任意名称可靠识别品牌；优先模型路径末段，未匹配再尝试服务商，最终由组件显示默认图标。
+  // 无法凭任意名称可靠识别品牌；优先模型路径末段，未匹配再尝试服务商，最终由组件显示默认图标。
   const segments = model.trim().toLowerCase().replace(/[_.\s]+/g, "-").split("/").reverse();
   for (const name of segments) {
     const match = modelNames.find(({ prefix }) => name.startsWith(prefix)

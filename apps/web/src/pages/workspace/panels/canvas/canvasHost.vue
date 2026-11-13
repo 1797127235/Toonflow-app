@@ -96,7 +96,7 @@ async function ensureCanvas(fileName: string, signal?: AbortSignal, activate = f
   const previousKey = activeKey.value;
   let entry = entries.value.find(item => instances.get(item.key)?.canvasId === fileName || (!instances.get(item.key)?.canvasId && item.fileName === fileName));
   if (!entry) {
-    // ACT: 已打开的画布保留至退出工作区，避免卸载后台节点任务；大量画布时可按任务引用回收空闲实例。
+    // 已打开的画布保留至退出工作区，避免卸载后台节点任务；大量画布时可按任务引用回收空闲实例。
     entry = { key: crypto.randomUUID(), fileName };
     entries.value = [...entries.value, entry];
   }
@@ -242,7 +242,7 @@ function checkNodeResources(path: string) {
       for (const reference of references) {
         if (typeof reference !== "string" || !reference || /^(?:[a-z][a-z\d+.-]*:|[\\/])/i.test(reference)) continue;
         const resource = reference.replaceAll("\\", "/").split("/").filter(part => part && part !== ".").join("/").toLowerCase();
-        // ACT: 包含撤销历史，并保守合并大小写；节点资源仍被运行时持有时拒绝移动，避免后台生成写回旧路径。
+        // 包含撤销历史，并保守合并大小写；节点资源仍被运行时持有时拒绝移动，避免后台生成写回旧路径。
         if (containsPath(requested, resource) || containsPath(resource, requested)) throw new Error(`“${path}”仍被画布“${panel.canvasId}”中的节点使用，无法重命名或移动`);
       }
     }
@@ -325,7 +325,7 @@ async function performFileAction(directory: string, action: "copy" | "rename" | 
         // 共享列表移除会同步取消匹配实例的保存；只删除所选路径，不连带清理画布的素材。
         canvases.value = canvases.value.filter(canvas => !affected.includes(canvas));
         if (!entries.value.length) {
-          // ACT: 空字符串表示已删除最后一个画布，只保留菜单，不自动创建替代 JSON。
+          // 空字符串表示已删除最后一个画布，只保留菜单，不自动创建替代 JSON。
           const entry = { key: crypto.randomUUID(), fileName: "" };
           entries.value = [entry];
           activeKey.value = entry.key;

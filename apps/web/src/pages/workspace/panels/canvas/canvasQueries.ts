@@ -57,7 +57,7 @@ function jsonSize(value: unknown, limit = responseBytes) {
   return limit - remaining;
 }
 
-// ACT: 投影只遍历有界的字段和字符串，不调用节点自定义 toJSON，也不复制整幅画布。
+// 投影只遍历有界的字段和字符串，不调用节点自定义 toJSON，也不复制整幅画布。
 function projectValue(value: unknown, options: ValueOptions, path: string[] = []) {
   const truncated: OmittedValue[] = [];
   let remaining = 36 * 1024;
@@ -221,7 +221,7 @@ export function createCanvasQueries(source: {
         const keyword = args.query?.trim().toLocaleLowerCase();
         const types = args.types?.length ? new Set(args.types) : undefined;
         const start = offset;
-        // ACT: ID 读取复用原生索引；关键词检索按 2000 条分段扫描，频繁全图检索时再维护名称索引。
+        // ID 读取复用原生索引；关键词检索按 2000 条分段扫描，频繁全图检索时再维护名称索引。
         while (offset < nodes.length && offset - start < scanLimit && items.length < args.limit) {
           const node = nodes[offset]!;
           const summary = canvasNodeSummary(node);

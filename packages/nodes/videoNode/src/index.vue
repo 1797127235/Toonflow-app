@@ -143,7 +143,7 @@ async function uploadVideo(event: Event) {
   uploading.value = true;
   try {
     const url = await files.uploadFile(file);
-    // ACT: 复制节点可能仍引用旧视频，替换输出不删除共享文件。
+    // 复制节点可能仍引用旧视频，替换输出不删除共享文件。
     outputs.value.video = { dataType: "VIDEO", value: { url, mimeType: file.type } };
   } catch (error) {
     showError(error, "视频替换失败");

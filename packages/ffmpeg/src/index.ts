@@ -121,7 +121,7 @@ export async function installFfmpeg(directory: string, sourceId: SourceId, signa
       await readVersion(binary, name, signal);
     }
     signal.throwIfAborted();
-    // ACT: 两个程序验证完毕再整体替换；提交开始后不响应取消，避免留下半套程序。
+    // 两个程序验证完毕再整体替换；提交开始后不响应取消，避免留下半套程序。
     report({ phase: "installing", received: 0 });
     const existed = await checkDirectory(destination);
     if (existed) await rename(destination, previous);

@@ -65,13 +65,13 @@ async function observeDownloadProgress(source: string, signal: AbortSignal) {
       await waitForUpdateRead(signal);
       await readUpdate(source, signal, 1);
     } catch {
-      // ACT: 下载请求负责最终结果；进度查询短暂失败只等下一次读取，不重发下载。
+      // 下载请求负责最终结果；进度查询短暂失败只等下一次读取，不重发下载。
     }
   }
 }
 
 async function observeUpdate(snapshot: updateSnapshot, source: string, signal: AbortSignal) {
-  // ACT: 仅重复读取状态，最多观察三分钟；短暂断连不代表宿主已成功退出，不重发更新请求。
+  // 仅重复读取状态，最多观察三分钟；短暂断连不代表宿主已成功退出，不重发更新请求。
   const deadline = performance.now() + 180000;
   while (snapshot.updating && !snapshot.installFailure) {
     if (performance.now() >= deadline) throw new Error("暂时无法确认更新结果，请稍后重新读取状态，或重新打开客户端。");

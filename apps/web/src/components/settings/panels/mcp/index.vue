@@ -187,7 +187,7 @@ async function copyText(content: string, title: string, hasCredential = false) {
     ElMessage.success(`${title}已复制`);
     return;
   } catch {
-    // ACT: HTTP 页面或剪贴板权限受限时保留手动复制入口。
+    // HTTP 页面或剪贴板权限受限时保留手动复制入口。
   }
   copyContent.value = content;
   copyTitle.value = title;

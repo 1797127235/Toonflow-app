@@ -49,7 +49,7 @@ export function createAgentToolContext(cwd: string, config: Record<string, unkno
     }),
     mkdir: async (path, recursive = false) => {
       const target = await resolvePath(path);
-      // ACT: 递归创建已有目录无需修改，锁父目录会与 Agent 自己持有的会话文件锁冲突。
+      // 递归创建已有目录无需修改，锁父目录会与 Agent 自己持有的会话文件锁冲突。
       if (recursive && (await stat(target).catch((error: NodeJS.ErrnoException) => {
         if (error.code === "ENOENT") return null;
         throw error;

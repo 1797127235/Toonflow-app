@@ -15,7 +15,7 @@ import { isMemoryEnabled } from "@/utils/personalization";
 
 type ContextTool = Pick<ToolDefinition, "name" | "description" | "parameters">;
 
-// ACT: 与 pi-coding-agent 的 estimateTokens 相同，按字符数 ÷ 4 向上取整，不是模型 tokenizer。
+// 与 pi-coding-agent 的 estimateTokens 相同，按字符数 ÷ 4 向上取整，不是模型 tokenizer。
 function estimateText(text: string) {
   return Math.ceil(text.length / 4);
 }

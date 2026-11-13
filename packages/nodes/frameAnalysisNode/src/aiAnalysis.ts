@@ -49,7 +49,7 @@ export async function analyzeSceneDescriptions(options: AiAnalysisOptions): Prom
   if (typeof options.focus !== "undefined" && typeof options.focus !== "string") throw new Error("分析重点必须是文字");
   const focus = options.focus?.trim() ?? "";
   if (focus.length > 2000) throw new Error("分析重点最多填写 2000 字");
-  // ACT: 首版整段归纳采用单次请求，最多分析 200 个镜头；更长影片应先分段，避免静默漏掉镜头。
+  // 首版整段归纳采用单次请求，最多分析 200 个镜头；更长影片应先分段，避免静默漏掉镜头。
   if (result.scenes.length > 200) throw new Error("AI 辅助拉片每次最多分析 200 个镜头，请先将长视频分段；本地拉片结果已保留");
   const offset = result.sourceVideoOffset ?? 0;
   if (!Number.isFinite(offset) || offset < 0) throw new Error("视频时间信息无效，请重新执行本地拉片");
@@ -166,7 +166,7 @@ ${JSON.stringify(observations)}`;
   let overview: AnalysisResult["overview"];
   let overviewError: string | undefined;
   try {
-    // ACT: 用字符数作为偏保守的输入规模检查，不宣称等于模型 token 数；实际上下文上限仍由提供商校验。
+    // 用字符数作为偏保守的输入规模检查，不宣称等于模型 token 数；实际上下文上限仍由提供商校验。
     const availableContext = model.contextWindow && Number.isFinite(model.contextWindow)
       ? model.contextWindow - Math.min(model.maxOutputTokens ?? 4096, 8000) : undefined;
     if (availableContext !== undefined && overviewPrompt.length > availableContext) {

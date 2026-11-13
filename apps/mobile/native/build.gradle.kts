@@ -54,7 +54,7 @@ android {
   packaging {
     jniLibs {
       useLegacyPackaging = true
-      // ACT: 官方 Gecko 与 Bun 二进制已处理符号，保留原文件，避免安装 NDK 重新剥离。
+      // 官方 Gecko 与 Bun 二进制已处理符号，保留原文件，避免安装 NDK 重新剥离。
       keepDebugSymbols += "**/*.so"
     }
   }

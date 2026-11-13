@@ -240,7 +240,7 @@ export function pairMobileDevice(req: Request, code: string, name: string) {
   if (!pairing || !matchesHash(code, manual ? pairing.manualCodeHash : pairing.codeHash)) {
     throw Object.assign(new Error("配对码无效或已使用，请重新获取"), { status: 401 });
   }
-  // ACT: 配对码仅属于当前进程；同步消费和写入，重复及并发请求只能成功一次。
+  // 配对码仅属于当前进程；同步消费和写入，重复及并发请求只能成功一次。
   runtime.pairing = undefined;
   const deviceToken = randomBytes(32).toString("base64url");
   const config = getMobileLinkConfig();

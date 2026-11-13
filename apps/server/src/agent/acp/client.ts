@@ -142,7 +142,7 @@ export function createAcpClient(options: { command: string; args: string[]; cwd:
     async loadSession(cwd: string, sessionId: string) {
       ensureAlive();
       const response = await withTimeout(agent.request("session/load", { sessionId, cwd, mcpServers: [] }), "session/load");
-      // ACT: SDK v1 未公开 load 的会话接管入口（attachSession 是 private），恢复必须借它把 update 队列接回来。
+      // SDK v1 未公开 load 的会话接管入口（attachSession 是 private），恢复必须借它把 update 队列接回来。
       const attach = (agent as unknown as { attachSession: (response: { sessionId: string }) => ActiveSession }).attachSession;
       sessions.set(sessionId, attach.call(agent, { sessionId }));
       // load 的响应同样带 configOptions，恢复后模型选择器要靠它显示当前模型。

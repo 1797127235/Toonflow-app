@@ -10,7 +10,7 @@ async function loadDocumentParser() {
   } catch {
     const parser = await import("@firecrawl/anydoc-wasm");
     parser.initSync({ module: await readFile(new URL(import.meta.resolve("@firecrawl/anydoc-wasm/anydoc_wasm_bg.wasm"))) });
-    // ACT: 无原生包的平台使用同步 WASM；大文档会占用当前线程，后续可迁移到独立 Worker。
+    // 无原生包的平台使用同步 WASM；大文档会占用当前线程，后续可迁移到独立 Worker。
     return (bytes: Uint8Array, extension: string) => Promise.resolve(parser.toMarkdownBytes(bytes,
       parser.formatFromBytes(bytes) ?? parser.formatFromExtension(extension)));
   }
@@ -44,7 +44,7 @@ export async function readDocument(name: string, bytes: Buffer, mimeType?: strin
       const markdown = await (await parser)(bytes, extension);
       if (!markdown.trim()) throw new Error("文档中未提取到可读文本");
       const content = Buffer.from(markdown);
-      // ACT: 分页复用解析结果，最多缓存 128 份、32 MiB 正文；更大的文档按次解析。
+      // 分页复用解析结果，最多缓存 128 份、32 MiB 正文；更大的文档按次解析。
       if (content.byteLength <= 32 * 1024 * 1024) {
         while (cache.size >= 128 || cacheBytes + content.byteLength > 32 * 1024 * 1024) {
           const oldest = cache.keys().next().value!;

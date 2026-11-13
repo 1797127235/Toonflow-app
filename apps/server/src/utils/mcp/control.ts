@@ -19,7 +19,7 @@ export const controlStateSchema = z.object({
 type ControlState = z.infer<typeof controlStateSchema>;
 type ControlResult = { result?: unknown; error?: string };
 type Connection = { id: string; state: ControlState; revision: number; response: Response; pending?: { id: string; finish(result: ControlResult): void } };
-// ACT: 控制连接只属于当前单进程，重连重新注册，不持久化运行中的命令。
+// 控制连接只属于当前单进程，重连重新注册，不持久化运行中的命令。
 const connections = new Map<string, Connection>();
 
 export function getMcpSettings() {
@@ -161,7 +161,7 @@ export function callControl(connectionId: string, name: string, args: Record<str
       if (!connection.response.destroyed) connection.response.write(`data: ${JSON.stringify({ type: "cancel", callId })}\n\n`);
       finish({ error: "控制命令已取消或超时" });
     };
-    // ACT: A2A/MCP 的转写与 Agent 共用浏览器 ASR 超时，避免长音频在两分钟时被截断。
+    // A2A/MCP 的转写与 Agent 共用浏览器 ASR 超时，避免长音频在两分钟时被截断。
     const timer = ["transcribeAudio", "askUser"].includes(name) ? undefined : setTimeout(abort, 120000);
     connection.pending = { id: callId, finish };
     signal.addEventListener("abort", abort, { once: true });

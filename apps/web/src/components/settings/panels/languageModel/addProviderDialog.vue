@@ -105,7 +105,7 @@ watch(
     if (!apiKey) return;
     const controller = new AbortController();
     fetching.value = true;
-    // ACT: 输入停顿后自动获取；输入变化时立即取消旧请求，避免逐字请求和结果串到新密钥。
+    // 输入停顿后自动获取；输入变化时立即取消旧请求，避免逐字请求和结果串到新密钥。
     const timer = setTimeout(async () => {
       try {
         const { data } = await axios.post("/api/providers/models", {

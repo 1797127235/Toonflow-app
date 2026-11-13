@@ -8,7 +8,7 @@ export default async function copyDocumentPackages(nodeModulesDirectory: string)
     optionalDependencies?: Record<string, string>;
   };
   const optionalDependencies = metadata.optionalDependencies ?? {};
-  // ACT: 保留包目录与所有已安装的原生平台包；缺少目标平台二进制时由运行时回退到独立 WASM 包。
+  // 保留包目录与所有已安装的原生平台包；缺少目标平台二进制时由运行时回退到独立 WASM 包。
   for (const packageName of ["@firecrawl/anydoc", "@firecrawl/anydoc-wasm", ...Object.keys(optionalDependencies)]) {
     const destination = resolve(nodeModulesDirectory, packageName);
     await rm(destination, { recursive: true, force: true });

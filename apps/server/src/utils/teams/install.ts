@@ -14,7 +14,7 @@ export async function installTeam(fileName: string, bytes: Uint8Array, force = f
   }
   if (!bytes.byteLength || bytes.byteLength > maxBytes) throw Object.assign(new Error("团队包不能为空且不能超过 20 MB"), { status: 413 });
   const name = checkName(fileName.slice(0, -10));
-  // ACT: 与技能安装共用 ZIP 校验，不执行包内工具或解压到不受控路径。
+  // 与技能安装共用 ZIP 校验，不执行包内工具或解压到不受控路径。
   const archive = skillZip(bytes);
   const prefix = archive.has("team.json") ? "" : `${name}/`;
   if (!archive.has(`${prefix}team.json`) || [...archive.keys()].some(path => !path.startsWith(prefix))) {

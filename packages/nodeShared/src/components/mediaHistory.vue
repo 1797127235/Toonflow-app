@@ -66,7 +66,7 @@ const mimeTypes: Record<string, string> = {
 };
 const previewFile = computed(() => visible.value ? selected.value : undefined);
 watch(previewFile, () => { previewError.value = ""; }, { flush: "sync" });
-// ACT: 目录列表仅保存路径，每页显示 20 条，只读取选中文件；海量目录需服务端分页时再扩展 list。
+// 目录列表仅保存路径，每页显示 20 条，只读取选中文件；海量目录需服务端分页时再扩展 list。
 const previewUrl = files.useFileUrl(previewFile, () => { previewError.value = "历史文件读取失败，文件可能已被移动或删除"; });
 watch([previewFile, previewUrl], () => { previewReady.value = false; }, { flush: "sync" });
 
@@ -94,7 +94,7 @@ watch(visible, async (open, _previous, onCleanup) => {
         results.set(url, { url, mimeType });
       }
     }
-    // ACT: 副本使用新 ID，但当前结果仍可能引用原节点文件；只补当前结果，不继承原目录的全部历史。
+    // 副本使用新 ID，但当前结果仍可能引用原节点文件；只补当前结果，不继承原目录的全部历史。
     const current = props.current && { ...props.current, url: props.current.url.replaceAll("\\", "/") };
     if (current) results.set(current.url, current);
     items.value = [...results.values()].sort((left, right) => left.url.localeCompare(right.url, "zh-CN", { numeric: true }));

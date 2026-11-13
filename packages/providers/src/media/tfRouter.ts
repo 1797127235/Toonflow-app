@@ -86,7 +86,7 @@ function wait(signal: AbortSignal) {
 }
 
 async function generateTask(context: ProviderContext, mediaType: "image" | "video" | "audio", body: unknown, mimeType?: string) {
-  // ACT: 单次生成最多等待 30 分钟；供应商开放任务恢复能力后再单独保存任务 ID。
+  // 单次生成最多等待 30 分钟；供应商开放任务恢复能力后再单独保存任务 ID。
   const signal = AbortSignal.any([AbortSignal.timeout(30 * 60_000), ...(context.signal ? [context.signal] : [])]);
   const path = mediaType === "audio" ? "tts" : mediaType;
   const name = { image: "Image", video: "Video", audio: "Audio" }[mediaType];
@@ -243,7 +243,7 @@ export default {
     if (result.data === null) return null;
     const price = object(result.data);
     if (typeof price.price === "string" && price.price.trim() && typeof price.tips === "string") return { price: price.price, tips: price.tips };
-    // ACT: 兼容仍返回数值报价的官方接口；统一升级后可移除此分支。
+    // 兼容仍返回数值报价的官方接口；统一升级后可移除此分支。
     const amount = balanceAmount(price.amount);
     if (amount < 0 || typeof price.unit !== "string" || !price.unit.trim()) throw new Error("TF-router 价格响应格式错误");
     return { price: `${amount} ${price.unit.trim()}`, tips: "以实际扣费为准" };
@@ -252,7 +252,7 @@ export default {
     const result = await fetchJson(this, "balance");
     if (result.code !== 200) throw new Error(this.tool.errorMessage(result) || "TF-router 余额查询失败");
     const balance = object(result.data);
-    // ACT: 旧版余额接口以元计价且没有 unit；升级接口返回单位后直接沿用，不换算数值。
+    // 旧版余额接口以元计价且没有 unit；升级接口返回单位后直接沿用，不换算数值。
     const unit = balance.unit === undefined ? "元" : balance.unit;
     if (typeof unit !== "string" || !unit.trim()) throw new Error("TF-router 余额单位格式错误");
     return {

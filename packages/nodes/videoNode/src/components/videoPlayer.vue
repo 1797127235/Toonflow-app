@@ -71,7 +71,7 @@ const currentTime = ref(0);
 const duration = ref(0);
 const capturing = ref(false);
 const captureMenuVisible = ref(false);
-// ACT: 只读预览挂载时不连接节点和工作区；从只读切换到编辑模式时重新挂载播放器。
+// 只读预览挂载时不连接节点和工作区；从只读切换到编辑模式时重新挂载播放器。
 const node = readOnly ? undefined : useNode().node;
 const flow = readOnly ? undefined : useVueFlow();
 const files = readOnly ? undefined : useNodeFiles();
@@ -121,7 +121,7 @@ function readPreview(event: Event) {
   if (poster.value || !source.videoWidth || !source.videoHeight) return;
   try {
     const canvas = document.createElement("canvas");
-    // ACT: 复用已解码帧，封面最长边限制为 640px；更高清画面由视频播放提供。
+    // 复用已解码帧，封面最长边限制为 640px；更高清画面由视频播放提供。
     const scale = Math.min(1, 640 / Math.max(source.videoWidth, source.videoHeight));
     canvas.width = Math.max(1, Math.round(source.videoWidth * scale));
     canvas.height = Math.max(1, Math.round(source.videoHeight * scale));

@@ -5,7 +5,7 @@ type NodeComponent = Exclude<NodeTypesObject[string], string>;
 
 const components = shallowReactive(new Map<string, NodeComponent>());
 const requests = new Map<string, Promise<NodeComponent>>();
-// ACT: 超时只释放重试槽位，不 reject；脚本晚到仍会回填组件，避免超时误杀后无法恢复。
+// 超时只释放重试槽位，不 reject；脚本晚到仍会回填组件，避免超时误杀后无法恢复。
 // 弱机器上大画布首次加载可能接近 20s，阈值取宽，宁可多等也不要误报错误。
 const loadTimeout = 20000;
 
@@ -24,7 +24,7 @@ export function loadNodeComponent(name: string, url: string, force = false): Pro
     return Promise.resolve(cached);
   }
   components.delete(name);
-  // ACT: 同名节点只加载一份脚本，所有画布共享进行中的重载，避免互相清除全局导出。
+  // 同名节点只加载一份脚本，所有画布共享进行中的重载，避免互相清除全局导出。
   const request = (async () => {
     const scriptUrl = force ? `${url}${url.includes("?") ? "&" : "?"}reload=${crypto.randomUUID()}` : url;
     const response = await fetch(scriptUrl);

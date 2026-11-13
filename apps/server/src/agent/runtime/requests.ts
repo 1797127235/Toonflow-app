@@ -47,7 +47,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
       for (const [index, part] of call.result.content.entries()) {
         content.push(part.type === "image" ? await saveAgentImage(cwd, part, `tool:${observationId}:${index}`, signal) : part);
       }
-      // ACT: 三个组合入口均禁用 Pi 扩展；先附件化再交原 hook，避免 SDK 二次缩放和重复尺寸说明。
+      // 三个组合入口均禁用 Pi 扩展；先附件化再交原 hook，避免 SDK 二次缩放和重复尺寸说明。
       const previous = await afterToolCall?.({ ...call, result: { ...call.result, content } }, signal);
       const result: (TextContent | ImageContent)[] = [];
       for (const [index, part] of (previous?.content ?? content).entries()) {
@@ -281,7 +281,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
                 }
                 const imageBytes = activeImages.reduce((sum, image) => sum + image.file.inlineBytes, 0);
                 const bodyBytes = Buffer.byteLength(JSON.stringify(body), "utf8");
-                // ACT: 上传后再计内联 base64 与 JSON；文件 ID 不再占用内联预算，超限仍卸载旧观察。
+                // 上传后再计内联 base64 与 JSON；文件 ID 不再占用内联预算，超限仍卸载旧观察。
                 if (imageBytes > maxRequestImageBytes || bodyBytes > maxRequestBytes) {
                   // 先按图片超额卸载；如果卸载后仍超，说明非图片内容本身过大，
                   // 这时没有可卸载的东西，直接报错让用户压缩对话。
@@ -310,7 +310,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
                   status: 413, headers: { "content-type": "application/json", "x-should-retry": "false" },
                 });
               }
-              // ACT: 工具或用户等待可能让代理关闭空闲连接；每轮重新握手，避免 Bun 复用失效 socket。
+              // 工具或用户等待可能让代理关闭空闲连接；每轮重新握手，避免 Bun 复用失效 socket。
               const response = await request(input, { ...init, keepalive: false });
               if (response.status !== 413) return response;
               http413 = true;

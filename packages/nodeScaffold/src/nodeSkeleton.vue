@@ -237,7 +237,7 @@ function mountDocument(target: HTMLElement) {
   };
   const lease = Symbol();
   documentLease = lease;
-  // ACT: 只移动原节点的界面，保留画布中的运行实例和尺寸；同一节点仅允许一个文档显示位置。
+  // 只移动原节点的界面，保留画布中的运行实例和尺寸；同一节点仅允许一个文档显示位置。
   documentContext.targets.set(nodeId, target);
   return () => {
     if (documentLease !== lease) return;
@@ -347,7 +347,7 @@ function zoomCanvas(event: WheelEvent) {
 }
 
 const slotsHiddenByInteraction = ref(false);
-// ACT: 多选只操作节点；未选中的节点仍可通过 v-model 主动打开槽位。
+// 多选只操作节点；未选中的节点仍可通过 v-model 主动打开槽位。
 const slotsVisible = computed(() => !slotsHiddenByInteraction.value && (!node.selected || getSelectedNodes.value.length <= 1));
 onSelectionStart(() => {
   slotsHiddenByInteraction.value = true;
@@ -703,7 +703,7 @@ watch(
     .contentCard .loadingContent {
       display: flex;
       min-height: 84px;
-      /* ACT: 视口外的骨架不参与绘制，避免大量节点同时加载时旋转动画常驻。 */
+      /* 视口外的骨架不参与绘制，避免大量节点同时加载时旋转动画常驻。 */
       content-visibility: auto;
       contain-intrinsic-size: auto 84px;
       align-items: center;

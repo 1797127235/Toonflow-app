@@ -74,7 +74,7 @@ export function file(path: string | URL | ArrayBufferLike | Uint8Array<ArrayBuff
 }
 
 export async function write(destination: string | URL | ArrayBufferLike | NodeJS.TypedArray | ManagedFile, content: FileContent, options?: WriteOptions): Promise<number> {
-  // ACT: Bun 1.3.14 在部分错误输入流上不会结束 Promise；流写用标准 pipeline/createWriteStream。
+  // Bun 1.3.14 在部分错误输入流上不会结束 Promise；流写用标准 pipeline/createWriteStream。
   if (content instanceof Response || content instanceof Request || content instanceof ReadableStream) {
     throw new TypeError("流式写入请使用 @toonflow/file 的 createWriteStream 和 pipeline");
   }

@@ -143,7 +143,7 @@ function referencesAllowed(values: NodeInputValue[]) {
 }
 
 nodeEvent.on("canConnect", (connection, context) => {
-  // ACT: 重验已有连线时不重复计数；未产出内容的来源仍按声明类型占位。
+  // 重验已有连线时不重复计数；未产出内容的来源仍按声明类型占位。
   const edges = context.edges.filter(edge => edge.source !== connection.source || edge.sourceHandle !== connection.sourceHandle
     || edge.target !== connection.target || edge.targetHandle !== connection.targetHandle);
   return referencesAllowed(getTargetValues(id, "in", context.nodes, [...edges, connection]));
@@ -185,7 +185,7 @@ function loadModels() {
       return;
     }
     models.value = items.filter(item => item.type === "audio");
-    // ACT: 仅空配置选择默认模型，临时不可用的模型保持原选择，避免静默换供应商。
+    // 仅空配置选择默认模型，临时不可用的模型保持原选择，避免静默换供应商。
     if (!data.value.model) {
       const first = models.value[0];
       data.value.model = first ? JSON.stringify([first.providerId, first.modelId]) : "";
@@ -236,7 +236,7 @@ async function replaceOutput(event: Event) {
       await workspace.remove(url);
       return;
     }
-    // ACT: 替换不删除旧音频，保留复制节点与撤销记录的文件引用。
+    // 替换不删除旧音频，保留复制节点与撤销记录的文件引用。
     outputs.value.audio = { dataType: "AUDIO", value: { url, mimeType: file.type } };
   } catch (error) {
     showNodeError(error, "音频替换失败");

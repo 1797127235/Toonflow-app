@@ -21,7 +21,7 @@ if (typeof version !== "string" || !/^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?(?:\+[a-z
   throw new Error("更新清单缺少有效 version");
 }
 if (typeof manifest.hash !== "string" || !manifest.hash) throw new Error("更新清单缺少 hash");
-// ACT: 仅兼容已验证的 Intel Mac 旧清单；其他构建必须明确提供 artifact.file。
+// 仅兼容已验证的 Intel Mac 旧清单；其他构建必须明确提供 artifact.file。
 if (manifest.artifact === undefined && manifest.platform === "macos" && manifest.arch === "x64") {
   const archives = names.filter((name) => name.startsWith(prefix) && name.endsWith(".app.tar.zst"));
   if (archives.length !== 1) throw new Error("Intel Mac 旧清单必须对应且仅对应一个同前缀 .app.tar.zst 归档");
@@ -42,7 +42,7 @@ mkdirSync(releasesDir, { recursive: true });
 mkdirSync(releaseDir);
 try {
   for (const name of files) copyFileSync(join(artifactDir, name), join(releaseDir, name));
-  // ACT: 单人手动发布；保留历史补丁，文件逐一替换完成后才切换清单，不支持并发发布。
+  // 单人手动发布；保留历史补丁，文件逐一替换完成后才切换清单，不支持并发发布。
   for (const name of files) {
     const temporaryFile = join(publicDir, `${name}.tmp`);
     try {

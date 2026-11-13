@@ -474,7 +474,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     resetAttachmentDrag();
     editor.removeEventListener("keyup", updateCursor);
     editor.removeEventListener("compositionend", updateCursor);
-    // ACT: XSender 1.4.6 的排队聚焦不会随 destroy 取消；保留回调所需字段，库修复后可恢复直接销毁。
+    // XSender 1.4.6 的排队聚焦不会随 destroy 取消；保留回调所需字段，库修复后可恢复直接销毁。
     Object.assign(instance.chatEditor, { focusFirst: () => {}, focusLast: () => {}, focusMark: () => {}, cursorView: () => {} });
     for (const line of instance.chatEditor.NODES) for (const tag of line.children) {
       if (tag.type === "Write" || tag.type === "Input") tag.focus = () => {};

@@ -171,7 +171,7 @@ export async function createAgentConversation(cwd: string, child?: Omit<AgentSub
     if (child.providerId && child.modelId) history.appendModelChange(child.providerId, child.modelId);
     if (child.thinkingLevel) history.appendThinkingLevelChange(child.thinkingLevel);
   }
-  // ACT: SDK 默认等首条消息才落盘；先保存会话头，让空对话也能被历史列表读取。
+  // SDK 默认等首条消息才落盘；先保存会话头，让空对话也能被历史列表读取。
   await writeWorkspaceFile(path, [history.getHeader(), ...history.getEntries()].map(entry => JSON.stringify(entry)).join("\n") + "\n", true);
   return getAgentSession(cwd, path);
 }
@@ -376,7 +376,7 @@ export async function getAgentSession(cwd: string, path: string) {
       previous.error = message.error;
     } else groupedMessages.push(message);
   }
-  // ACT: 同轮的工具调用与多步回复合并后，只拼接一次正文。
+  // 同轮的工具调用与多步回复合并后，只拼接一次正文。
   for (const message of groupedMessages) {
     if (message.role === "assistant" && !message.report) message.content = message.parts.flatMap(part => part.type === "text" ? [part.content] : []).join("\n\n");
   }
@@ -486,7 +486,7 @@ export function getAgentContext(history: SessionManager, contextWindow = 0, pref
   const usage = getLastAssistantUsage(recent);
   const messages = history.buildSessionContext().messages;
   const usageIndex = messages.findLastIndex((message) => message.role === "assistant" && message.usage === usage);
-  // ACT: 压缩后先按摘要与保留消息估算，首条新回复后再使用模型 usage。模型 usage 已包含当轮静态提示，对话段取剩余量。
+  // 压缩后先按摘要与保留消息估算，首条新回复后再使用模型 usage。模型 usage 已包含当轮静态提示，对话段取剩余量。
   const includesStaticPrompt = Boolean(usage && usageIndex >= 0);
   const measured = includesStaticPrompt
     ? calculateContextTokens(usage!) + messages.slice(usageIndex + 1).reduce((total, message) => total + estimateTokens(message), 0)

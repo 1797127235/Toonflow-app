@@ -67,7 +67,7 @@ const toolbarStyle = computed(() => {
   const width = toolbar.value?.$el.offsetWidth ?? 0;
   const height = toolbar.value?.$el.offsetHeight ?? 0;
   const left = Math.max(width / 2 + 8, Math.min(x + (bounds.x + bounds.width / 2) * zoom, flow.dimensions.value.width - width / 2 - 8));
-  // ACT: 顶部导航约占 56px，留出 8px 间隔；高度变化时再按导航实际尺寸定位。
+  // 顶部导航约占 56px，留出 8px 间隔；高度变化时再按导航实际尺寸定位。
   const top = Math.max(height + 64, Math.min(y + bounds.y * zoom - 12 - (hasGroup.value ? 30 * zoom : 0), flow.dimensions.value.height - 8));
   return { left: `${left}px`, top: `${top}px` };
 });
@@ -256,7 +256,7 @@ function startDragCopy(selection: GraphNode[], withEdges: boolean) {
   return {
     update() {
       if (signal.aborted) return;
-      // ACT: Vue Flow 固定拖动原节点 ID；同一帧还原原位置，只让副本跟随，松手后统一提交历史。
+      // Vue Flow 固定拖动原节点 ID；同一帧还原原位置，只让副本跟随，松手后统一提交历史。
       for (const node of roots) {
         if (flow.findNode(node.id) !== node) continue;
         positions.set(node.id, { ...node.position });

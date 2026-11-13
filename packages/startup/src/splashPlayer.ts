@@ -66,7 +66,7 @@ export function createSplashPlayer(assetDir: string, width: number, height: numb
     const loading = getSegment("loading"), ready = getSegment("ready");
     const frameDelay = 1000 / definition.fr;
     const loopDuration = loading.dr * frameDelay;
-    // ACT: 页面已就绪时保留完整收尾帧，但最多播放 600ms，避免额外等待原动画的 2.2 秒。
+    // 页面已就绪时保留完整收尾帧，但最多播放 600ms，避免额外等待原动画的 2.2 秒。
     const readyDuration = Math.min(ready.dr * frameDelay, 600);
     const readyFrameDelay = readyDuration / ready.dr;
     let readyAt = Infinity;
@@ -77,7 +77,7 @@ export function createSplashPlayer(assetDir: string, width: number, height: numb
     check(tvg.tvg_swcanvas_set_target(canvas, ptr(pixels), width, width, height, 1));
     check(tvg.tvg_canvas_add(canvas, picture));
 
-    // ACT: 播放时间仅由平台层的 performance.now() 差值传入。
+    // 播放时间仅由平台层的 performance.now() 差值传入。
     function draw(elapsedMs: number) {
       if (isClosed) throw new Error("启动动画已关闭");
       const readyElapsed = elapsedMs - readyAt;

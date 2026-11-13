@@ -48,7 +48,7 @@ watch([() => JSON.stringify(props.input), () => props.supported, currentDirector
   if (!supported) return;
   const controller = new AbortController();
   loading.value = true;
-  // ACT: 仅底部设置挂载时查询；合并连续输入，素材只传路径，不在节点端读取文件。
+  // 仅底部设置挂载时查询；合并连续输入，素材只传路径，不在节点端读取文件。
   const timer = setTimeout(async () => {
     try {
       if (!directory) throw new Error("请先选择工作目录");

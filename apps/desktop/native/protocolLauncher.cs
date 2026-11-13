@@ -33,7 +33,7 @@ internal static class protocolLauncher
                     if (!locked) throw new InvalidOperationException("Laywork 正在启动，请稍后重试。");
                     if (sendUrl(args[0])) return 0;
 
-                    // ACT: SDK launcher 不转发 URL 参数；启动后通过本机服务交给待确认队列。
+                    // SDK launcher 不转发 URL 参数；启动后通过本机服务交给待确认队列。
                     string bin = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "../../bin"));
                     string launcher = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "startupLauncher.exe");
                     if (!File.Exists(launcher)) launcher = Path.Combine(bin, "launcher.exe");
@@ -118,7 +118,7 @@ internal static class protocolLauncher
         }
         catch (WebException error)
         {
-            // ACT: 只有无法连接才启动应用；已运行服务的拒绝或超时不会启动第二个实例。
+            // 只有无法连接才启动应用；已运行服务的拒绝或超时不会启动第二个实例。
             if (error.Status == WebExceptionStatus.ConnectFailure) return false;
             using (var response = error.Response as HttpWebResponse)
             {
@@ -133,7 +133,7 @@ internal static class protocolLauncher
                             message = responseMessage(result, message);
                         }
                     }
-                    // ACT: 非 JSON 或读取失败时保留 HTTP 状态，不把整页错误 HTML 弹给用户。
+                    // 非 JSON 或读取失败时保留 HTTP 状态，不把整页错误 HTML 弹给用户。
                     catch (Exception) { }
                     throw new InvalidOperationException("Laywork 拒绝安装请求（HTTP " + (int)response.StatusCode + "）：" + message);
                 }

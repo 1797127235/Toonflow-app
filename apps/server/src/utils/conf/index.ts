@@ -34,7 +34,7 @@ const config = new conf<{ settings: Record<string, unknown>; disabledSkills: str
 
 export function removeLegacySettings(settings: Record<string, unknown>) {
   let changed = false;
-  // ACT: 只清理已废弃字段，保留其他设置和插件配置。
+  // 只清理已废弃字段，保留其他设置和插件配置。
   for (const [record, key] of [[settings, "developerConfirmed"], [settings.general, "systemPrompt"], [settings.stores, "toonflow.developer"]] as const) {
     if (record && typeof record === "object" && !Array.isArray(record) && Object.hasOwn(record, key)) {
       Reflect.deleteProperty(record, key);
@@ -50,7 +50,7 @@ export function cleanNodeMenuSettings(settings: Record<string, unknown>) {
   const record = general as Record<string, unknown>;
   const installedTypes = new Set<string>();
   try {
-    // ACT: 仅扫描已安装文件名；禁用节点保留配置，菜单清理与同步存盘间不插入异步等待。
+    // 仅扫描已安装文件名；禁用节点保留配置，菜单清理与同步存盘间不插入异步等待。
     for (const file of readdirSync(resolve(configDirectory, "nodes"), { withFileTypes: true })) {
       if (file.isFile() && /^[a-z][a-zA-Z0-9]*\.umd\.js$/.test(file.name)) installedTypes.add(`remote-${file.name.slice(0, -7)}`);
     }

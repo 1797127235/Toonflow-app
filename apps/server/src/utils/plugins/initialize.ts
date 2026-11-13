@@ -26,7 +26,7 @@ export default async function initializePlugins(targetDirectory: string, sourceD
       await cp(source, target, { recursive: true, force: false });
       continue;
     }
-    // ACT: 版本同步仅覆盖匹配的内置单文件；同目录 rename 保留失败时的旧文件。
+    // 版本同步仅覆盖匹配的内置单文件；同目录 rename 保留失败时的旧文件。
     const temporary = resolve(targetDirectory, `.pluginSync${crypto.randomUUID()}`);
     try {
       await copyFile(source, temporary);

@@ -237,7 +237,7 @@ function redraw() {
   const canvas = paintCanvas.value;
   canvas?.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
   hasDrawing.value = false;
-  // ACT: 形状预览和历史切换重放矢量操作；超长标记需要分段快照，普通画笔移动仍只增量绘制。
+  // 形状预览和历史切换重放矢量操作；超长标记需要分段快照，普通画笔移动仍只增量绘制。
   for (const stroke of strokes.slice(0, strokeCount.value)) {
     drawStroke(stroke);
     if (stroke.tool === "clear") hasDrawing.value = false;
@@ -371,7 +371,7 @@ async function createInpaint(input: InpaintDraftInput, signal: AbortSignal) {
     requestSignal.throwIfAborted();
     const mask = await uploadNodeFile(workspace, nodeId, await toFile(layer));
     requestSignal.throwIfAborted();
-    // ACT: 编辑素材放入子目录，避免混入只扫描节点目录顶层的生成历史。
+    // 编辑素材放入子目录，避免混入只扫描节点目录顶层的生成历史。
     const directory = `assets/${nodeId}/inpaint`;
     await workspace.mkdir(directory);
     const paths = [original, guide, mask].map(path => `${directory}/${path.split("/").at(-1)}`);

@@ -452,7 +452,7 @@ public class mobileActivity extends Activity {
     }
     showProgress("正在启用内置 GeckoView 浏览器内核…");
     try {
-      // ACT: Runtime 随进程复用；Activity 重建只替换 Session，保留应用内重启能力。
+      // Runtime 随进程复用；Activity 重建只替换 Session，保留应用内重启能力。
       if (geckoRuntime == null) geckoRuntime = GeckoRuntime.create(getApplicationContext(), new GeckoRuntimeSettings.Builder()
         .remoteDebuggingEnabled((getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0).build());
       geckoSession = new GeckoSession();
@@ -612,7 +612,7 @@ public class mobileActivity extends Activity {
       result.complete(prompt.dismiss());
       return;
     }
-    // ACT: Gecko 需要实际文件路径；系统 content URI 先复制到专属缓存，关闭 Activity 后清理。
+    // Gecko 需要实际文件路径；系统 content URI 先复制到专属缓存，关闭 Activity 后清理。
     new Thread(() -> {
       try {
         Uri[] selected = new Uri[files.length];
@@ -722,7 +722,7 @@ public class mobileActivity extends Activity {
       mainHandler.removeCallbacks(startupTimeout);
       if (!stopping) {
         stopBun();
-        // ACT: 子进程可能继承输出管道，退出提示最多等待 200ms 排空日志。
+        // 子进程可能继承输出管道，退出提示最多等待 200ms 排空日志。
         try { readerThread.join(200); } catch (InterruptedException error) { Thread.currentThread().interrupt(); }
         String output;
         synchronized (outputTail) { output = outputTail.toString().trim(); }
@@ -981,7 +981,7 @@ public class mobileActivity extends Activity {
 
   @Override
   protected void onDestroy() {
-    // ACT: 当前版本仅随 Activity 运行；后台长任务需另行接入前台服务。
+    // 当前版本仅随 Activity 运行；后台长任务需另行接入前台服务。
     finishMedia(false);
     mediaPermissionPending = false;
     if (fileCallback != null) fileCallback.onReceiveValue(null);

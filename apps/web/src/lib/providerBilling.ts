@@ -118,7 +118,7 @@ export function useProviderBalances() {
 
   function subscribe() {
     const ids = [...new Set(providerBalances.value.map(item => item.accountId).filter(Boolean))].sort();
-    // ACT: 每 100 个账户共用一个通知流，避免按供应商占用浏览器连接；普通工作区只需一条。
+    // 每 100 个账户共用一个通知流，避免按供应商占用浏览器连接；普通工作区只需一条。
     const groups = Array.from({ length: Math.ceil(ids.length / 100) }, (_, index) => ids.slice(index * 100, index * 100 + 100).join(","));
     for (const [group, connection] of connections) if (!groups.includes(group)) { connection.close(); connections.delete(group); }
     for (const group of groups) {
@@ -193,7 +193,7 @@ export function useProviderBalances() {
   function scheduleRefresh() {
     if (document.visibilityState === "hidden") return;
     clearTimeout(timer);
-    // ACT: 合并同一次窗口显示事件；多画布共用工作区这一处监听。
+    // 合并同一次窗口显示事件；多画布共用工作区这一处监听。
     timer = setTimeout(() => void refresh(), 200);
   }
 

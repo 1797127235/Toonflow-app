@@ -9,7 +9,7 @@ import type { ReasoningEfforts, ThinkingLevel } from "@toonflow/server/modelReas
 import "element-plus/es/components/message/style/css";
 
 export const settings = ref<Record<string, unknown>>({});
-// ACT: 页面在 loadSettings 完成后才挂载，加载标记仅保留在设置初始化与自动保存内部。
+// 页面在 loadSettings 完成后才挂载，加载标记仅保留在设置初始化与自动保存内部。
 let settingsReady = false;
 let saveQueue = Promise.resolve();
 let applyingSettings = false;
@@ -18,7 +18,7 @@ export const settingsStorage = {
   getItem(key: string) {
     const stores = settings.value.stores as Record<string, unknown> | undefined;
     if (stores && Object.hasOwn(stores, key)) return JSON.stringify(stores[key]);
-    // ACT: 只迁移当前来源可读取的旧缓存，保留原值；不同端口的 localStorage 不能互读。
+    // 只迁移当前来源可读取的旧缓存，保留原值；不同端口的 localStorage 不能互读。
     const value = localStorage.getItem(key);
     if (value !== null) settingsStorage.setItem(key, value);
     return value;
@@ -120,7 +120,7 @@ export async function loadSettings() {
 }
 
 export function saveSettings(update?: (current: Record<string, unknown>) => Record<string, unknown> | undefined) {
-  // ACT: 队列内读取最新配置再计算变更，确认成功后发布；仅协调当前页面的保存。
+  // 队列内读取最新配置再计算变更，确认成功后发布；仅协调当前页面的保存。
   const saving = saveQueue.then(async () => {
     const patch = update?.(settings.value);
     if (update && !patch) return false;

@@ -142,7 +142,7 @@ watch(visible, (isVisible) => {
   draft.value = createDraft();
   formError.value = "";
   original = JSON.parse(JSON.stringify(model ?? {}));
-  // ACT: 旧文本模型的扩展字段按原值保留，不再提供专用配置。
+  // 旧文本模型的扩展字段按原值保留，不再提供专用配置。
   const { id, label, type, ...extra } = original;
   Object.assign(draft.value, { id: id ?? "", label: label ?? "", type: type ?? "image" });
   if (draft.value.type === "image" || draft.value.type === "video") {

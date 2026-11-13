@@ -84,7 +84,7 @@ function validateDraft(draft: Draft, complete = false) {
   const scene = sceneSchema.parse(draft.scene);
   const plan = directorPlanSchema.safeParse(draft.plan);
   const issues = plan.success ? [] : plan.error.issues;
-  // ACT: 仅允许顶层必填项尚未补齐；字段结构、数值和已完整方案的约束仍拒绝整批修改。
+  // 仅允许顶层必填项尚未补齐；字段结构、数值和已完整方案的约束仍拒绝整批修改。
   const incomplete = (issue: z.core.$ZodIssue) => issue.path.length === 1 && (
     (issue.code === "invalid_type" && !Object.hasOwn(draft.plan, issue.path[0]!))
     || (issue.code === "too_small" && issue.path[0] === "cameraFrames" && draft.plan.cameraFrames?.length === 0)

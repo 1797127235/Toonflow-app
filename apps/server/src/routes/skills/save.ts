@@ -16,7 +16,7 @@ export default router.put("/", validateFields({
   const { name, path, content } = req.body as { name: string; path?: string; content: string };
   if (Buffer.byteLength(content, "utf8") > u.skillFile.maxBytes) return res.status(413).json(error("技能文件不能超过 20 MB", null, 413));
   if (content.includes("\u0000")) return res.status(400).json(error("内容不能包含空字符", null, 400));
-  // ACT: 锁住技能根目录以覆盖扫描与替换，避免同进程安装/文件操作交错；高并发时再细化锁范围。
+  // 锁住技能根目录以覆盖扫描与替换，避免同进程安装/文件操作交错；高并发时再细化锁范围。
   const release = u.workspaceFile.lockWorkspaceFiles([u.skillFile.directory()]);
   try {
     const { target, isMain } = await u.skillFile.locate(name, path);

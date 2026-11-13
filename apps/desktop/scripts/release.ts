@@ -58,7 +58,7 @@ if (!initial) {
       typeof previous.version !== "string" || !/^\d+\.\d+\.\d+$/.test(previous.version)) {
     throw new Error("更新清单的平台、架构、版本或 Hash 无效。");
   }
-  // ACT: Intel 固定使用 1.18.1 旧协议；不向独立发布服务器传递桌面配置。
+  // Intel 固定使用 1.18.1 旧协议；不向独立发布服务器传递桌面配置。
   const legacy = isMac && process.arch === "x64" && previous.schemaVersion === undefined;
   if (!legacy && (previous.identifier !== desktopConfig.app.identifier || previous.channel !== "stable")) {
     throw new Error("更新清单的应用标识或通道不一致。");
@@ -83,7 +83,7 @@ await $`${process.execPath} run package:desktop`
   .cwd(projectDir)
   .env({ ...process.env, appVersion: version, generateUpdatePatch: initial ? "0" : "1" });
 
-// ACT: 本机 SDK 产物直接读取，完整清单校验仅用于远程基线。
+// 本机 SDK 产物直接读取，完整清单校验仅用于远程基线。
 const manifest = await file(join(artifactDir, manifestName)).json();
 if (manifest.version !== version) {
   throw new Error("本次构建的更新 JSON 与请求版本不一致。");

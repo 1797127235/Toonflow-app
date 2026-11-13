@@ -15,7 +15,7 @@ function cachePath(path: string) {
 }
 
 function invalidateUrls(directory: string, path: string) {
-  // ACT: 仅失效时保守合并路径写法；实际读取仍交服务端校验，区分大小写的文件最多多读一次。
+  // 仅失效时保守合并路径写法；实际读取仍交服务端校验，区分大小写的文件最多多读一次。
   directory = cachePath(directory);
   path = cachePath(path);
   for (const [key, entry] of fileUrls) {
@@ -120,7 +120,7 @@ export default function useWorkspaceFiles(directory?: MaybeRefOrGetter<string | 
 
   async function write(path: string, content: string | Blob | ArrayBuffer, exclusive = false, signal?: AbortSignal) {
     const directory = getDirectory();
-    // ACT: 磁盘来源的 File 会保留原始文件引用，Chromium 上传前校验被改动即报 ERR_UPLOAD_FILE_CHANGED（crbug 40694432），先读进内存再传。
+    // 磁盘来源的 File 会保留原始文件引用，Chromium 上传前校验被改动即报 ERR_UPLOAD_FILE_CHANGED（crbug 40694432），先读进内存再传。
     const body = content instanceof Blob ? await content.arrayBuffer() : content;
     await client.put("/write", body, { params: { directory, path, exclusive }, signal, headers: { "Content-Type": "application/octet-stream" } });
     invalidateUrls(directory, path);
@@ -159,6 +159,6 @@ export default function useWorkspaceFiles(directory?: MaybeRefOrGetter<string | 
     await client.post("/mkdir", { directory: getDirectory(), path });
   }
 
-  // ACT: 当前目录逐次读取；跨 await 或防抖的操作传入目录字符串，固定本次目标。
+  // 当前目录逐次读取；跨 await 或防抖的操作传入目录字符串，固定本次目标。
   return { list, read, importImage, cloneProject, acquireUrl, readText, readJson, readTextSnapshot, writeTextSnapshot, write, writeJson, rename, copy, reveal, remove, mkdir };
 }

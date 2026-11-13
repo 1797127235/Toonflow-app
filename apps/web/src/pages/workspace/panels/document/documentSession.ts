@@ -65,7 +65,7 @@ export function createDocumentSession(resource: ExtResource, extension: ExtDefin
         const currentRevision = revision;
         const text = context.text;
         queuedRevision = currentRevision;
-        // ACT: 保存始终绑定打开时的目录和文件，排队期间切换 Tab 不改变写入目标。
+        // 保存始终绑定打开时的目录和文件，排队期间切换 Tab 不改变写入目标。
         saving = saving.catch(() => {}).then(async () => {
           if (disposed) return;
           if (!disk) throw new Error("文件尚未读取，不能保存");

@@ -43,7 +43,7 @@ const player = ref<InstanceType<typeof audioPlayer>>();
 const duration = ref(0);
 const selectedIndex = ref(0);
 const playhead = ref(0);
-// ACT: 分组只用于编辑器的粘合显示，导出仍展开为原始区间，保留删除造成的缺口。
+// 分组只用于编辑器的粘合显示，导出仍展开为原始区间，保留删除造成的缺口。
 const groups = ref<AudioSegment[][]>([]);
 const undoStack = ref<EditState[]>([]);
 const redoStack = ref<EditState[]>([]);
@@ -227,7 +227,7 @@ function updatePlayback(time: number | undefined) {
   if (!clip || !part || time === undefined || !Number.isFinite(time)) return;
   playhead.value = clip.offset + part.offset + Math.min(part.length, Math.max(0, time - part.start));
   if (!player.value?.playing || time < part.end) return;
-  // ACT: 复用播放器帧更新跳过已删除片段；试听切点受帧率限制，导出由 FFmpeg 精确裁剪。
+  // 复用播放器帧更新跳过已删除片段；试听切点受帧率限制，导出由 FFmpeg 精确裁剪。
   let next = clip.parts[++playbackPartIndex];
   if (!next) {
     next = clips.value[++playbackClipIndex]?.parts[0];
@@ -262,7 +262,7 @@ function updatePlayback(time: number | undefined) {
     .playhead { position: absolute; top: 22px; bottom: 0; width: 1px; background: var(--el-color-danger); pointer-events: none; &::before { content: ""; position: absolute; top: -4px; left: -4px; width: 9px; height: 9px; background: inherit; clip-path: polygon(0 0, 100% 0, 100% 60%, 50% 100%, 0 60%); } }
     .cursorInput {
       position: absolute; inset: 0 -6px; width: calc(100% + 12px); height: 100%; margin: 0; opacity: 0; appearance: none; pointer-events: none; touch-action: none;
-      // ACT: 仅游标附近的滑块接收拖动，其余区域用于选择片段。
+      // 仅游标附近的滑块接收拖动，其余区域用于选择片段。
       &::-webkit-slider-thumb { appearance: none; width: 12px; height: 148px; pointer-events: auto; cursor: ew-resize; }
       &::-moz-range-thumb { width: 12px; height: 148px; border: 0; pointer-events: auto; cursor: ew-resize; }
       &:disabled::-webkit-slider-thumb, &:disabled::-moz-range-thumb { pointer-events: none; }

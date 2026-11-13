@@ -184,7 +184,7 @@ watch(
   selectedModel,
   (choice) => {
     if (!choice) return;
-    // ACT: 现有分辨率使用 K 单位；出现其他单位时再统一换算，未知名称排在数值选项之后。
+    // 现有分辨率使用 K 单位；出现其他单位时再统一换算，未知名称排在数值选项之后。
     if (!sizeOptions.value.includes(data.value.size)) data.value.size = sizeOptions.value.toSorted((left, right) =>
       (Number.parseFloat(left) || Infinity) - (Number.parseFloat(right) || Infinity)
     )[0]!;
@@ -276,7 +276,7 @@ async function replaceOutput(event: Event) {
       await workspace.remove(url);
       return;
     }
-    // ACT: 保留历史输出文件，避免破坏撤销记录和复制节点的引用。
+    // 保留历史输出文件，避免破坏撤销记录和复制节点的引用。
     outputs.value.image = { dataType: "IMAGE", value: { url, mimeType: file.type } };
   } catch (error) {
     showNodeError(error, "图片替换失败");
@@ -291,7 +291,7 @@ function loadModels() {
   modelsRequest = ai.getMediaModels().then((items) => {
     if (disposed || generating.value || deleting.value) return;
     models.value = items.filter((item) => item.type === "image");
-    // ACT: 只给空配置选默认模型，保留暂时不可用的旧选择及其参数。
+    // 只给空配置选默认模型，保留暂时不可用的旧选择及其参数。
     if (!data.value.model) {
       const first = models.value[0];
       data.value.model = first ? JSON.stringify([first.providerId, first.modelId]) : "";
@@ -334,7 +334,7 @@ async function startGeneration() {
   const controller = new AbortController();
   const inpaintData = data.value.inpaint;
   generationController = controller;
-  // ACT: 工具立即返回，任务由节点持有，停止或卸载时取消。
+  // 工具立即返回，任务由节点持有，停止或卸载时取消。
   generation = generationState.run(() => workspace.list()
     .then(({ directory }) => {
       controller.signal.throwIfAborted();

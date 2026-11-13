@@ -177,7 +177,7 @@ async function executeClientTool(event: Extract<SingleAgentEvent, { type: "clien
     const result = await tool.execute(event.toolCallId, event.args, signal, partial => {
       if (!acceptingUpdates || signal.aborted) return;
       updates = updates.then(() => sendResult({ result: partial, partial: true }));
-      // ACT: 增量按顺序回传；失败在最终结果前统一上报，不产生未处理的 Promise。
+      // 增量按顺序回传；失败在最终结果前统一上报，不产生未处理的 Promise。
       void updates.catch(() => {});
     });
     acceptingUpdates = false;
@@ -261,7 +261,7 @@ async function control(action: "pause" | "resume" | "stop") {
   const owner = lifecycle;
   const controller = turnController;
   try {
-    // ACT: 状态以有序回复流为准，避免较晚返回的暂停请求覆盖已恢复的状态。
+    // 状态以有序回复流为准，避免较晚返回的暂停请求覆盖已恢复的状态。
     await axios.post("/api/singleAgent/control", { sessionId: sessionId.value, runId: turnId, action }, { headers: requestHeaders, signal: owner.signal });
   } catch (error) { if (!owner.signal.aborted && lifecycle === owner && turnController === controller) reportError(error); }
 }

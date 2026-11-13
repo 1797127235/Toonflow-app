@@ -49,7 +49,7 @@ const plugin: ToolPlugin = {
           const onAbort = () => cancelled.reject(requestSignal.reason);
           requestSignal.addEventListener("abort", onAbort, { once: true });
           try {
-            // ACT: Needle 在 Bun 下取消后可能不结束 Promise；signal 销毁请求，竞速保证工具及时退出。
+            // Needle 在 Bun 下取消后可能不结束 Promise；signal 销毁请求，竞速保证工具及时退出。
             const response = await Promise.race([cancelled.promise, search(query, undefined, {
               headers: COMMON_HEADERS,
               signal: requestSignal,

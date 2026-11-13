@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 
 const projectDir = resolve(import.meta.dirname, "../../..");
 
-// ACT: Bun 1.3.14 在 Linux 的 --filter 会误读小驼峰目录；修复后可复用根目录的批量构建命令。
+// Bun 1.3.14 在 Linux 的 --filter 会误读小驼峰目录；修复后可复用根目录的批量构建命令。
 for (const group of ["nodes", "tools", "ext"]) {
   const groupDirectory = resolve(projectDir, "packages", group);
   await rm(resolve(projectDir, "build", group), { recursive: true, force: true });

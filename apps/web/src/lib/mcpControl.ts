@@ -90,7 +90,7 @@ export function useMcpControl() {
         const controller = new AbortController();
         calls.set(request.callId, controller);
         connectionCalls.set(request.callId, controller);
-        // ACT: 长音频转写由 ASR 检测停滞与收尾超时，连接关闭和主动取消仍立即中止。
+        // 长音频转写由 ASR 检测停滞与收尾超时，连接关闭和主动取消仍立即中止。
         const callSignal = AbortSignal.any([signal, controller.signal, ...(["transcribeAudio", "askUser"].includes(request.name) ? [] : [AbortSignal.timeout(120000)])]);
         let result: unknown;
         let error: string | undefined;
@@ -130,7 +130,7 @@ export function useMcpControl() {
             if (typeof directory !== "string" || !directory.trim()) throw new Error("缺少工作目录");
             await workspaceControl.value?.flushSave();
             callSignal.throwIfAborted();
-            // ACT: 切换项目会取消旧画布调用；当前打开项目命令属于应用层。
+            // 切换项目会取消旧画布调用；当前打开项目命令属于应用层。
             calls.delete(request.callId);
             await workspaceStore.openProject(directory, directory, callSignal);
             const openedDirectory = workspaceStore.project?.directory;

@@ -50,7 +50,7 @@ export async function createApp({
     const { default: initializeExt } = await import("@/utils/plugins/initializeExt");
     await initializeExt(resolve(dataDirectory, "ext"), extRoot, pluginRevision);
   }
-  // ACT: 内置媒体供应商随构建同步，其他供应商文件和独立保存的配置保留。
+  // 内置媒体供应商随构建同步，其他供应商文件和独立保存的配置保留。
   if (dataDirectory && providersRoot) {
     const sourceDirectory = resolve(providersRoot, "media");
     let providerRevision = pluginRevision;
@@ -67,12 +67,12 @@ export async function createApp({
     }
     await initializePlugins(resolve(dataDirectory, "providers"), sourceDirectory, autoInstallProviders, providerRevision);
   }
-  // ACT: 技能和团队只补首次安装，保留用户修改。
+  // 技能和团队只补首次安装，保留用户修改。
   if (dataDirectory && skillsRoot) await initializePlugins(resolve(dataDirectory, "skills"), skillsRoot);
   if (dataDirectory && agentsRoot) await initializePlugins(resolve(dataDirectory, "agents"), agentsRoot);
   const app = express();
   app.locals.appVersion = appVersion;
-  // ACT: 内置身份取自当前发行包的目录，不依赖作者或安装记录；更新后的同名插件仍属于内置插件。
+  // 内置身份取自当前发行包的目录，不依赖作者或安装记录；更新后的同名插件仍属于内置插件。
   app.locals.builtinPlugins = Object.fromEntries(await Promise.all(
     Object.entries({ tool: toolsRoot, node: nodesRoot, ext: extRoot, skill: skillsRoot, agent: agentsRoot }).map(async ([type, root]) => {
       const entries = root ? await readdir(root, { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
@@ -99,7 +99,7 @@ export async function createApp({
   app.use("/api/desktop", desktopRequest);
 
   const { default: initializeProviderModels } = await import("@/utils/ai/initialize");
-  // ACT: 启动先使用已有模型，远程刷新不阻塞服务监听。
+  // 启动先使用已有模型，远程刷新不阻塞服务监听。
   void initializeProviderModels().catch(error => console.warn("启动时刷新供应商模型失败：", error));
   const router = await import("@/router");
   router.default(app);

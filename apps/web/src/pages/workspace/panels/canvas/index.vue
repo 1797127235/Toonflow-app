@@ -263,7 +263,7 @@ flow.onNodeDragStop(({ nodes }) => {
   dragCopy = undefined;
   if (copy) copy.finish();
   else finishGroupDrag(flow.getNodes.value, nodes);
-  // ACT: 拖动过程不逐帧写保存修订号，松手后在这里统一提交一次。
+  // 拖动过程不逐帧写保存修订号，松手后在这里统一提交一次。
   scheduleCanvasChange();
 });
 const canvasHistory = useCanvasHistory(flow, () =>
@@ -570,7 +570,7 @@ let saveRevision = 0;
 const saveCanvas = debounce((directory: string, fileName: string) => {
   const flow = toObject();
   const revision = saveRevision;
-  // ACT: 同页保存按顺序完成，防止慢请求覆盖后续修改；不处理多个客户端的并发编辑。
+  // 同页保存按顺序完成，防止慢请求覆盖后续修改；不处理多个客户端的并发编辑。
   saving = saving.then(async () => {
     try {
       await useWorkspaceFiles(directory).writeJson(fileName, { toonflowCanvas: true, nodes: flow.nodes, edges: flow.edges, viewport: flow.viewport });
@@ -621,7 +621,7 @@ const nodeRuntimeFields = new Set([
   "events",
 ]);
 const edgeRuntimeFields = new Set(["data", "selected", "sourceNode", "targetNode", "sourceX", "sourceY", "targetX", "targetY", "events"]);
-// ACT: 仅增删、替换元素时扫描列表；位移与 data 各自监听，单个节点变化不遍历其余节点。
+// 仅增删、替换元素时扫描列表；位移与 data 各自监听，单个节点变化不遍历其余节点。
 watch(
   () => [...flow.nodes.value, ...flow.edges.value],
   (elements) => {
@@ -689,7 +689,7 @@ watch(
   { flush: "sync" }
 );
 
-// ACT: 切换显示面板不会卸载画布；仅清理交互，不中断本轮工具调用。
+// 切换显示面板不会卸载画布；仅清理交互，不中断本轮工具调用。
 watch(() => props.active, (active) => {
   if (!active) assetsVisible.value = false;
   edgeDisconnect.value = undefined;
@@ -699,7 +699,7 @@ watch(() => props.active, (active) => {
 }, { flush: "sync" });
 
 function flushCanvasSave(action?: () => Promise<void>): Promise<void> {
-  // ACT: 完整保存及其文件操作串行执行，重命名暂停期间的显式保存也必须等待。
+  // 完整保存及其文件操作串行执行，重命名暂停期间的显式保存也必须等待。
   const next = flushing.then(() => saveCanvasState(action)).then(() => { canvasSaveError.value = ""; }, error => {
     canvasSaveError.value = axios.isAxiosError<{ message?: string }>(error) ? error.response?.data.message || error.message : error instanceof Error ? error.message : "画布保存失败";
     throw error;
@@ -759,7 +759,7 @@ function canUseCanvasClipboard(event: Event) {
 function beforeClipboard(event: Event) {
   if (!canUseCanvasClipboard(event)) return;
   if (event.type === "beforecopy" && (!flow.getSelectedNodes.value.length || window.getSelection()?.toString())) return;
-  // ACT: WKWebView 通过 beforecopy/beforepaste 判定非输入区能否使用原生编辑菜单。
+  // WKWebView 通过 beforecopy/beforepaste 判定非输入区能否使用原生编辑菜单。
   event.preventDefault();
 }
 
@@ -829,7 +829,7 @@ async function pasteNode(event: ClipboardEvent) {
   const canvasSignal = canvasController.signal;
   let files = getClipboardMediaFiles(event);
   if (files.length || text.trim()) event.preventDefault();
-  // ACT: 部分 WebView 不向 paste 事件暴露剪贴板文件，桌面端回退到原生剪贴板读取。
+  // 部分 WebView 不向 paste 事件暴露剪贴板文件，桌面端回退到原生剪贴板读取。
   if (!files.length && isDesktop) files = await readClipboardFiles().catch(() => []);
   if (canvasSignal.aborted) return;
   if (!files.length && text.trim()) files = [new File([text], "粘贴文本.txt", { type: "text/plain" })];
@@ -923,7 +923,7 @@ function zoomCanvas(event: WheelEvent | (Event & { scale: number })) {
     factor = event.type === "gesturechange" && gestureScale !== undefined ? event.scale / gestureScale : 1;
     gestureScale = event.type === "gestureend" ? undefined : event.scale;
   } else {
-    // ACT: Chromium 捏合发送 Ctrl+wheel，但不发送 Control 按键；WebKit 使用上方原生 gesture 事件。
+    // Chromium 捏合发送 Ctrl+wheel，但不发送 Control 按键；WebKit 使用上方原生 gesture 事件。
     const pinching = event.ctrlKey && !pressedCodes.has("ControlLeft") && !pressedCodes.has("ControlRight");
     // 无需按键的滚轮缩放让节点控件保留自己的滚动；显式缩放快捷键及捏合仍沿用原行为。
     if (defaultWheelZoom.value && !pinching && !zoomKeyPressed.value
@@ -937,7 +937,7 @@ function zoomCanvas(event: WheelEvent | (Event & { scale: number })) {
     } else if (pinching) {
       factor = 2 ** (-event.deltaY * 0.02);
     } else {
-      // ACT: @vue-flow/core 的 wheelDelta 在 macOS 下若检测到 event.ctrlKey 会额外乘以 10（误判为捏合微步）；非捏合的实体 Ctrl 滚轮缩放需剔除该倍数，保留标准滚轮速度。
+      // @vue-flow/core 的 wheelDelta 在 macOS 下若检测到 event.ctrlKey 会额外乘以 10（误判为捏合微步）；非捏合的实体 Ctrl 滚轮缩放需剔除该倍数，保留标准滚轮速度。
       const delta = wheelDelta(event) / (event.ctrlKey && isMacOs() ? 10 : 1);
       factor = 2 ** delta;
     }
@@ -1109,7 +1109,7 @@ async function loadNode(name: string, url: string, force = false): Promise<void>
   if (!force && nodeTypes.value[nodeType] && !nodeErrors.value[nodeType]) return;
   if (force) {
     signal.throwIfAborted();
-    // ACT: 复用画布修订号收敛等待期间的编辑；持续修改画布时延后刷新，不额外维护节点修订状态。
+    // 复用画布修订号收敛等待期间的编辑；持续修改画布时延后刷新，不额外维护节点修订状态。
     let revision: number;
     do {
       revision = saveRevision;
@@ -1123,7 +1123,7 @@ async function loadNode(name: string, url: string, force = false): Promise<void>
   delete nodeErrors.value[nodeType];
   const nodeLoad = loadNodeComponent(name, url, force)
     .then((remoteNode) => {
-      // ACT: 超时后加载仍可能晚到，此时恢复为可渲染状态。
+      // 超时后加载仍可能晚到，此时恢复为可渲染状态。
       delete nodeErrors.value[nodeType];
       // 同类型节点共享组件，运行错误由每个节点自己的边界显示。
       nodeTypes.value = { ...nodeTypes.value, [nodeType]: markRaw(remoteNode) };
@@ -1138,7 +1138,7 @@ async function loadNode(name: string, url: string, force = false): Promise<void>
       if (nodeLoads.get(nodeType) === nodeLoad) nodeLoads.delete(nodeType);
     });
   nodeLoads.set(nodeType, nodeLoad);
-  // ACT: 超时后主动退出加载态并展示错误卡片，避免一次未收敛的加载让节点永久停在骨架。
+  // 超时后主动退出加载态并展示错误卡片，避免一次未收敛的加载让节点永久停在骨架。
   nodeLoadTimers.set(
     nodeType,
     setTimeout(() => {
@@ -1179,7 +1179,7 @@ async function loadRemoteNodes(reloadName?: string) {
     // 节点各自加载完成后即可出现在菜单中，不等待其他节点的脚本。
     nodeOptions.value = enabledNodes.map(node => ({ type: `remote-${node.name}`, label: node.displayName }))
       .sort((left, right) => left.type.localeCompare(right.type));
-    // ACT: 安装事件合并到最新列表请求，避免连续更新不同节点时丢失较早的刷新名称。
+    // 安装事件合并到最新列表请求，避免连续更新不同节点时丢失较早的刷新名称。
     const reloadNames = new Set(nodeReloads);
     nodeReloads.clear();
     await Promise.all(

@@ -37,7 +37,7 @@ export function normalizeNodeMenu(value: unknown): NodeMenuItem[] {
       continue;
     }
     if (typeof item.id !== "string" || !item.id.startsWith("group:") || item.id.length <= 6 || !label || !Array.isArray(item.children)) continue;
-    // ACT: 超过三级的旧配置提升子项，保留节点的隐藏状态；编辑器在移动时限制深度。
+    // 超过三级的旧配置提升子项，保留节点的隐藏状态；编辑器在移动时限制深度。
     const promote = depth >= 3 || ids.has(item.id);
     const children: NodeMenuItem[] = promote ? output : [];
     if (!promote) {

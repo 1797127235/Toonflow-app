@@ -17,7 +17,7 @@ const componentLoads = new Map<string, Promise<Record<string, Component>>>();
 let rendererRequest: Promise<ToolRenderer[]> | undefined;
 
 export async function loadToolComponent(toolName: string): Promise<Component | undefined> {
-  // ACT: 只合并并发查询；新卡片重新查询安装状态，组件按内容版本复用。
+  // 只合并并发查询；新卡片重新查询安装状态，组件按内容版本复用。
   rendererRequest ??= axios.get<{ code: number; data: ToolRenderer[]; message?: string }>("/api/tools/renderers")
     .then(({ data }) => {
       if (data.code !== 200 || !Array.isArray(data.data)) throw new Error(data.message || "工具界面列表无效");

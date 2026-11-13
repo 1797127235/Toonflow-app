@@ -23,7 +23,7 @@ export function createApp(publicDirectory: string) {
     }
     const name = req.path.slice(1);
     const filePath = join(publicDir, name);
-    // ACT: 只服务发布器生成的平铺 ASCII 文件名，不解码 URL，也不跟随符号链接。
+    // 只服务发布器生成的平铺 ASCII 文件名，不解码 URL，也不跟随符号链接。
     if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(name) || !lstatSync(filePath, { throwIfNoEntry: false })?.isFile()) {
       res.status(404).end();
       return;

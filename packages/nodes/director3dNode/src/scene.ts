@@ -7,7 +7,7 @@ import { createMannequin, mannequinJoints } from "./mannequin";
 const coordinate = z.number().min(-10000).max(10000);
 const vector = z.strictObject({ x: coordinate, y: coordinate, z: coordinate });
 const color = z.string().regex(/^#[\da-f]{6}$/i);
-// ACT: 场景只接入基础几何体和内置人偶，不接受可执行脚本、HTML 或外部资源配置。
+// 场景只接入基础几何体和内置人偶，不接受可执行脚本、HTML 或外部资源配置。
 export const sceneSchema = z.strictObject({
   version: z.literal("next"),
   sceneConfig: z.strictObject({

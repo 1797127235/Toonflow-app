@@ -93,7 +93,7 @@ export async function queryMentionNodes(nodes: readonly MentionCanvasNode[], rev
   }
   const items: MentionNode[] = [];
   const end = Math.min(nodes.length, offset + 2000);
-  // ACT: 名称搜索每页最多扫描 2000 节点；不复制画布，不读输出正文，不为所有节点建立深响应对象。
+  // 名称搜索每页最多扫描 2000 节点；不复制画布，不读输出正文，不为所有节点建立深响应对象。
   for (; offset < end && items.length < limit; offset++) {
     options.signal?.throwIfAborted();
     const node = nodes[offset];

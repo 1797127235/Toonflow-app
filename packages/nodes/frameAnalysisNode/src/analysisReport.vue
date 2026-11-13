@@ -115,7 +115,7 @@ watch(previewFile, () => {
   previewError.value = "";
 }, { flush: "sync" });
 onBeforeUnmount(() => previewVideo.value?.pause());
-// ACT: 仅加载当前选中的画面，切换镜头或关闭报告时由宿主释放文件 URL。
+// 仅加载当前选中的画面，切换镜头或关闭报告时由宿主释放文件 URL。
 const previewUrl = files.useFileUrl(previewFile, () => { previewError.value = "画面读取失败，文件可能已被移动或删除"; });
 const manifestUrl = files.useFileUrl(
   computed(() => visible.value ? { url: props.result.manifest, mimeType: "application/json" } : undefined),

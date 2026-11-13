@@ -53,7 +53,7 @@ export function normalizeLocale(value: unknown): Locale | undefined {
   }
   const base = language.language === "tl" ? "fil" : language.language === "in" ? "id" : language.language;
   const locale = supportedLocales.find(item => item.code === base)?.code;
-  // ACT: 每种新增语言只提供一种文字体系；pa-Arab/pa-PK 等不能误用 Gurmukhi 译文。
+  // 每种新增语言只提供一种文字体系；pa-Arab/pa-PK 等不能误用 Gurmukhi 译文。
   return locale && script === new Intl.Locale(locale).maximize().script ? locale : undefined;
 }
 
@@ -97,7 +97,7 @@ export function translate(message: string | MessageDescriptor, values?: Record<s
     let formatter = formatters.get(cacheKey);
     if (!formatter) {
       formatter = new IntlMessageFormat(text, language, undefined, { ignoreTag: true });
-      // ACT: 字典与语言切换共享缓存，限制 2000 项；无需随用户输入增长。
+      // 字典与语言切换共享缓存，限制 2000 项；无需随用户输入增长。
       if (formatters.size >= 2000) formatters.delete(formatters.keys().next().value!);
       formatters.set(cacheKey, formatter);
     }
@@ -108,7 +108,7 @@ export function translate(message: string | MessageDescriptor, values?: Record<s
   };
   try { return format(translated); }
   catch {
-    // ACT: 损坏或缺参数的外部语言包回退原文；参数只替换一次，不再解析用户输入。
+    // 损坏或缺参数的外部语言包回退原文；参数只替换一次，不再解析用户输入。
     try { return format(id); }
     catch { return id.replace(/\{(\d+)\}/g, (token, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : token); }
   }

@@ -37,7 +37,7 @@ watch([visible, () => props.directory], async ([visible, directory], _previous, 
   const files = useWorkspaceFiles(directory);
   const directories = ["assets"];
   try {
-    // ACT: 按目录层级和文件名查找首图，找到即停止；封面仍读取原图，大图优化可改用服务端缩略图。
+    // 按目录层级和文件名查找首图，找到即停止；封面仍读取原图，大图优化可改用服务端缩略图。
     for (let index = 0; index < directories.length && !controller.signal.aborted; index++) {
       const { entries } = await files.list(directories[index]!, controller.signal).catch(() => ({ entries: [] }));
       if (controller.signal.aborted) return;

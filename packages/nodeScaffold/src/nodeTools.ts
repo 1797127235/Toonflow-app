@@ -41,7 +41,7 @@ function getRegistry(flow: ReturnType<typeof useVueFlow>) {
       if (!node.size) index.nodes.delete(entry.nodeId);
     };
     for (const entry of registry.values()) add(entry);
-    // ACT: 旧 UMD 仍写原 Map；在共享 Map 上同步索引，避免每次读取扫描全部节点函数。
+    // 旧 UMD 仍写原 Map；在共享 Map 上同步索引，避免每次读取扫描全部节点函数。
     Object.defineProperties(registry, {
       set: { value(this: Map<string, RegisteredNodeTool>, key: string, entry: RegisteredNodeTool) {
         const previous = this.get(key);

@@ -68,7 +68,7 @@ function analyze(source: string, id: string) {
   };
   const sliceNode = (node: Node, code: string) => code.slice(node.start ?? 0, node.end ?? 0);
 
-  // ACT: Only display expressions are visited. Comparisons, keys, calls and user data retain their original semantics.
+  // Only display expressions are visited. Comparisons, keys, calls and user data retain their original semantics.
   function displayExpression(node: Node, code: string): string {
     const original = sliceNode(node, code);
     if (node.type === "StringLiteral") return hasChinese(node.value) ? translate(node.value) : original;

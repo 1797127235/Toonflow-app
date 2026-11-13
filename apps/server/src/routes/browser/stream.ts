@@ -39,7 +39,7 @@ export default Router().get("/", validateFields(inputSchema.shape, "query"), asy
   const write = (event: BrowserStreamEvent) => {
     if (disposed || res.destroyed) return;
     if (blocked) {
-      // ACT: 慢客户端只保留最新状态和一帧，避免浏览器画面无限积压。
+      // 慢客户端只保留最新状态和一帧，避免浏览器画面无限积压。
       if (event.type === "frame") pendingFrame = event;
       else {
         pendingState = event;

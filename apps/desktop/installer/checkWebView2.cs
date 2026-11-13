@@ -13,7 +13,7 @@ using Microsoft.Web.WebView2.Core;
 
 internal static class checkWebView2
 {
-    // ACT: URL.canParse 需要 Chromium 120；同时覆盖 Map.groupBy 和 Promise.withResolvers。
+    // URL.canParse 需要 Chromium 120；同时覆盖 Map.groupBy 和 Promise.withResolvers。
     private static readonly Version minimumVersion = new Version(120, 0, 0, 0);
     private static volatile string stage = "version";
     private static string runtimeVersion = "<none>";
@@ -26,7 +26,7 @@ internal static class checkWebView2
         ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
     private static extern int getAvailableVersion(string browserExecutableFolder, out IntPtr versionInfo);
 
-    // ACT: 使用 WebView2 官方比较规则，忽略 beta/dev/canary 通道后缀，解析失败仍拒绝。
+    // 使用 WebView2 官方比较规则，忽略 beta/dev/canary 通道后缀，解析失败仍拒绝。
     [DllImport("WebView2Loader.dll", EntryPoint = "CompareBrowserVersions",
         CharSet = CharSet.Unicode,
         ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
@@ -60,7 +60,7 @@ internal static class checkWebView2
             Environment.SetEnvironmentVariable("WEBVIEW2_USER_DATA_FOLDER", userDataFolder);
             stage = "window";
             int result = 2;
-            // ACT: 独立线程覆盖 UI 消息循环本身卡死；超时不能证明 Runtime 文件损坏。
+            // 独立线程覆盖 UI 消息循环本身卡死；超时不能证明 Runtime 文件损坏。
             using (var watchdog = new System.Threading.Timer(delegate
             {
                 log("Startup probe timed out after 30 seconds", unchecked((int)0x800705B4));
@@ -129,7 +129,7 @@ internal static class checkWebView2
         int result;
         try
         {
-            // ACT: 独立临时用户目录只验证内核启动，不代表 Laywork 实际用户目录一定健康。
+            // 独立临时用户目录只验证内核启动，不代表 Laywork 实际用户目录一定健康。
             stage = "environment";
             environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
             environment.BrowserProcessExited += delegate { browserExited.TrySetResult(true); };
@@ -231,7 +231,7 @@ internal static class checkWebView2
                 if (key == null) continue;
                 bool matches = String.Equals(key.GetValue("DisplayVersion") as string, runtimeVersion, StringComparison.OrdinalIgnoreCase);
                 if (repairPath != null && (!matches || matchedVersion)) continue;
-                // ACT: NoRepair 只隐藏独立 Repair 按钮；微软的 ModifyPath 仍提供在线修复。
+                // NoRepair 只隐藏独立 Repair 按钮；微软的 ModifyPath 仍提供在线修复。
                 if (Convert.ToString(key.GetValue("NoModify")) == "1")
                 {
                     policyBlocked = true;

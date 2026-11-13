@@ -1,4 +1,4 @@
-// ACT: 字符串优先精确匹配，正则按列表顺序匹配；两项上限均优先于用户配置和 Pi 内置模型目录。
+// 字符串优先精确匹配，正则按列表顺序匹配；两项上限均优先于用户配置和 Pi 内置模型目录。
 // 单位为 token；2026-09-20 核对官方标准 API 上限，不采用批处理或 Beta 专属上限。
 const modelContextLimits: { id: string | RegExp; contextWindow: number; maxTokens: number }[] = [
   // TF-Router

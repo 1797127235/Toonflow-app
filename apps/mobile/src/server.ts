@@ -22,7 +22,7 @@ setRuntimeHost("mobile");
 process.env.TOONFLOW_DATA_DIR = directory;
 await mkdir(exportDirectory, { recursive: true });
 const connection = await createRemoteConnection(directory, { deviceName: process.env.TOONFLOW_MOBILE_DEVICE_NAME || "Laywork Android", appVersion: config.app.version });
-// ACT: 临时导出不属于项目数据；应用被系统终止后，下次启动清理未完成的导出。
+// 临时导出不属于项目数据；应用被系统终止后，下次启动清理未完成的导出。
 for (const entry of await readdir(exportDirectory, { withFileTypes: true })) {
   if (entry.isFile() && exportId.test(entry.name)) await rm(resolve(exportDirectory, entry.name));
 }
@@ -37,7 +37,7 @@ app.use((request, response, next) => {
   response.setHeader("Content-Security-Policy", "frame-ancestors 'none'; object-src 'none'; base-uri 'self'");
   response.setHeader("Referrer-Policy", "same-origin");
   response.setHeader("Cache-Control", "no-store");
-  // ACT: 一次启动凭据换同源 Cookie，覆盖 Axios、SSE、节点脚本和媒体请求，无须逐个修改前端接口。
+  // 一次启动凭据换同源 Cookie，覆盖 Axios、SSE、节点脚本和媒体请求，无须逐个修改前端接口。
   if (request.method === "GET" && request.path === "/" && request.query.token === token) {
     response.cookie("toonflowMobile", token, { httpOnly: true, sameSite: "strict", path: "/" });
     const engine = request.query.engine === "gecko" ? "&engine=gecko" : "";
@@ -62,7 +62,7 @@ app.get("/", (request, response, next) => {
     }
     return next();
   }
-  // ACT: 旧内核先执行独立小页面，避免 Vue 或依赖在能力检测前就抛错。
+  // 旧内核先执行独立小页面，避免 Vue 或依赖在能力检测前就抛错。
   // 旧内核无法解析检测函数时仍有 ES5 基线结果，让原生壳能够进入备用内核流程。
   const bridge = request.query.engine === "gecko"
     ? `<meta name="toonflowBrowserProbe"><script>document.querySelector('meta[name="toonflowBrowserProbe"]').content=JSON.stringify(window.toonflowBrowserProbe);</script>` : "";
@@ -80,7 +80,7 @@ app.post("/api/mobile/exports", express.raw({ type: "application/octet-stream", 
   const id = randomUUID();
   const path = resolve(exportDirectory, id);
   await writeAtomic(path, request.body, { mode: 0o600 });
-  // ACT: 复用现有文件接口的 100 MB 上限；更大导出需改为流式暂存。
+  // 复用现有文件接口的 100 MB 上限；更大导出需改为流式暂存。
   setTimeout(() => { void rm(path, { force: true }).catch(console.error); }, 30 * 60 * 1000).unref();
   response.json({ url: `/api/mobile/exports/${id}` });
 });

@@ -4,7 +4,7 @@ import { WaveFile } from "wavefile";
 import type { AudioConvertOptions } from "@toonflow/providers";
 
 const maxInputBytes = 100 * 1024 * 1024;
-// ACT: 上限按 48kHz 立体声 30 分钟估算，防止畸形 WAV 头声称超长时长耗尽内存。
+// 上限按 48kHz 立体声 30 分钟估算，防止畸形 WAV 头声称超长时长耗尽内存。
 const maxSamplesPerChannel = 48000 * 60 * 30;
 const mimeTypes = { wav: "audio/wav", mp3: "audio/mpeg" } as const;
 const mp3BlockSize = 1152;
@@ -15,7 +15,7 @@ function invalid(message: string): never {
 
 /**
  * 仅接受内存中的 WAV 字节并返回处理后的内存字节，不读写文件、不解析路径或 URL。
- * ACT: 只支持 WAV 输入（wavefile 无法解码 mp3/aac 等压缩格式），转码到 mp3 通过 lamejs 编码实现。
+ * 只支持 WAV 输入（wavefile 无法解码 mp3/aac 等压缩格式），转码到 mp3 通过 lamejs 编码实现。
  */
 export async function convertAudio(input: Uint8Array, options: AudioConvertOptions, signal?: AbortSignal): Promise<{ data: Uint8Array; mimeType: string }> {
   signal?.throwIfAborted();

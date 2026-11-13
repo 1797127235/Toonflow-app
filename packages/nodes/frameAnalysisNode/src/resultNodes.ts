@@ -37,7 +37,7 @@ export function useResultNodes() {
 
   function create(result: AnalysisResult) {
     verify({ frames: result.scenes.some(scene => !!scene.image), clips: result.scenes.some(scene => !!scene.video), audio: !!result.audio });
-    // ACT: 结果直接使用各素材自己的输出；视频、音频节点没有输入端口，不创建虚假数据连线。
+    // 结果直接使用各素材自己的输出；视频、音频节点没有输入端口，不创建虚假数据连线。
     const nodes: Node[] = [];
     const groups: { node: Node; width: number; height: number }[] = [];
     const previewWidth = Math.max(180, result.height > 0 ? 240 * result.width / result.height : 320) + 18;
@@ -58,7 +58,7 @@ export function useResultNodes() {
             sceneIndex: scene.index,
           }] : [];
         });
-      // ACT: 每组最多 12 项、3 列，长视频继续向下排组，保留所有检测结果。
+      // 每组最多 12 项、3 列，长视频继续向下排组，保留所有检测结果。
       for (let offset = 0; offset < media.length; offset += 12) {
         const items = media.slice(offset, offset + 12);
         const columns = Math.min(3, items.length);

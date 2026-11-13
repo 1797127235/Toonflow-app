@@ -25,18 +25,18 @@ export function confirmWindowsUpdateStartup(resourcesDirectory: string, failed =
   if (!lstatSync(extractionDirectory).isDirectory() || lstatSync(extractionDirectory).isSymbolicLink()) throw new Error(t`更新缓存目录不能是链接`);
   const { version, hash } = JSON.parse(readFileSync(join(resourcesDirectory, "version.json"), "utf8"));
   if (typeof version !== "string" || !versionPattern.test(version) || typeof hash !== "string" || !hashPattern.test(hash)) throw new Error(t`桌面安装标识无效，请重新安装`);
-  // ACT: 只有本次主界面首次就绪才确认更新；后续页面重载不覆盖事务结果。
+  // 只有本次主界面首次就绪才确认更新；后续页面重载不覆盖事务结果。
   writeAtomicSync(join(extractionDirectory, `update-${transactionId}.started.json`), JSON.stringify({ transactionId, version, hash, success: !failed }), { exclusive: true });
   delete process.env.TOONFLOW_UPDATE_TRANSACTION;
 }
 
-// ACT: 单人桌面单进程使用一个下载任务；保留现有发布协议和 bspatch，不修改 SDK 缓存。
+// 单人桌面单进程使用一个下载任务；保留现有发布协议和 bspatch，不修改 SDK 缓存。
 export default function createWindowsUpdater(resourcesDirectory: string, lifecycle: updateLifecycle) {
   const installDirectory = realpathSync(resolve(resourcesDirectory, "../.."));
   const extractionDirectory = join(installDirectory, "self-extraction");
   const preparedPath = join(extractionDirectory, "preparedUpdate.json");
   const resultPath = join(extractionDirectory, "updateResult.json");
-  // ACT: Electrobun 在 Worker 中加载应用，环境变量区分大小写，不能只读取 WINDIR。
+  // Electrobun 在 Worker 中加载应用，环境变量区分大小写，不能只读取 WINDIR。
   const tarExecutable = join(process.env.SystemRoot ?? process.env.windir ?? process.env.WINDIR!, "System32", "tar.exe");
   let localInfo: versionInfo;
   let manifest: { version: string; hash: string; artifact: { file: string } } | undefined;
@@ -78,7 +78,7 @@ export default function createWindowsUpdater(resourcesDirectory: string, lifecyc
       || !Number.isSafeInteger(ready.quitDeadline) || ready.quitDeadline - Date.now() < 5000 || ready.quitDeadline - Date.now() > 65000) {
       throw new Error(t`更新助手就绪状态无效或已过期，请重新准备更新`);
     }
-    // ACT: 文件删除也可能被锁阻止；退出前同时确认本次助手存活，不能仅依赖遗留 .ready。
+    // 文件删除也可能被锁阻止；退出前同时确认本次助手存活，不能仅依赖遗留 .ready。
     try { process.kill(ready.helperPid, 0); }
     catch { throw new Error(t`更新助手已退出，请重新准备更新`); }
     return ready.quitDeadline - Date.now();
@@ -91,7 +91,7 @@ export default function createWindowsUpdater(resourcesDirectory: string, lifecyc
       if (typeof record.version === "string" && typeof record.hash === "string" && typeof record.archiveSha256 === "string"
         && versionPattern.test(record.version) && hashPattern.test(record.hash) && /^[a-f0-9]{64}$/.test(record.archiveSha256)
         && regularFile(join(extractionDirectory, `${record.hash}.tar`))) return record;
-    } catch { /* ACT: 缓存损坏可重新下载，不影响用户数据。 */ }
+    } catch { /* 缓存损坏可重新下载，不影响用户数据。 */ }
   }
 
   async function getLocalInfo() {
@@ -242,7 +242,7 @@ export default function createWindowsUpdater(resourcesDirectory: string, lifecyc
       try {
         if (!regularFile(archivePath)) throw new Error(t`缺少旧版本更新缓存`);
         const visited = new Set([currentHash]);
-        // ACT: 最多追溯 8 跳；更老的安装直接使用全量包，避免无限补丁链。
+        // 最多追溯 8 跳；更老的安装直接使用全量包，避免无限补丁链。
         for (let count = 0; currentHash !== target.hash && count < 8; count++) {
           const patchPath = temporaryFile(".patch");
           await download(`${localInfo.channel}-win-x64-${currentHash}.patch`, patchPath);
@@ -345,7 +345,7 @@ export default function createWindowsUpdater(resourcesDirectory: string, lifecyc
       setTimeout(() => {
         if (applyingTransaction !== transactionId) return;
         try {
-          // ACT: .ready 可能早于助手超时；退出前重读本次结果，不依赖状态轮询是否已消费它。
+          // .ready 可能早于助手超时；退出前重读本次结果，不依赖状态轮询是否已消费它。
           // 同时保留单调时钟预算，系统时间回拨不能延长助手实际的 60 秒等待。
           if (quitDeadline - performance.now() < 5000) throw new Error(t`更新交接已超时，已保留旧版本，请重试`);
           assertUpdatePending(transactionId, planPath, readyPath);
@@ -364,7 +364,7 @@ export default function createWindowsUpdater(resourcesDirectory: string, lifecyc
       if (approval) lifecycle.cancelQuitApproval(approval);
       busy = false;
       removeUpdateFile(planPath);
-      // ACT: 启动助手失败不使已验证的更新包失效，可直接重试；助手运行后的包校验失败仍重新下载。
+      // 启动助手失败不使已验证的更新包失效，可直接重试；助手运行后的包校验失败仍重新下载。
       if (approval && helperStarted) {
         removeUpdateFile(preparedPath);
         state.updateReady = false;

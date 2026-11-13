@@ -14,14 +14,14 @@ if (process.env.ELECTROBUN_OS === "macos") {
 
   const plistPath = join(bundlePath, "Contents", "Info.plist");
   let plist = readFileSync(plistPath, "utf8");
-  // ACT: 两套 SDK 当前生成 XML；如果改为二进制 plist，应改用 macOS 的 plutil。
+  // 两套 SDK 当前生成 XML；如果改为二进制 plist，应改用 macOS 的 plutil。
   if (!/<\/dict>\s*<\/plist>\s*$/.test(plist)) throw new Error(`不支持的 Info.plist 格式：${plistPath}`);
   const bundleName = plist.match(/<key>CFBundleName<\/key>\s*<string>([^<]+)<\/string>/)?.[1];
   if (!bundleName) throw new Error(`无法读取应用名称：${plistPath}`);
   const minimumMacVersion = process.env.ELECTROBUN_ARCH === "x64" ? "13.0" : undefined;
 
   if (minimumMacVersion) {
-    // ACT: 内层更新包和外层自解压器都执行此钩子，防止旧 SDK 二进制把构建机系统版本带回发布包。
+    // 内层更新包和外层自解压器都执行此钩子，防止旧 SDK 二进制把构建机系统版本带回发布包。
     for (const path of new Bun.Glob("**/*").scanSync({ cwd: bundlePath, absolute: true, onlyFiles: true })) {
       const header = Buffer.from(await file(path).slice(0, 4).arrayBuffer());
       if (header.length < 4 || ![0xfeedface, 0xfeedfacf, 0xcafebabe, 0xbebafeca, 0xcafebabf, 0xbfbafeca].includes(header.readUInt32LE())) continue;

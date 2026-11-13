@@ -10,7 +10,7 @@ function loadNativeLibrary(assetDir: string) {
     closeNativeSplash: { args: ["ptr"], returns: "void" },
   });
 }
-// ACT: Objective-C 类会注册到进程运行时；桥接库保留到退出，窗口和像素仍逐次释放。
+// Objective-C 类会注册到进程运行时；桥接库保留到退出，窗口和像素仍逐次释放。
 let nativeLibrary: ReturnType<typeof loadNativeLibrary> | undefined;
 
 export function showMacSplash(assetDir: string, onClose: () => void) {

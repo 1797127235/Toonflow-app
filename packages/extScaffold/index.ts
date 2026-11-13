@@ -120,7 +120,7 @@ export function createExtConfig(config: ExtMetadata, configUrl: string) {
     // 打包目标：一个 UMD 文件，导出到 window.toonflowExts[<id>]，宿主按这个约定取。
     build: {
       outDir,
-      // ACT: 多个扩展共享 build/ext 目录，构建单包时不能清空其他扩展的产物。
+      // 多个扩展共享 build/ext 目录，构建单包时不能清空其他扩展的产物。
       emptyOutDir: false,
       // 不拆 CSS：样式要内联进 UMD，见 generateBundle。
       cssCodeSplit: false,

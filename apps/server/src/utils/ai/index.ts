@@ -48,11 +48,11 @@ export function getModelReasoning(providerId: string, model: z.infer<typeof prov
   const efforts = model.reasoningEfforts;
   const supported = candidates.map(item => item.reasoning ? getSupportedThinkingLevels(item) : []);
   const wireValue = (item: Model<KnownApi>, level: ThinkingLevel) => item.thinkingLevelMap?.[level] ?? (level === "off" ? undefined : level);
-  // ACT: 中转站仅继承同 ID 模型共同支持且接口值一致的档位，不猜别名或取能力全集。
+  // 中转站仅继承同 ID 模型共同支持且接口值一致的档位，不猜别名或取能力全集。
   const inheritedLevels: ThinkingLevel[] = candidates.length
     ? thinkingLevels.filter(level => candidates.every((item, index) => supported[index]!.includes(level)
       && wireValue(item, level) === wireValue(candidates[0]!, level)))
-    // ACT: 目录未知不等于禁用，保留旧版低中高；额外档位由模型显式声明。
+    // 目录未知不等于禁用，保留旧版低中高；额外档位由模型显式声明。
     : [...defaultThinkingLevels];
   const reasoningLevels = efforts === false ? [] : efforts
     ? thinkingLevels.filter(level => Object.hasOwn(efforts, level))
@@ -64,7 +64,7 @@ export function getModelReasoning(providerId: string, model: z.infer<typeof prov
     const wire = efforts ? efforts[level] : candidates[0] ? wireValue(candidates[0], level) : level;
     if (wire != null) thinkingLevelMap[level] = wire;
   }
-  // ACT: 显式接口值声明使用 Anthropic effort 协议，避免 SDK 将映射值改为 token 预算。
+  // 显式接口值声明使用 Anthropic effort 协议，避免 SDK 将映射值改为 token 预算。
   const compat = protocol === "anthropic-messages" && efforts
     ? { ...base?.compat, forceAdaptiveThinking: true, supportsMidConvoEffort: false }
     : base?.compat;
@@ -81,7 +81,7 @@ export function getModelLimits(providerId: string, model: z.infer<typeof provide
   const matches = builtinModels.filter(item => item.id === model.id);
   const exact = matches.find(item => item.provider === providerId);
   const candidates = exact ? [exact] : matches;
-  // ACT: 只精确匹配 ID；跨供应商同名参数逐项一致才采用，不猜别名。
+  // 只精确匹配 ID；跨供应商同名参数逐项一致才采用，不猜别名。
   const contextWindow = candidates.every(item => item.contextWindow === candidates[0]?.contextWindow) ? candidates[0]?.contextWindow : undefined;
   const maxTokens = candidates.every(item => item.maxTokens === candidates[0]?.maxTokens) ? candidates[0]?.maxTokens : undefined;
   return {
@@ -210,7 +210,7 @@ export function streamAi(
       if (references.length) {
         const field = provider.protocol === "openai-responses" ? "input" : "messages";
         const messages = body[field] as { role: string; content: unknown }[];
-        // ACT: 后续 Anthropic 工具结果也使用 user 角色，附件只补充到最初的输入。
+        // 后续 Anthropic 工具结果也使用 user 角色，附件只补充到最初的输入。
         const firstUser = messages.findIndex(message => message.role === "user");
         const attachmentContent = referenceContent(provider.protocol, "", references).slice(1);
         body = { ...body, [field]: messages.map((message, index) => index === firstUser

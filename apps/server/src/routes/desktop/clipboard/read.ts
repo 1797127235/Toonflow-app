@@ -38,7 +38,7 @@ async function readClipboardFile(path: string) {
   return { name: basename(path), mimeType, data: bytes.toString("base64") };
 }
 
-// ACT: 读取也使用 POST，复用 desktopRequest 的同源校验。
+// 读取也使用 POST，复用 desktopRequest 的同源校验。
 export default Router().post("/", validateFields({ format: z.enum(["image", "files"]).optional() }), async (req, res) => {
   const desktop = u.desktop.getDesktopRuntime(req);
   if (req.body.format === "image") {

@@ -92,7 +92,7 @@ export async function runSubAgent(options: SubAgentModel & {
         args[2] = args[2] ? AbortSignal.any([signal, args[2]]) : signal;
         // 取消后不再进入工具实现：这里拦一次，工具内部再抛也来不及撤销已有副作用。
         args[2].throwIfAborted();
-        // ACT: SDK 会把整批工具执行完才停轮；提问之后剩余工具可能继续改文件，
+        // SDK 会把整批工具执行完才停轮；提问之后剩余工具可能继续改文件，
         // 所以必须在每个工具入口就阻断，不能只靠 finishTurn。
         if (inputRequired?.()) throw new Error("任务正在等待调用方补充输入，不能继续执行工具");
         // 非提问工具原样执行：父会话不需要子 Agent 每次读文件、搜索的噪音，

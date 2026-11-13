@@ -230,7 +230,7 @@ function saveStorage(entries: [string, string | null][]) {
       else localStorage.setItem(key, value);
     }
   } catch (error) {
-    // ACT: localStorage 没有事务，写入失败时恢复本次修改的项。
+    // localStorage 没有事务，写入失败时恢复本次修改的项。
     for (const [key, value] of previous.reverse()) {
       if (value === null) localStorage.removeItem(key);
       else localStorage.setItem(key, value);

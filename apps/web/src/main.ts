@@ -36,7 +36,7 @@ async function notifyDesktopReady(failed = false) {
   if (!response.ok) throw new Error((await response.json()).message || `通知桌面就绪失败（${response.status}）`);
 }
 
-// ACT: 已安装客户端的自动更新不经过 NSIS；启动时阻止缺少所需 API 的旧 WebView2 进入业务页面。
+// 已安装客户端的自动更新不经过 NSIS；启动时阻止缺少所需 API 的旧 WebView2 进入业务页面。
 (requiresWebView2Update
   ? Promise.reject(new Error("当前 Microsoft Edge WebView2 Runtime 版本过旧。请以管理员身份运行微软最新版安装器；若仍提示已安装，请修复 WebView2 或联系管理员检查更新服务。更新完成后，请完全退出 Laywork 再重新打开。"))
   : requiresMobileWebViewUpdate
@@ -51,12 +51,12 @@ async function notifyDesktopReady(failed = false) {
   if (!isDesktop) return;
   if (!isRemoteConnection) app.onUnmount(registerDesktopProtocol());
   await nextTick();
-  // ACT: 隐藏的 WebView 不依赖 requestAnimationFrame；等待首页挂载和页面资源就绪。
+  // 隐藏的 WebView 不依赖 requestAnimationFrame；等待首页挂载和页面资源就绪。
   if (document.readyState !== "complete") {
     await new Promise<void>((resolve) => window.addEventListener("load", () => resolve(), { once: true }));
   }
   await notifyDesktopReady();
-  // ACT: 桌面启动后只静默检查一次；失败留待用户手动重试，不阻塞启动或自动下载。
+  // 桌面启动后只静默检查一次；失败留待用户手动重试，不阻塞启动或自动下载。
   if (!isRemoteConnection) void checkDesktopUpdate(true).catch(() => {});
 }).catch(async (error) => {
   console.error("页面初始化失败：", error);
@@ -94,6 +94,6 @@ async function notifyDesktopReady(failed = false) {
     }),
   }).mount("#app");
   await nextTick();
-  // ACT: 错误页也要结束启动动画，但不能消费尚未注册监听的安装请求。
+  // 错误页也要结束启动动画，但不能消费尚未注册监听的安装请求。
   await notifyDesktopReady(true).catch((error) => console.error("显示启动错误页失败：", error));
 });

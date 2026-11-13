@@ -1,4 +1,4 @@
-// ACT: 一个进程一个宿主，由启动入口声明；子进程默认是独立服务，不继承宿主权限。
+// 一个进程一个宿主，由启动入口声明；子进程默认是独立服务，不继承宿主权限。
 let runtimeHost: "server" | "desktop" | "mobile" = "server";
 
 export function setRuntimeHost(host: typeof runtimeHost) {
@@ -15,7 +15,7 @@ export function getRuntimePlatform() {
   const nativeDevelopment = desktopSystem && development;
   const host = desktop || mobile;
   // local 表示本机任意工作目录能力，native 表示原生宿主或开发原生操作，均不代替请求授权。
-  // ACT: Linux 桌面与 Windows、macOS 一样可选本机目录；独立服务器进程和 OpenHarmony 仍只能用服务器工作区。
+  // Linux 桌面与 Windows、macOS 一样可选本机目录；独立服务器进程和 OpenHarmony 仍只能用服务器工作区。
   const linuxDesktop = process.platform === "linux" && desktop && process.env.TOONFLOW_PLATFORM !== "ohos";
   const local = linuxDesktop || (desktopSystem && (development || desktop));
   const native = host || nativeDevelopment;

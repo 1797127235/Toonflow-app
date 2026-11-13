@@ -49,7 +49,7 @@ function requestFile(url: URL, signal: AbortSignal, accept: string) {
       let addresses = isIP(hostname) ? [{ address: hostname, family: isIP(hostname) }] : await lookup(hostname, { all: true, verbatim: true });
       signal.throwIfAborted();
       if (addresses.length && addresses.every(item => /^198\.(18|19)\./.test(item.address))) {
-        // ACT: 仅兼容 TUN 的 fake-IP 答案；固定 DoH 查回真实公网地址，不允许将特殊网段直接作为下载目标。
+        // 仅兼容 TUN 的 fake-IP 答案；固定 DoH 查回真实公网地址，不允许将特殊网段直接作为下载目标。
         const dnsUrl = new URL("https://dns.alidns.com/resolve");
         dnsUrl.searchParams.set("name", hostname);
         dnsUrl.searchParams.set("type", "A");
@@ -63,7 +63,7 @@ function requestFile(url: URL, signal: AbortSignal, accept: string) {
       const address = addresses[0];
       const connection = new URL(url);
       connection.hostname = address.family === 6 ? `[${address.address}]` : address.address;
-      // ACT: 固定已校验 IP，保留原 Host 和 TLS 证书域名；Bun 的 request signal 不保证及时结束，改为显式销毁并 reject。
+      // 固定已校验 IP，保留原 Host 和 TLS 证书域名；Bun 的 request signal 不保证及时结束，改为显式销毁并 reject。
       outgoing = (url.protocol === "https:" ? requestSecure : request)(connection, {
         method: "GET", agent: false, servername: hostname, headers: { Host: url.host, Accept: accept },
       }, response => {

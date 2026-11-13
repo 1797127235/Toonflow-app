@@ -11,7 +11,7 @@ export { toolNameSchema } from "@toonflow/tools-scaffold/runtime";
 
 const { z } = zod;
 
-// ACT: 工具复用宿主 Zod 4；虚拟模块不依赖安装目录中的 node_modules。
+// 工具复用宿主 Zod 4；虚拟模块不依赖安装目录中的 node_modules。
 Bun.plugin({
   name: "toolHost",
   setup(build) {
@@ -88,7 +88,7 @@ export async function listTools() {
 
 export async function loadTool(name: string, directory = toolsDirectory) {
   const { path, metadata } = await readTool(name, directory);
-  // ACT: 工具是可信的服务端代码，不是沙箱；安装成功后由安装器清除模块缓存。
+  // 工具是可信的服务端代码，不是沙箱；安装成功后由安装器清除模块缓存。
   const { default: plugin } = await import(pathToFileURL(path).href) as { default: ToolPlugin };
   if (typeof plugin?.createTools !== "function" || typeof plugin.validateConfig !== "function") {
     throw Object.assign(new Error(t`${metadata.displayName} 未导出有效的工具插件`), { status: 400 });

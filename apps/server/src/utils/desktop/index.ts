@@ -28,7 +28,7 @@ function getInstallFailure(local: Awaited<ReturnType<DesktopRuntime["updater"]["
     catch (error) { console.error("清理已取消更新核验记录失败：", error); }
     return;
   }
-  // ACT: 页面刷新不算重启；由进程内标识区分交接中与下一次实际启动。
+  // 页面刷新不算重启；由进程内标识区分交接中与下一次实际启动。
   if (attempt.runtimeId === updateRuntimeId && !attempt.failure && !applyError) return;
   try {
     Bun.semver.order(attempt.targetVersion, attempt.targetVersion);
@@ -48,7 +48,7 @@ function getInstallFailure(local: Awaited<ReturnType<DesktopRuntime["updater"]["
   }
   const message = attempt.failure || applyError || "更新重启后的版本或构建号与目标不一致，请下载完整安装包重新安装。";
   if (!attempt.failure) {
-    // ACT: 磁盘满或权限异常时，已有目标仍足以显示完整安装指引，补记失败不能阻断状态查询。
+    // 磁盘满或权限异常时，已有目标仍足以显示完整安装指引，补记失败不能阻断状态查询。
     try { conf.set("desktopUpdateAttempt", { ...attempt, failure: message }); }
     catch (error) { console.error("保存更新核验失败信息失败：", error); }
   }
@@ -89,7 +89,7 @@ function getUpdateBaseUrl(): string {
 }
 
 async function withUpdateSource<T>(updater: DesktopRuntime["updater"], updateBaseUrl: string, run: () => Promise<T>) {
-  // ACT: 两版 Mac SDK 和 Windows 更新器均返回缓存对象；只在互斥的更新操作期间覆盖地址。
+  // 两版 Mac SDK 和 Windows 更新器均返回缓存对象；只在互斥的更新操作期间覆盖地址。
   const info = await updater.getLocalInfo();
   const baseUrl = info.baseUrl;
   info.baseUrl = updateBaseUrl;
@@ -140,14 +140,14 @@ export async function getDesktopUpdate(req: Request): Promise<updateSnapshot> {
   const state = getDesktopState(req);
   const local = await updater.getLocalInfo();
   const { version, channel, hash } = local;
-  // ACT: Intel 1.18.1 首次检查前没有状态，旧清单也可能缺少状态字段。
+  // Intel 1.18.1 首次检查前没有状态，旧清单也可能缺少状态字段。
   const update = updater.updateInfo();
   const updateBaseUrl = getUpdateBaseUrl();
   const validUpdate = state.checkedBaseUrl === updateBaseUrl;
   const applyError = state.applyingUpdate && state.updateHandoffComplete ? update?.error : undefined;
   const installFailure = getInstallFailure(local, applyError);
   if (applyError) state.applyingUpdate = false;
-  // ACT: 安装失败跨重启保留，不被切换更新源或普通联网错误覆盖。
+  // 安装失败跨重启保留，不被切换更新源或普通联网错误覆盖。
   const error = installFailure?.message || (state.lastBaseUrl === updateBaseUrl ? state.updateError || (validUpdate ? update?.error || "" : "") : "") || update?.installError || "";
   return {
     version, channel, hash,
@@ -253,19 +253,19 @@ export async function applyDesktopUpdate(req: Request): Promise<void> {
     const target = updater.updateInfo();
     if (!target?.version || !target.hash) throw new Error("更新包缺少目标版本或构建号，请重新下载。");
     attempt = { attemptId: crypto.randomUUID(), runtimeId: updateRuntimeId, channel: local.channel, targetVersion: target.version, targetHash: target.hash };
-    // ACT: SDK 可能直接退出进程，必须在交接前写入 app 外的数据目录。
+    // SDK 可能直接退出进程，必须在交接前写入 app 外的数据目录。
     conf.set("desktopUpdateAttempt", attempt);
     await withUpdateSource(updater, updateBaseUrl, () => updater.applyUpdate!());
     const error = updater.updateInfo()?.error;
     if (error) throw new Error(error);
     state.updateHandoffComplete = true;
-    // ACT: 成功后宿主即将退出，保持互斥直到进程结束。
+    // 成功后宿主即将退出，保持互斥直到进程结束。
   } catch (error) {
     state.updateError = error instanceof Error ? error.message : String(error);
     // 交接未完成或用户取消时没有发生重启，不留下虚假的重启失败记录。
     if (attempt) {
       cancelledUpdateAttempt = attempt.attemptId;
-      // ACT: 短暂写锁仅重试一次，后续查询可补清理；退出前仍不可写时无法跨进程确认取消。
+      // 短暂写锁仅重试一次，后续查询可补清理；退出前仍不可写时无法跨进程确认取消。
       for (let retry = 0; retry < 2; retry++) {
         try {
           if (conf.get("desktopUpdateAttempt")?.attemptId === attempt.attemptId) conf.delete("desktopUpdateAttempt");

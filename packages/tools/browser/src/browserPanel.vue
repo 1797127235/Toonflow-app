@@ -193,7 +193,7 @@ function resetInput() {
   composing.value = false;
   if (keyboardInput.value) keyboardInput.value.value = "";
   keyboardInput.value?.blur();
-  // ACT: 释放必须排在已开始的输入之后，不能随观看流一起取消，否则远端会留下按住的键或鼠标。
+  // 释放必须排在已开始的输入之后，不能随观看流一起取消，否则远端会留下按住的键或鼠标。
   if (target) releasePending = releasePending.then(() => fetch("/api/browser/input", { method: "POST", headers: { "Content-Type": "application/json", "x-toonflow-workspace": "1" }, body: JSON.stringify({ ...target, input: { type: "release" } }), keepalive: true, signal: AbortSignal.timeout(5000) })).then(() => {}, () => {});
 }
 
@@ -223,7 +223,7 @@ watch([() => props.active, browserScope, () => session.value?.browserSessionId, 
     connectionMessage.value = "";
   }
   if (!active) { expanded.value = false; status.value = "paused"; return; }
-  // ACT: 同一浏览器可跨轮复用；旧轮只保留已收到的末帧，不重连获取后续轮次的画面。
+  // 同一浏览器可跨轮复用；旧轮只保留已收到的末帧，不重连获取后续轮次的画面。
   if (live === false) { expanded.value = false; status.value = "paused"; connectionMessage.value = ""; return; }
   if (closed || sessionEnded) { endSession(); return; }
   if (!scope || !sessionId) { status.value = "waiting"; return; }
@@ -329,7 +329,7 @@ function sendInput(input: BrowserInput) {
   const target = { ...scope, sessionId: current.browserSessionId, tabId: current.tabId };
   inputTarget = target;
   const queued = { input, target, controller: inputController };
-  // ACT: HTTP 慢于指针移动时只保留尚未发送的最新位置；按下、抬起和键盘事件仍严格排序。
+  // HTTP 慢于指针移动时只保留尚未发送的最新位置；按下、抬起和键盘事件仍严格排序。
   const previous = inputQueue.at(-1);
   if (input.type === "mouse" && input.event === "move" && previous?.input.type === "mouse" && previous.input.event === "move") inputQueue[inputQueue.length - 1] = queued;
   else inputQueue.push(queued);

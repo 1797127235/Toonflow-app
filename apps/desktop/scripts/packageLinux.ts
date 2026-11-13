@@ -17,7 +17,7 @@ process.chdir(projectDir);
 const debArch = process.arch === "x64" ? "amd64" : "arm64";
 const appArch = process.arch === "x64" ? "x86_64" : "aarch64";
 const runtimeName = process.arch === "x64" ? "runtime-x86_64" : "runtime-aarch64";
-// ACT: 固定 2026-11-03 的 type2 runtime。上游 continuous 更换后校验失败，需同时更新体积上限内的摘要。
+// 固定 2026-11-03 的 type2 runtime。上游 continuous 更换后校验失败，需同时更新体积上限内的摘要。
 const runtimeSha256 = process.arch === "x64"
   ? "617aa77314d57c8b8e4fae9c3f0b35af7b30d5529cb69e98f64f92510ed98a46"
   : "9a72a744d221576c9347ec074243acc5c3c7568896b12714e0e82e9f0bf47900";
@@ -139,7 +139,7 @@ if command -v update-desktop-database >/dev/null 2>&1; then
   update-desktop-database -q /usr/share/applications || true
 fi
 `, 0o755);
-  // ACT: 卸载不删除 ~/.local/share/toonflow，避免清掉用户项目与设置。
+  // 卸载不删除 ~/.local/share/toonflow，避免清掉用户项目与设置。
   await writeText(join(debRoot, "DEBIAN/postrm"), `#!/bin/sh
 set -e
 if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then

@@ -114,7 +114,7 @@ async function prepareRequest<T>(directory: string | undefined, mediaType: "imag
   const references = async (items: MediaReference[] | undefined, type: string) => {
     if (!items?.length) return items ? [] : undefined;
     if (!directory) invalid("参考媒体需要工作目录");
-    // ACT: 单次请求顺序处理引用，避免数十个参考媒体同时启动探测进程。
+    // 单次请求顺序处理引用，避免数十个参考媒体同时启动探测进程。
     const result: T[] = [];
     for (const item of items) result.push(await read(directory, item, type, signal));
     return result;
@@ -207,7 +207,7 @@ export async function generateMedia(
     signal?.throwIfAborted();
     return result;
   } catch (err) {
-    // ACT: 只回滚本次创建的文件，保留目录中已有的节点资源。
+    // 只回滚本次创建的文件，保留目录中已有的节点资源。
     await Promise.all(written.map(path => unlink(path).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; })));
     throw err;
   } finally { finish(); }

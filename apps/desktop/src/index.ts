@@ -76,7 +76,7 @@ async function restoreInstallRegistration(installDirectory: string) {
           if ((error as { code?: number }).code !== 1) throw error;
           protocolExists = false;
         }
-        // ACT: 自动更新不经过 NSIS；仅补全缺失协议，已有注册（包括其他安装）保持不动。
+        // 自动更新不经过 NSIS；仅补全缺失协议，已有注册（包括其他安装）保持不动。
         if (!protocolExists) {
           for (const [key, value] of [[protocolKey, "URL:Laywork Protocol"], [`${protocolKey}\\DefaultIcon`, `"${resolve(PATHS.RESOURCES_FOLDER, "app.ico")}",0`], [commandKey, command]]) {
             await execFileAsync("reg.exe", ["add", key, "/ve", "/t", "REG_SZ", "/d", value, "/f"], { windowsHide: true });
@@ -107,7 +107,7 @@ async function start() {
       try { accessSync(PATHS.RESOURCES_FOLDER, constants.W_OK); }
       catch { linuxPackage = true; }
     }
-    // ACT: 先显示原生动画，再加载服务，避免初始化期间没有反馈。
+    // 先显示原生动画，再加载服务，避免初始化期间没有反馈。
     const startupSettings = await file(resolve(dataDirectory, "settings.json")).json().catch((error) => {
       if (error.code !== "ENOENT") console.error("读取启动设置失败，使用默认启动动画：", error);
       return null;
@@ -115,7 +115,7 @@ async function start() {
     setLocaleFallback(() => normalizeLocale(startupSettings?.settings?.ui?.language)
       ?? detectLocale([Intl.DateTimeFormat().resolvedOptions().locale]));
     if (process.platform === "darwin") {
-      // ACT: WKWebView 的 Command 编辑快捷键由原生菜单角色交给当前响应者处理。
+      // WKWebView 的 Command 编辑快捷键由原生菜单角色交给当前响应者处理。
       ApplicationMenu.setApplicationMenu([
         { label: "Laywork", submenu: [
           { role: "about" },
@@ -138,7 +138,7 @@ async function start() {
       ]);
     }
     try {
-      // ACT: Linux 暂无原生启动画面，直接显示主窗口。
+      // Linux 暂无原生启动画面，直接显示主窗口。
       if (process.platform !== "linux" && startupSettings?.settings?.ui?.startupAnimation !== false) {
         splash = await showNativeSplash(resolve(PATHS.VIEWS_FOLDER, "../startup"), () => {
           isClosing = true;
@@ -167,7 +167,7 @@ async function start() {
       extRoot: resolve(PATHS.VIEWS_FOLDER, "../ext"),
       providersRoot: resolve(PATHS.VIEWS_FOLDER, "../providers"),
       skillsRoot: resolve(PATHS.VIEWS_FOLDER, "../skills"),
-      // ACT: 暂不安装内置团队，随团队打包一同恢复。
+      // 暂不安装内置团队，随团队打包一同恢复。
       // agentsRoot: resolve(PATHS.VIEWS_FOLDER, "../agents"),
       pluginRevision: hash,
     });
@@ -186,14 +186,14 @@ async function start() {
     console.log(`桌面服务：http://127.0.0.1:${connection.port}`);
 
     const { workArea } = Screen.getPrimaryDisplay();
-    // ACT: 宽高分别限制在屏幕可用区域内，预留标题栏和边距，不固定比例。
+    // 宽高分别限制在屏幕可用区域内，预留标题栏和边距，不固定比例。
     const width = Math.min(1280, workArea.width - 64);
     const height = Math.min(960, workArea.height - 64);
     const mainWindow = new BrowserWindow({
       title: "Laywork",
       url: `http://127.0.0.1:${connection.port}/?desktop=1${connection.remote ? "&remote=1" : ""}`,
       navigationRules: JSON.stringify(getNavigationRules(connection.port)),
-      // ACT: Windows SDK 未接管普通新窗口请求，在创建 WebView 弹窗前交给宿主。
+      // Windows SDK 未接管普通新窗口请求，在创建 WebView 弹窗前交给宿主。
       preload: `
         (() => {
           function openExternal(url) {
@@ -233,7 +233,7 @@ async function start() {
       if (target.protocol !== "http:" && target.protocol !== "https:") return;
       const current = new URL(mainWindow.webview.url!);
       if (process.platform === "win32" && target.origin === current.origin && target.pathname === current.pathname && target.search === current.search) {
-        // ACT: SDK 把 Ctrl 刷新误判为新窗口；松开后恢复内部导航，避免再次触发误判。
+        // SDK 把 Ctrl 刷新误判为新窗口；松开后恢复内部导航，避免再次触发误判。
         clearTimeout(navigationTimer);
         const navigate = () => {
           if (isClosing) return;
@@ -248,7 +248,7 @@ async function start() {
         void Utils.showMessageBox({ type: "error", title: t`打开链接失败`, message: t`请检查默认浏览器设置后重试。` });
       }
     }
-    // ACT: 两版 SDK 的全局事件不带 WebView ID，使用事件名后缀限定主窗口。
+    // 两版 SDK 的全局事件不带 WebView ID，使用事件名后缀限定主窗口。
     Electrobun.events.on(`new-window-open-${mainWindow.webview.id}`, (event: { data: { detail: unknown } }) => openLink(event.data.detail));
     Electrobun.events.on(`host-message-${mainWindow.webview.id}`, (event: { data: { detail: unknown } }) => {
       const detail = event.data.detail;
@@ -296,7 +296,7 @@ async function start() {
             splash = undefined;
           }
           isShowing = true;
-          // ACT: 安装器已完成注册；更新后的修复仅首次展示时执行，不阻塞主窗口。
+          // 安装器已完成注册；更新后的修复仅首次展示时执行，不阻塞主窗口。
           void restoreInstallRegistration(installDirectory);
         }
         if (failed && !connection.remote) {
@@ -326,12 +326,12 @@ async function start() {
         else await (Updater as DesktopRuntime["updater"]).confirmStartup?.();
       },
       openDevTools() { mainWindow.webview.openDevTools(); },
-      // ACT: Windows 使用两阶段退出；Intel Mac 由兼容入口适配 1.18.1 更新器。
+      // Windows 使用两阶段退出；Intel Mac 由兼容入口适配 1.18.1 更新器。
       updater: process.platform === "win32" ? createWindowsUpdater(PATHS.RESOURCES_FOLDER, Utils as unknown as Parameters<typeof createWindowsUpdater>[1])
         : linuxPackage ? createLinuxPackageUpdater() : Updater,
     } satisfies DesktopRuntime;
     if (process.platform === "win32") {
-      // ACT: Electrobun 2.0.1 未设置 Windows 窗口图标，复用构建产物中的应用 ICO。
+      // Electrobun 2.0.1 未设置 Windows 窗口图标，复用构建产物中的应用 ICO。
       const user32 = dlopen("user32.dll", {
         LoadImageW: { args: ["ptr", "ptr", "u32", "i32", "i32", "u32"], returns: "ptr" },
         SendMessageW: { args: ["ptr", "u32", "u64", "ptr"], returns: "ptr" },
@@ -371,7 +371,7 @@ async function start() {
       splash = undefined;
     });
     function saveRuntime(port: number) {
-      // ACT: 切换连接也更新端口；启动器通过 PID 忽略已退出进程留下的记录。
+      // 切换连接也更新端口；启动器通过 PID 忽略已退出进程留下的记录。
       const record = JSON.stringify({ pid: process.pid, port });
       if (process.platform === "win32") writeAtomicSync(resolve(PATHS.RESOURCES_FOLDER, "desktopRuntime.json"), record);
       else if (process.platform === "linux") writeAtomicSync(resolve(dataDirectory, "desktopRuntime.json"), record);

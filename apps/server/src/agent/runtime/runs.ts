@@ -5,7 +5,7 @@ type agentRun = { cwd: string; abort: () => void; finished: Promise<void> };
  * 如果按 sessionFile 存取消入口，用户点“停止”晚到一步就会误杀下一轮。
  */
 
-// ACT: 每轮 HTTP 请求独立持有取消通道；迟到的停止请求不能取消同一会话的下一轮。
+// 每轮 HTTP 请求独立持有取消通道；迟到的停止请求不能取消同一会话的下一轮。
 const agentRuns = new Map<string, agentRun>();
 
 export function registerAgentRun(cwd: string, abort: () => void) {

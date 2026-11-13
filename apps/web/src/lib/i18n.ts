@@ -28,7 +28,7 @@ import "dayjs/locale/tr";
 export function registerApiLanguage(client: AxiosInstance) {
   const interceptor = client.interceptors.request.use(config => {
     const url = new URL(client.getUri(config), window.location.href);
-    // ACT: 仅本应用 API 接收界面语言，不改变供应商等外部请求。
+    // 仅本应用 API 接收界面语言，不改变供应商等外部请求。
     if (url.origin === window.location.origin && url.pathname.startsWith("/api/")) config.headers.set("Accept-Language", locale.value);
     return config;
   });
@@ -52,7 +52,7 @@ export function registerLanguage() {
   };
 }
 
-// ACT: 只翻译 Markdown 控件，用户输入和模型生成的正文原样显示。
+// 只翻译 Markdown 控件，用户输入和模型生成的正文原样显示。
 export const markdownLocale = computed<LocaleConfig>(() => ({
   button: {
     zoomIn: translate("放大"), zoomOut: translate("缩小"), resetZoom: translate("重置缩放"),

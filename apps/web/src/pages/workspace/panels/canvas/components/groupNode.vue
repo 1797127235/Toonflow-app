@@ -151,7 +151,7 @@ watch(
   () => props.readOnly ? [] : flow.getNodes.value.filter(node => node.parentNode === props.id),
   children => {
     if (props.readOnly) return;
-    // ACT: 拖动期间保持分组框不变，松手后由画布统一贴合内容。
+    // 拖动期间保持分组框不变，松手后由画布统一贴合内容。
     children.forEach(node => { node.expandParent = false; });
   },
   { immediate: true },

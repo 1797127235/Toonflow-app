@@ -60,7 +60,7 @@
           <el-form-item v-if="activeTab === 'file'" class="sourceField" label="供应商文件">
             <div class="fileImport">
               <div class="fileSource">
-                <!-- ACT: Android 会把 .ts 识别为视频，选中后再校验扩展名和大小。 -->
+                <!-- Android 会把 .ts 识别为视频，选中后再校验扩展名和大小。 -->
                 <input ref="fileInput" type="file" :accept="isMobile ? undefined : '.ts'" hidden :disabled="saving" @change="readSourceFile" />
                 <el-input :modelValue="fileName" :prefixIcon="IconFileCode" placeholder="尚未选择文件" readonly aria-label="已选择的供应商文件" />
                 <el-button :icon="IconFolderOpen" @click="fileInput?.click()">选择文件</el-button>
@@ -236,7 +236,7 @@ async function addProvider() {
     }
     if (values) {
       const providerId = addedProvider.value.id;
-      // ACT: 安装成功但配置保存失败时保留安装结果，重试只保存配置。
+      // 安装成功但配置保存失败时保留安装结果，重试只保存配置。
       await saveSettings(settings => {
         const configs = settings.mediaProviderConfigs as Record<string, Record<string, unknown>> | undefined;
         if (configs !== undefined && (!configs || typeof configs !== "object" || Array.isArray(configs))) throw new Error("媒体供应商配置格式无效");

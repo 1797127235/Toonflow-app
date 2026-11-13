@@ -3,7 +3,7 @@ import { Worker } from "node:worker_threads";
 
 export async function showNativeSplash(assetDir: string, onClose: () => void) {
   if (process.platform === "win32" && process.arch === "x64") {
-    // ACT: Win32 窗口与消息循环都归 Worker 所有，主线程加载服务/WebView2 时动画仍能响应。
+    // Win32 窗口与消息循环都归 Worker 所有，主线程加载服务/WebView2 时动画仍能响应。
     const worker = new Worker(join(assetDir, "windowsSplashWorker.js"), { workerData: assetDir });
     const ready = Promise.withResolvers<void>();
     const finished = Promise.withResolvers<void>();
@@ -31,7 +31,7 @@ export async function showNativeSplash(assetDir: string, onClose: () => void) {
     });
     worker.on("error", (error) => {
       ready.reject(error);
-      // ACT: 动画故障结束等待并继续启动，只有 cancelled 消息表示用户退出。
+      // 动画故障结束等待并继续启动，只有 cancelled 消息表示用户退出。
       if (isReady && !isClosed) {
         console.error("原生启动动画失败：", error);
         close();

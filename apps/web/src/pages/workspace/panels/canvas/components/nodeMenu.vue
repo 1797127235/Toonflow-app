@@ -249,7 +249,7 @@ async function openMenu(event: MouseEvent | TouchEvent, nodesOnly = false, selec
   menuAnchor.value = { getBoundingClientRect: () => new DOMRect(clientX, clientY, 0, 0) };
   if (handle) {
     const bounds = flow.vueFlowRef.value!.getBoundingClientRect();
-    // ACT: VueFlow 在释放后清空拖线；菜单期间复用其预览，避免创建临时节点或边。
+    // VueFlow 在释放后清空拖线；菜单期间复用其预览，避免创建临时节点或边。
     flow.startConnection(handle.start, { x: clientX - bounds.left, y: clientY - bounds.top });
   }
   await nextTick();
@@ -347,7 +347,7 @@ async function runCommand(command: unknown) {
     if (created) flow.addSelectedNodes([created]);
     return menu.value?.handleClose();
   }
-  // ACT: 远端节点挂载后才注册端口，沿用画布工具的 nextTick 等待方式。
+  // 远端节点挂载后才注册端口，沿用画布工具的 nextTick 等待方式。
   await nextTick();
   const created = flow.findNode(id);
   if (group.length) {

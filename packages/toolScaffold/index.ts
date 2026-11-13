@@ -100,7 +100,7 @@ export async function createToolConfig(config: Omit<ToolMetadata, "components" |
     plugins: [{
       name: "toolHost",
       setup(build) {
-        // ACT: Bun 1.3 的 external 会保留原始路径，用虚拟转发模块保证产物引用宿主。
+        // Bun 1.3 的 external 会保留原始路径，用虚拟转发模块保证产物引用宿主。
         build.onResolve({ filter: /^zod$/ }, () => ({ path: "zod", namespace: "toolHost" }));
         build.onLoad({ filter: /^zod$/, namespace: "toolHost" }, () => ({
           contents: 'module.exports = require("toonflow:tool-zod");',
@@ -112,7 +112,7 @@ export async function createToolConfig(config: Omit<ToolMetadata, "components" |
       setup(build) {
         build.onLoad({ filter: /[\\/]@deepseek-ai[\\/]dsh-llm[\\/]lib[\\/]index\.js$/ }, async ({ path }) => {
           const source = await file(path).text();
-          // ACT: DSH 0.1.5-rc.2 动态读取自身 package.json；改成静态读取供 Bun 内联版本信息。
+          // DSH 0.1.5-rc.2 动态读取自身 package.json；改成静态读取供 Bun 内联版本信息。
           const contents = source.replace("createRequire(import.meta.url)(\"../package.json\")", "require(\"../package.json\")");
           return { contents, loader: "js" };
         });
@@ -133,7 +133,7 @@ export async function createToolConfig(config: Omit<ToolMetadata, "components" |
   await write(builtPath, `/*! toonflowTool:${metadataJson} */\n${clientBanner}${await result.outputs[0].text()}`);
   if (process.env.NODE_ENV === "dev") {
     await mkdir(dataDir, { recursive: true });
-    // ACT: Windows 的 bun --watch 占用已加载模块，开发同步直接复制覆盖，不使用 rename。
+    // Windows 的 bun --watch 占用已加载模块，开发同步直接复制覆盖，不使用 rename。
     await copyFile(builtPath, resolve(dataDir, fileName));
   }
 }

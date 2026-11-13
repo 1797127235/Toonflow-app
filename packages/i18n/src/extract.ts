@@ -41,7 +41,7 @@ async function scan(directory: string) {
           add(node.quasi.quasis.map((part, index) => (node.quasi.expressions.length ? escapeMessageText(part.value.cooked ?? part.value.raw) : part.value.cooked ?? part.value.raw) + (index < node.quasi.expressions.length ? `{${index}}` : "")).join(""), path);
         }
         if (node.type === "CallExpression" && node.callee.type === "Identifier" && ["translate", "translateMessage"].includes(node.callee.name) && node.arguments[0]?.type === "StringLiteral") add(node.arguments[0].value, path);
-        // ACT: 服务端这里只提取候选字典，不改业务字符串；真正翻译仅发生于明确的系统文案出口。
+        // 服务端这里只提取候选字典，不改业务字符串；真正翻译仅发生于明确的系统文案出口。
         if (!protectedMessage && backend && node.type === "StringLiteral" && node.value.length < 1200 && !node.value.includes("```")) {
           const parent = parents.at(-1);
           if (!(parent?.type === "ObjectProperty" && parent.key === node)) add(node.value, path);

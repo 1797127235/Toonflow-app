@@ -15,7 +15,7 @@ Function logWebView2Check
   ${Else}
     DetailPrint "诊断日志：$TEMP\toonflowWebView2Check.log"
   ${EndIf}
-  ; ACT: 日志写入失败只影响诊断，不改变 WebView2 探测结果。
+  ; 日志写入失败只影响诊断，不改变 WebView2 探测结果。
   ClearErrors
 FunctionEnd
 
@@ -53,7 +53,7 @@ Function ensureWebView2
   ${If} $0 == 4
   ${OrIf} $0 == 5
     ${If} ${Silent}
-      ; ACT: 静默安装不因实测失败弹框或提权，交由调用方根据退出码和日志处理。
+      ; 静默安装不因实测失败弹框或提权，交由调用方根据退出码和日志处理。
       Goto webView2Abort
     ${EndIf}
     MessageBox MB_YESNO|MB_ICONEXCLAMATION "检测到了 WebView2，但未能完成实际启动测试。可能与运行时、权限或系统策略有关。$\r$\n是否尝试使用微软组件修复？修复过程可能请求管理员权限；完成后将重新测试一次。$\r$\n检测返回码：$0$\r$\n诊断日志：$TEMP\toonflowWebView2Check.log" /SD IDNO IDNO webView2Abort
@@ -91,7 +91,7 @@ installWebView2:
     SetDetailsPrint textonly
     DetailPrint "请允许微软安装器获取管理员权限并完成 WebView2 安装或更新…"
     SetDetailsPrint none
-    ; ACT: 普通用户模式可能把已有旧 Runtime 视为已安装；仅微软更新进程请求提权。
+    ; 普通用户模式可能把已有旧 Runtime 视为已安装；仅微软更新进程请求提权。
     StrCpy $2 "管理员安装已结束，以启动实测为准"
     ExecShellWait "runas" "$PLUGINSDIR\MicrosoftEdgeWebview2Setup.exe"
   ${Else}
@@ -109,7 +109,7 @@ installWebView2:
   Call logWebView2Check
 
 recheckWebView2:
-  ; ACT: 微软操作返回成功不代表内核可用；新进程只复测一次，不循环修复。
+  ; 微软操作返回成功不代表内核可用；新进程只复测一次，不循环修复。
   StrCpy $4 "recheck"
   Call runWebView2Check
   ${If} $0 != 0

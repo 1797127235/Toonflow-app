@@ -31,7 +31,7 @@ $owner = [System.Windows.Forms.Form]::new()
 $owner.ShowInTaskbar = $false
 $owner.Opacity = 0
 try {
-  # ACT: 隐形父窗口先显示，系统目录弹窗才能继承置顶状态。
+  # 隐形父窗口先显示，系统目录弹窗才能继承置顶状态。
   $owner.Show()
   $owner.TopMost = $true
   $owner.Activate()

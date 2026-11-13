@@ -130,7 +130,7 @@ async function detectScenes(options: AnalysisOptions, videoIndex: number, estima
         if (time === undefined) throw new Error("视频帧与时间戳无法对应，已停止拉片");
         cuts.push(...detector.processFrame(content.subarray(offset, offset + frameBytes), time));
         frameCount++;
-        // ACT: 每 12 帧让出主线程，保证长视频处理中仍能响应取消和画布操作。
+        // 每 12 帧让出主线程，保证长视频处理中仍能响应取消和画布操作。
         if (frameCount % 12 === 0) {
           onProgress(Math.min(55, 5 + time / estimatedDuration * 50), `检测分镜 · ${frameCount} 帧`);
           await new Promise<void>(resolve => setTimeout(resolve, 0));
@@ -195,7 +195,7 @@ async function detectScenes(options: AnalysisOptions, videoIndex: number, estima
   if (!decodedCount || frameCount !== decodedCount) throw new Error("视频帧数与解码结果不一致，已停止拉片");
   cuts.push(...detector.finish());
   await workspace.remove(temporary, true);
-  // ACT: VFR 的最后一帧不能沿用前一帧间隔；优先取帧自身时长或有效流时长。
+  // VFR 的最后一帧不能沿用前一帧间隔；优先取帧自身时长或有效流时长。
   const duration = lastDuration > 0 ? lastTime + lastDuration
     : Number.isFinite(streamDuration) && streamDuration > lastTime ? streamDuration
       : lastTime + lastDelta;
@@ -286,7 +286,7 @@ export async function analyzeVideo(options: AnalysisOptions): Promise<AnalysisRe
     if (options.clips) {
       progress(`切割视频 · ${scene.index}/${result.scenes.length}`);
       scene.video = `${directory}/shot${name}.mp4`;
-      // ACT: 重编码用于按检测帧边界切割，避免 stream copy 只能在关键帧附近切开的误差。
+      // 重编码用于按检测帧边界切割，避免 stream copy 只能在关键帧附近切开的误差。
       await runFfmpeg(ffmpeg(source).seekInput(offset + scene.start).duration(scene.end - scene.start)
         .videoCodec("libx264").audioCodec("aac").audioBitrate(192).format("mp4")
         .videoFilters("pad=ceil(iw/2)*2:ceil(ih/2)*2")

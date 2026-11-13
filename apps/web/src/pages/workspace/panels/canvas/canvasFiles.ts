@@ -66,7 +66,7 @@ export async function copyCanvasFiles(files: Files, path: string, target: string
         copiedAssets.push(destination);
         paths.set(`assets/${id}`, destination);
       }
-      // ACT: 节点所属素材整体独立复制；未归属本画布节点的公共素材继续引用原文件。
+      // 节点所属素材整体独立复制；未归属本画布节点的公共素材继续引用原文件。
       const remapPath = (value: string) => {
         const normalized = value.replaceAll("\\", "/");
         for (const [source, destination] of paths) if (normalized === source || normalized.startsWith(`${source}/`)) return destination + normalized.slice(source.length);

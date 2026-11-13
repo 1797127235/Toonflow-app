@@ -75,7 +75,7 @@ export function useCanvasTools(options: {
       async call(request, signal) {
         if (redirected) return redirected.call(request, signal);
         const changesCanvas = request.name === "addCanvas" || request.name === "switchCanvas" || request.name === "renameCanvas";
-        // ACT: 转写按音频时长运行，复用 ASR 的停滞与收尾超时，不套用画布操作的总时限。
+        // 转写按音频时长运行，复用 ASR 的停滞与收尾超时，不套用画布操作的总时限。
         const callSignal = AbortSignal.any([workspaceSignal, ...(changesCanvas ? [] : [canvasSignal]), ...(request.name === "transcribeAudio" ? [] : [AbortSignal.timeout(120000)]), ...(signal ? [signal] : [])]);
         let cancel = () => {};
         try {
@@ -225,7 +225,7 @@ export function useCanvasTools(options: {
             throw new Error(`连接无效：${connection.source} -> ${connection.target}，请检查端口方向、数据类型以及目标节点的连接规则`);
           }
           const id = crypto.randomUUID();
-          // ACT: 候选边只参与本批校验，全部通过后再一次提交画布。
+          // 候选边只参与本批校验，全部通过后再一次提交画布。
           edges.push({
             ...connection, id, type: "default", selected: false, data: {}, events: {}, sourceNode, targetNode,
             sourceX: sourceNode.computedPosition.x, sourceY: sourceNode.computedPosition.y,

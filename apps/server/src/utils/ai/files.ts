@@ -179,7 +179,7 @@ export function createFileTransport(provider: FileProvider, options: { fetch?: t
         if (!invalidatedFiles.has(`${source.cachePath}\0${file.fileId}`)) return file;
       } catch (error) {
         signal?.throwIfAborted();
-        // ACT: 首个上传者取消后，其他等待者重新解析；取消不扩散到仍在使用同一内容的请求。
+        // 首个上传者取消后，其他等待者重新解析；取消不扩散到仍在使用同一内容的请求。
         if (!pending.signal?.aborted) throw error;
       }
       if (pendingUploads.get(source.cachePath) === pending) pendingUploads.delete(source.cachePath);
@@ -239,7 +239,7 @@ export function createFileTransport(provider: FileProvider, options: { fetch?: t
     const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
     if (fileIds.length) adapter.headers(provider.protocol, headers);
     if (renewed) headers.delete("content-length");
-    // ACT: SDK 可能重用首次构建的 payload；后续网络重试也必须使用已更新的文件 ID。
+    // SDK 可能重用首次构建的 payload；后续网络重试也必须使用已更新的文件 ID。
     const requestInit = { ...init, headers, signal, ...(renewed ? { body: JSON.stringify(body) } : {}) };
     const response = await request(input, requestInit);
     if (response.ok || recovered || !fileIds.length || ![400, 404, 422].includes(response.status)) return response;

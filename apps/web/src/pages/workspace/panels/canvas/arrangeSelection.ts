@@ -70,6 +70,6 @@ export function arrangeSelection(flow: ReturnType<typeof useVueFlow>, selection:
     return { node, position };
   });
   positions.forEach(({ node, position }) => { node.position = position; });
-  // ACT: 整理只贴合原分组边界，不执行拖动结束时按相交关系重新归组。
+  // 整理只贴合原分组边界，不执行拖动结束时按相交关系重新归组。
   fitGroupBounds(nodes, affected);
 }

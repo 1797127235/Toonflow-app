@@ -5,7 +5,7 @@ import type { PathLike } from "node:fs";
 
 type AccessKind = "read" | "write";
 type Entry = { queue: Semaphore; readers: number; writers: number };
-// ACT: 同文件最多同时读取 64 次；写入占满许可，FIFO 防止后到读写插队。
+// 同文件最多同时读取 64 次；写入占满许可，FIFO 防止后到读写插队。
 const readCapacity = 64;
 const entries = new Map<string, Entry>();
 
@@ -30,7 +30,7 @@ function waitForAccess(entry: Entry, kind: AccessKind, signal: AbortSignal): Pro
   });
 }
 
-// ACT: 单进程、规范化的文件路径队列；realpath/目录事务/业务锁由模块负责。
+// 单进程、规范化的文件路径队列；realpath/目录事务/业务锁由模块负责。
 export async function acquireFileAccess(paths: PathLike[], kind: AccessKind, signal?: AbortSignal) {
   signal?.throwIfAborted();
   const requests = accessKeys(paths).map(key => {

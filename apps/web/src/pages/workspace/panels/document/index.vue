@@ -369,7 +369,7 @@ async function tabAction(id: string, action: TabAction) {
     const session = sessions.get(id)!;
     keepOpen(id);
     if (session.context.resource.kind === "canvasNode") {
-      // ACT: 画布节点保留唯一运行实例，分屏只移动，不能复制 Teleport 的挂载目标。
+      // 画布节点保留唯一运行实例，分屏只移动，不能复制 Teleport 的挂载目标。
       if (panel.group.panels.length < 2) { ElMessage.info("画布节点只有一个视图，请先打开另一标签再移动到分屏"); return; }
       panel.api.moveTo({ group: panel.group, position: action === "splitRight" ? "right" : "bottom" });
     } else {
@@ -600,7 +600,7 @@ function beforeUnload(event: BeforeUnloadEvent) {
 }
 function drainRefreshQueue() {
   if (!active.value || lifetime.signal.aborted) { refreshQueue.clear(); return; }
-  // ACT: 只检查可见分组中的文档，最多同时读两个文件；隐藏标签切回来时再读取。
+  // 只检查可见分组中的文档，最多同时读两个文件；隐藏标签切回来时再读取。
   for (const session of refreshQueue) {
     if (refreshing.size >= 2) break;
     refreshQueue.delete(session);

@@ -61,7 +61,7 @@ const { version, buildCode, markdown = updateNotes } = defineProps<{ version: st
 const messageMarkdown = defineAsyncComponent(() => import("./messageMarkdown.vue"));
 
 const buildTiles = computed(() => {
-  // ACT: 构建码仅用于生成稳定的装饰图案，不作为完整性校验。
+  // 构建码仅用于生成稳定的装饰图案，不作为完整性校验。
   let seed = 2166136261;
   for (const character of buildCode) seed = Math.imul(seed ^ character.codePointAt(0)!, 16777619) >>> 0;
   const palettes = [

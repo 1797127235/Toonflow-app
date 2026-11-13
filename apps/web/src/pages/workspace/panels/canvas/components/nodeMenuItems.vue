@@ -89,7 +89,7 @@ let keyboardNavigation = false;
 const nodeByType = computed(() => new Map(props.nodes.map(node => [node.type, node])));
 
 onMounted(() => {
-  // ACT: 挂到直接父浮层，避开列表滚动裁剪，也让三级菜单保持父层的悬浮状态。
+  // 挂到直接父浮层，避开列表滚动裁剪，也让三级菜单保持父层的悬浮状态。
   menuHost.value = menuList.value?.closest<HTMLElement>(".el-popper") ?? props.appendTo;
 });
 
@@ -139,7 +139,7 @@ async function openGroup(id: string, keyboard = false) {
 async function closeGroup(id: string) {
   keyboardNavigation = true;
   openGroupId.value = undefined;
-  // ACT: 等子浮层释放焦点后再返回父项，避免 Element Plus 恢复旧焦点。
+  // 等子浮层释放焦点后再返回父项，避免 Element Plus 恢复旧焦点。
   await nextTick();
   focusButton(menuButtons()[props.items.findIndex(item => item.id === id)]);
 }

@@ -178,7 +178,7 @@ const treeRows = computed<TreeRow[]>(() => {
   return rows;
 });
 const rowIndexes = computed(() => new Map(treeRows.value.map((row, index) => [row.item.key, index])));
-// ACT: 数据与展开状态完整保留，只挂载可见行和少量缓冲；目录仍按需读取。
+// 数据与展开状态完整保留，只挂载可见行和少量缓冲；目录仍按需读取。
 const treeVirtualizer = useVirtualizer<HTMLDivElement, HTMLDivElement>(computed(() => {
   const sourceIndex = rowIndexes.value.get(draggedKey.value ?? "");
   return {
@@ -456,7 +456,7 @@ async function handleCommand(command: string, item = menuItem.value, source = cl
       const { entries } = await useWorkspaceFiles(currentDirectory).list(destination);
       const names = new Set(entries.map(entry => pathIdentity(entry.name)));
       total = source.items.length;
-      // ACT: 批量文件操作逐项协调，已完成项保留；错误明确报告进度，剩余剪切项可继续粘贴。
+      // 批量文件操作逐项协调，已完成项保留；错误明确报告进度，剩余剪切项可继续粘贴。
       for (const entry of [...source.items]) {
         if (currentDirectory !== directory.value) throw new Error("工作目录已切换");
         const from = pathIdentity(entry.path);
@@ -683,7 +683,7 @@ function readNodeIndex(currentDirectory: string, signal: AbortSignal) {
   signal.throwIfAborted();
   const cached = assetNodes.get(signal);
   if (cached) return cached;
-  // ACT: 素材归属才扫描全部画布；搜索与树各自持有可取消的缓存，失败不缓存。
+  // 素材归属才扫描全部画布；搜索与树各自持有可取消的缓存，失败不缓存。
   const pending = (props.params?.params.readNodes(currentDirectory, { signal, onError: (path, error) => {
     if (!signal.aborted && currentDirectory === directory.value) loadError.value = `无法读取“${path}”的节点，其余文件仍可使用：${error instanceof Error ? error.message : "请检查文件"}`;
   } }) ?? Promise.resolve([])).then(nodes => {
@@ -764,7 +764,7 @@ watch([searchTerm, directory, treeVersion], ([term, currentDirectory], _previous
     const results: FileTreeItem[] = [];
     const pending = [""];
     try {
-      // ACT: 搜索按目录逐层读取完整文件名和节点名，不缓存内容；大工作区可改为服务端索引。
+      // 搜索按目录逐层读取完整文件名和节点名，不缓存内容；大工作区可改为服务端索引。
       for (let index = 0; index < pending.length; index++) {
         let items: FileTreeItem[];
         try { items = await readDirectory(currentDirectory, pending[index]!, controller.signal); }

@@ -1,4 +1,4 @@
-// ACT: 此函数也会被序列化到原生壳的预检页面，必须保持自包含，不依赖模块变量。
+// 此函数也会被序列化到原生壳的预检页面，必须保持自包含，不依赖模块变量。
 export function getMissingBrowserFeatures(): string[] {
   const browser = globalThis as typeof globalThis & {
     ResizeObserver?: unknown;

@@ -99,7 +99,7 @@ export function createNodeConfig(config: NodeConfig, configUrl: string) {
     define: { "process.env.NODE_ENV": JSON.stringify("production") },
     build: {
       outDir,
-      // ACT: 单包构建不清公共产物目录，由根 build:nodes 在批量构建前统一清理。
+      // 单包构建不清公共产物目录，由根 build:nodes 在批量构建前统一清理。
       emptyOutDir: false,
       cssCodeSplit: true,
       lib: {

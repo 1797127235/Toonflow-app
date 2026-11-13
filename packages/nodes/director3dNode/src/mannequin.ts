@@ -12,7 +12,7 @@ export function createMannequin(id: string, color = "#c7a77b", hiddenParts: read
   root.userData.threeJsonId = id;
   const material = new MeshStandardMaterial({ color, roughness: 0.75 });
 
-  // ACT: 用少量椭圆截面表现人体体积，保留刚性关节预演，不引入蒙皮或外部模型。
+  // 用少量椭圆截面表现人体体积，保留刚性关节预演，不引入蒙皮或外部模型。
   function bodyPart(parent: Group, rings: [height: number, width: number, depth: number, forward?: number][]) {
     if (!parent.visible) return;
     const segments = 16;
