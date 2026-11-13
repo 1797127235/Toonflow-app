@@ -42,7 +42,8 @@
 
 ## 设计与验证记录
 
-- [ACP 外部 pi 接入规格](./acpPi/spec.md)：需求真源与功能对等矩阵；配套[设计计划](./acpPi/plan.md)与[上下文注入问题记录](./acpPi/contextIssues.md)。
+- [ACP 外部 pi 接入规格](./acpPi/spec.md)：需求真源与功能对等矩阵。
+- [双编排问题记录](./agentRuntime/dualOrchestration.md)：内置 Agent 与单 Agent 接口为什么各有一套会话语义，以及合并顺序。
 - [C2A 提供商真实调用测试计划](./c2aProvider/testPlan.md)：环境、成本策略与实测记录；配套[测试用例](./c2aProvider/testCases.md)。
 
 ## 目录约定
@@ -51,7 +52,8 @@
 docs/
   readme.md          文档入口
   development.md     开发与扩展指南
-  acpPi/             ACP 外部 pi 接入规格、计划与问题记录
+  acpPi/             ACP 外部 pi 接入规格
+  agentRuntime/      内置 Agent 编排问题记录
   c2aProvider/       C2A 提供商真实调用测试计划与用例
   readme/            各语言项目介绍
   images/            标识、认证与社区图片

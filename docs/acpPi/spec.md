@@ -1,7 +1,6 @@
 # Spec: ACP Client 首轮（嵌入 pi）
 
-状态：已实现（2026-11-08，commit 5108985 起）。本文保留为需求基线；实现与 Tech Stack / Project Structure 的出入见 plan.md 状态说明。核查未见本机门禁（isLocalWorkspaceRequest）与跨引擎 409 串行的对应实现，§Success Criteria 第 1 / 10 条待补齐或改判。
-关联设计笔记：`docs/acpPi/plan.md`（实现顺序与验证清单细节；以本 Spec 为准拍板需求）。
+状态：已实现（2026-11-08，commit 5108985 起）。本文保留为需求基线。与计划的出入：实际改用上游 pi-acp（npx）+ piCommand 脚本 + piBridge 扩展，未建 vendored fork 与 ops/ 操作平面；提示词、技能清单与全局规范经 pi 原生参数 `--system-prompt` / `--append-system-prompt` 下发，与内置 Agent 共用 `apps/server/src/agent/context.ts`。核查未见本机门禁（isLocalWorkspaceRequest）与跨引擎 409 串行的对应实现，§Success Criteria 第 1 / 10 条待补齐或改判。
 能力假设来源：实测 `pi-acp@0.0.34` + `pi@1.5.0`（2026-11，见 Plan §4.0）。
 
 ## Objective
@@ -206,7 +205,6 @@ which pi && pi --version
 ```text
 docs/acpPi/
   spec.md                 → 本规格（需求真源）
-  plan.md                 → 设计笔记 / 验证清单（实现细节参考）
 
 packages/piAcpAdapter/    → 新建：vendored fork（MIT），仅 patch MCP 透传
   src/                    → 上游源码，改动集中在 session/new 与 spawn
