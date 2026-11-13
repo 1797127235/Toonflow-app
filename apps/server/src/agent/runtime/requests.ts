@@ -76,6 +76,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         // 工具结果落盘失败要等到发请求前才抛：SDK 在工具轮结束后会继续构造下一轮，
         // 若当场抛出，调用方拿到的是“工具失败”，而不是“这一轮无法继续”。
         if (toolFailure) { const { error } = toolFailure; toolFailure = undefined; throw error; }
+
         // ── 1. 模型认证与传输 ──
         const providers = conf.get("settings", {}).customProviders;
         const provider = Array.isArray(providers) ? providers.find(item => item?.id === model.provider) : undefined;
@@ -91,9 +92,12 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         for (const value of [maxRequestImageBytes, maxRequestBytes]) {
           if (!Number.isSafeInteger(value) || value <= 0) throw new Error("图片请求预算必须为正安全整数");
         }
+        // 本次运行的内存索引：图片 id → 元数据（磁盘路径、mime、字节数、备注）。
+        // 请求体里只保留 id，读文件前要先靠它换出 path；运行结束即丢弃，下次从日志重建。
         const references = new Map<string, AgentImageReference>();
         const offloaded = new Set<string>();
         const invalidThinking = new Set<string>();
+
         // ── 2. 从历史恢复图片状态 ──
         // 这些状态不挂在上下文对象上，进程重启或重建请求后只能从落盘 custom entry 恢复；
         // 否则已卸载的图片会在下一轮重新发送，失效的 thinking 也会重新进入请求。
@@ -104,10 +108,14 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         for (const entry of branch) {
           if (entry.type !== "custom") continue;
           if (entry.customType === "toonflowImageAttachment") {
+            // 日志里存的就是 toonflowImage 对象本身；拼一个空文本 part 只为复用 schema 校验
+            // （id、path 正则、mime、字节数）。校验失败说明日志损坏，直接报错而不跳过：
+            // 跳过会让模型静默地少看一张图，比报错更难排查。
             const reference = getAgentImageReference({ type: "text", text: "", toonflowImage: entry.data });
             if (!reference) throw new Error("历史图片附件记录无效");
             references.set(reference.id, reference);
           }
+
           if (entry.customType === "toonflowImageOffload") {
             const data = entry.data as { images?: unknown; thinking?: unknown } | null;
             if (!data || !Array.isArray(data.images) || !data.images.every(id => typeof id === "string")
@@ -144,6 +152,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           const index = branch.findIndex(entry => entry.id === entryId);
           return index >= 0 && branch.slice(index + 1).some(entry => entry.type === "message" && entry.message.role === "assistant");
         }
+        
         // ── 3. 重建循环与消息投影 ──
         let networkRecoveries = 0;
         // 重建请求的外层循环：每次 continue 都重新扫描上下文、重新分配图片引用，
