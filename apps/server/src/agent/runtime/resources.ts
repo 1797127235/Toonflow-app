@@ -2,6 +2,16 @@ import { join } from "node:path";
 import { DefaultResourceLoader, SettingsManager, type ToolDefinition } from "@earendil-works/pi-coding-agent";
 import { createAgentContext, globalSections } from "@/agent/context";
 
+/**
+ * 构建 SDK 会话所需资源：agentDir、settings、resourceLoader。
+ *
+ * 关闭扩展、自动技能发现、提示模板和主题，是因为这些能力会读写 SDK 的全局状态；
+ * 多个子 Agent 并发时，全局状态会互相覆盖。这里改为每个会话独立 loader，
+ * 只注入当前工作区的 AGENTS.md 和按需读取的技能集。
+ *
+ * skillOperator 启用时把技能标成 disableModelInvocation：模型必须先通过操作器
+ * 查询/读取，不能凭目录里的描述直接开跑。
+ */
 export async function createAgentResources(cwd: string, tools: ToolDefinition[], settings = SettingsManager.inMemory(), instructions = "") {
   const agentDir = join(cwd, ".agent");
   const context = await createAgentContext(cwd, tools);

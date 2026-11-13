@@ -1,3 +1,12 @@
+/**
+ * 请求层适配：在 SDK 把消息交给 provider 之前，统一处理图片外置、字节预算、
+ * 历史图片迁移和 413 卸载重试。
+ *
+ * 不做在 provider 适配层，是因为这些规则要对所有 provider 一致生效；
+ * 也不改会话落盘格式，历史里始终存“引用 + custom entry”，发送时才还原成
+ * 各 provider 需要的 base64 或文件 ID。
+ */
+
 import { createAssistantMessageEventStream } from "@earendil-works/pi-ai";
 import type { AssistantMessage, AssistantMessageEvent, ImageContent, Message, TextContent } from "@earendil-works/pi-ai";
 import type { AgentSession } from "@earendil-works/pi-coding-agent";
@@ -8,10 +17,16 @@ import { getRequestFiles, type RequestFile } from "@/utils/ai/requestFiles";
 import { createFileTransport, FileRequestLimitError } from "@/utils/ai/files";
 import conf from "@/utils/conf";
 
+// 内容哈希用于两件事：把相同图片的多份引用归并到一张实际文件；
+// SDK 构造 payload 后会丢失自定义元数据，只能靠消息/图片内容反查历史条目。
 function contentHash(value: unknown) {
   return createHash("sha256").update(JSON.stringify(value)).digest("hex");
 }
 
+/**
+ * 给一个会话挂上请求期行为。limits 来自 provider 配置，显式传入时优先；
+ * 任何非正安全整数都直接报错——0 或负数会让预算判断永远成立，等于关闭保护。
+ */
 export function configureAgentRequests(session: AgentSession, limits?: { maxRequestImageBytes?: number; maxRequestBytes?: number }, runSignal?: AbortSignal) {
   for (const value of Object.values(limits ?? {})) {
     if (value !== undefined && (!Number.isSafeInteger(value) || value <= 0)) throw new Error("图片请求预算必须为正安全整数");
@@ -20,6 +35,9 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
   const cwd = history.getCwd();
   const afterToolCall = session.agent.afterToolCall;
   let toolFailure: { error: unknown } | undefined;
+  // 工具结果里的图片先落盘成引用，再交给原 hook；顺序反了会让 SDK 先按自己的
+  // 尺寸策略缩放，之后无法再按原图哈希去重。hook 返回的图片也要再处理一次，
+  // 因为扩展可能在返回值里新塞图片。
   session.agent.afterToolCall = async (call, signal) => {
     if (runSignal) signal = signal ? AbortSignal.any([runSignal, signal]) : runSignal;
     try {
@@ -37,12 +55,16 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
       }
       return { ...previous, content: result };
     } catch (error) {
+      // 工具结果落盘失败不能吞：记下来，在真正发请求前抛出，避免模型基于缺失的
+      // 工具结果继续推理。取消导致的失败不记录，否则用户停止也会被当成故障。
       if (!signal?.aborted) toolFailure = { error };
       throw error;
     }
   };
 
   const streamFunction = session.agent.streamFunction;
+  // 自己创建事件流而不是直接返回 SDK 的流：遇到 413 或图片预算超限时，
+  // 需要丢弃本次结果、重建请求并重新推流，而调用方只能看到一个连续的流。
   session.agent.streamFunction = (model, context, options) => {
     const output = createAssistantMessageEventStream();
     void (async () => {
@@ -51,6 +73,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         // prompt 预处理可能晚于 abort 完成；以本轮信号约束实际请求，并按流协议返回 aborted。
         if (runSignal) options = { ...options, signal: options?.signal ? AbortSignal.any([runSignal, options.signal]) : runSignal };
         options?.signal?.throwIfAborted();
+        // 工具结果落盘失败要等到发请求前才抛：SDK 在工具轮结束后会继续构造下一轮，
+        // 若当场抛出，调用方拿到的是“工具失败”，而不是“这一轮无法继续”。
         if (toolFailure) { const { error } = toolFailure; toolFailure = undefined; throw error; }
         const providers = conf.get("settings", {}).customProviders;
         const provider = Array.isArray(providers) ? providers.find(item => item?.id === model.provider) : undefined;
@@ -69,7 +93,11 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         const references = new Map<string, AgentImageReference>();
         const offloaded = new Set<string>();
         const invalidThinking = new Set<string>();
+        // 这些状态不挂在上下文对象上，进程重启或重建请求后只能从落盘 custom entry 恢复；
+        // 否则已卸载的图片会在下一轮重新发送，失效的 thinking 也会重新进入请求。
         const branch = history.getBranch();
+        // 消息内容哈希 → 历史条目 id，用来给旧版直接存 base64 的图片找稳定 id；
+        // 内容完全相同的消息视为同一条，重发时能复用已有附件。
         const messageEntries = new Map(branch.flatMap(entry => entry.type === "message" ? [[contentHash(entry.message), entry.id] as const] : []));
         for (const entry of branch) {
           if (entry.type !== "custom") continue;
@@ -87,11 +115,16 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           }
         }
         const loaded = new Map<string, ImageContent>();
+        // 同一引用可能在一轮请求里出现多次（用户贴同一张图、工具重复观察），
+        // 按 path 缓存读取结果，避免重复解码和哈希校验。
         async function readImage(reference: AgentImageReference) {
           if (!loaded.has(reference.path)) loaded.set(reference.path, await readAgentImage(cwd, reference, options?.signal));
           return loaded.get(reference.path)!;
         }
         function recordOffload(ids: string[]) {
+          // 卸载是单向的：记录写进 JSONL 后，重启、回滚分支都仍然生效。
+          // thinking 一起作废，因为图片被替换成文字说明后，旧 thinking 的前缀
+          // 已经和当前上下文不一致，再发回去会被模型当成无效推理。
           const images = ids.filter(id => !offloaded.has(id));
           const thinking = context.messages.filter(message => message.role === "assistant" && message.content.some(part => part.type === "thinking"))
             .map(contentHash).filter(key => !invalidThinking.has(key));
@@ -103,11 +136,15 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           return true;
         }
         function hasLaterAssistant(id: string) {
+          // 只有“这张图后面已经有回答”时才需要让旧 thinking 失效；
+          // 图片在最后一条消息里时，thinking 还没产生，强行作废没有意义。
           const entryId = id.startsWith("user:") ? id.split(":")[1] : id.startsWith("legacy:") ? id.split(":")[1] : undefined;
           const index = branch.findIndex(entry => entry.id === entryId);
           return index >= 0 && branch.slice(index + 1).some(entry => entry.type === "message" && entry.message.role === "assistant");
         }
         let networkRecoveries = 0;
+        // 重建请求的外层循环：每次 continue 都重新扫描上下文、重新分配图片引用，
+        // 因为卸载会改变历史前缀，不能只在原 payload 上打补丁。
         for (;;) {
           options?.signal?.throwIfAborted();
           const imageQueue = new Map<string, AgentImageReference[]>();
@@ -124,6 +161,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
                 const id = `legacy:${entryId}:${index}`;
                 reference = references.get(id);
                 if (!reference) {
+                  // 旧会话直接存了 base64；第一次遇到时落盘并登记引用，
+                  // 之后的请求都走引用路径，不会反复迁移同一张图。
                   const saved = await saveAgentImage(cwd, part, id, options?.signal);
                   reference = saved.toonflowImage;
                   history.appendCustomEntry("toonflowImageAttachment", reference);
@@ -139,6 +178,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
                 continue;
               }
               const image = await readImage(reference);
+              // 同一图片内容可能对应多个引用（不同消息各存一份）；
+              // onPayload 里按内容哈希取用，保证发送时仍能找回正确的引用说明。
               const key = contentHash(image.data);
               imageQueue.set(key, [...(imageQueue.get(key) ?? []), reference]);
               const text = part.type === "text" ? part.text
@@ -149,6 +190,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           }
           const requestContext = {
             ...context,
+            // SDK 不认识 invalidThinking，这里在交给它之前把失效的 thinking 过滤掉；
+            // 过滤后若消息只剩空内容，整条消息一起丢弃。
             messages: messages.flatMap((message, index) => {
               if (message.role !== "assistant" || !invalidThinking.has(contentHash(context.messages[index]))) return [message];
               const content = message.content.filter(part => part.type !== "thinking");
@@ -160,6 +203,10 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           let http413 = false;
           let fatalError: { error: unknown } | undefined;
           let activeImages: { reference: AgentImageReference; file: RequestFile }[] = [];
+          // 卸载按引用聚合：同一张图在上下文里出现多次时，卸载它等于一次性
+          // 释放全部出现位置；只按单次出现卸载会误判收益。
+          // useFileBytes 用于供应商的“文件总大小”限制，此时应看原文件字节，
+          // 而不是已经按文件 ID 传输后剩余的内联字节。
           function offloadBytes(target: number, count = 0, useFileBytes = false) {
             const ids: string[] = [];
             let removed = 0;
@@ -189,6 +236,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
             apiKey,
             onPayload: async (payload, requestModel) => {
               try {
+                // 先调用外部 onPayload，保持扩展可以改请求体；之后所有图片都必须
+                // 能对应到已登记的引用，否则预算和卸载都管不到它。
                 const body = await options?.onPayload?.(payload, requestModel) ?? payload;
                 const images = getRequestFiles(body).filter(file => file.mimeType.toLowerCase().startsWith("image/"));
                 const imageCursors = new Map<string, number>();
@@ -202,13 +251,17 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
                   const fromContext = !image.id && Boolean(reference);
                   if (!reference) {
                     if (!image.id) throw new Error("onPayload 注入的图片必须提供稳定的 toonflowImageId，每次重新观察图片时使用新 ID");
+                    // 外部注入的新图片没有历史记录，先落盘成引用再参与预算；
+                    // 同一 id 重复出现时复用已有引用，避免每次观察都复制一份。
                     const saved = await saveAgentImage(cwd, { type: "image", data: image.data, mimeType: image.mimeType }, image.id, options?.signal);
                     reference = saved.toonflowImage;
                     history.appendCustomEntry("toonflowImageAttachment", reference);
                     references.set(image.id, reference);
                     const fixed = await readImage(reference);
-                    if ((fixed.data !== image.data || fixed.mimeType !== image.mimeType || reference.note) && hasLaterAssistant(image.id)) {
-                      restart = recordOffload([]) || restart;
+                    if (fixed.data !== image.data || fixed.mimeType !== image.mimeType || reference.note) {
+                      // 同一 id 的内容变了，说明是“重新观察”而非同一张图；
+                      // 若后面已有回答，旧 thinking 依赖的是旧图，必须作废。
+                      if (hasLaterAssistant(image.id)) restart = recordOffload([]) || restart;
                     }
                   }
                   if (offloaded.has(reference.id)) { image.offload(getOffloadedImageText(reference)); continue; }
@@ -230,6 +283,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
                 const bodyBytes = Buffer.byteLength(JSON.stringify(body), "utf8");
                 // ACT: 上传后再计内联 base64 与 JSON；文件 ID 不再占用内联预算，超限仍卸载旧观察。
                 if (imageBytes > maxRequestImageBytes || bodyBytes > maxRequestBytes) {
+                  // 先按图片超额卸载；如果卸载后仍超，说明非图片内容本身过大，
+                  // 这时没有可卸载的东西，直接报错让用户压缩对话。
                   if (!offloadBytes(Math.max(imageBytes - maxRequestImageBytes, bodyBytes - maxRequestBytes))) {
                     throw new Error(`模型请求的非图片内容超过 ${maxRequestBytes} 字节预算，请压缩对话或减少附件内容后重试`);
                   }
@@ -245,6 +300,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
             fetch: Object.assign(async (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
               init?.signal?.throwIfAborted();
               if (typeof init?.body === "string" && Buffer.byteLength(init.body, "utf8") > maxRequestBytes) {
+                // 本地预检：超过预算的请求体不再上传，直接返回 413 并禁止 SDK 重试，
+                // 避免把几十 MB 数据先发给供应商再被拒绝。
                 try {
                   restart = offloadBytes(Buffer.byteLength(init.body, "utf8") - maxRequestBytes);
                   if (!restart) fatalError = { error: new Error(`模型请求的非图片内容超过 ${maxRequestBytes} 字节预算，请压缩对话或减少附件内容后重试`) };
@@ -265,6 +322,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           let visible = false;
           let start: AssistantMessageEvent | undefined;
           let retry = false;
+          // 只有“还没向用户输出任何可见内容”时才允许重试；已经推过 text/tool 事件后
+          // 重建请求会造成重复输出，前端也无法合并。
           for await (const event of stream) {
             if ("partial" in event) partial = event.partial;
             if (event.type === "start") { start = event; continue; }
@@ -272,6 +331,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
               options?.signal?.throwIfAborted();
               if (fatalError) throw fatalError.error;
               const imageBytes = activeImages.reduce((sum, image) => sum + image.file.inlineBytes, 0);
+              // 413 时逐次减半卸载，最后一次性卸完；最多重试 4 次，避免无限循环。
               if (!visible && (restart || (http413 && networkRecoveries < 4
                 && offloadBytes(Math.max(1, networkRecoveries === 3 ? imageBytes : imageBytes / 2))))) {
                 if (http413) networkRecoveries++;
@@ -293,6 +353,9 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           return;
         }
       } catch (error) {
+        // 把已生成的部分内容带进错误消息：前端能显示截断的回复，
+        // 而不是只在界面上留一个空错误。aborted 优先于 error，用户主动取消
+        // 不应显示成模型故障。
         const message: AssistantMessage = {
           role: "assistant", content: partial?.content ?? [], api: model.api, provider: model.provider, model: model.id,
           stopReason: options?.signal?.aborted ? "aborted" : "error",

@@ -1,6 +1,13 @@
 import type { CanvasToolCall, QuestionRequest, ToolCall } from "@toonflow/tools-scaffold/runtime";
 import type { ThinkingLevel } from "../../lib/modelReasoning";
 
+/**
+ * Agent 运行时对外的公共契约：事件、统计、上下文用量和子 Agent 状态。
+ * 前端只依赖这里的结构，不直接读 SDK 类型。修改字段时先搜索 apps/web 的消费方。
+ */
+
+// question 挂在工具上而不是单独维护：提问的生命周期属于对应的 askUser 工具调用，
+// 工具结束或取消时问题状态自然失效，不需要额外清理表。
 export type AgentToolCall = ToolCall & { question?: QuestionRequest & { callId: string } };
 
 export type AgentMention = {
@@ -35,6 +42,8 @@ export type AgentContext = {
   segments?: AgentContextSegment[];
 };
 
+/** 子 Agent 的展示状态。inputRequired 是“本轮结束、等调用方补充”，
+ * 不是失败；前端不能把它和 error 混为一谈。 */
 export type AgentSubAgent = {
   file: string;
   parentFile: string;
@@ -47,6 +56,13 @@ export type AgentSubAgent = {
   thinkingLevel?: ThinkingLevel;
 };
 
+/**
+ * 流式事件。分组含义：
+ * - text/thinking：按 blockId 聚合的增量，done 表示该块结束；
+ * - tool/question/canvasCall：一次工具调用的状态与交互请求；
+ * - subAgent/subAgentEvent/report：委派链的状态与事件转发；
+ * - session/userMessage/stats/compaction/done：会话生命周期与统计。
+ */
 export type AgentEvent =
   | { type: "text" | "thinking"; blockId: string; delta?: string; content?: string; done?: boolean }
   | { type: "compaction"; active: boolean }

@@ -13,6 +13,19 @@ import { lockWorkspaceFiles, resolveWorkspacePath, writeWorkspaceFile } from "@/
 import { getReadableFileMimeType } from "@/lib/documentFormats";
 import { thinkingLevels } from "@/lib/modelReasoning";
 
+/**
+ * 会话运行时状态与磁盘读写。
+ *
+ * 这里同时处理三种“会话”：
+ * - ActiveAgentSession：进程内正在运行的实例，持有 SDK session、实时工具表和取消入口。
+ * - JSONL 文件：唯一持久化格式，一行一个 entry，树形关系用 parentId 表达。
+ * - SessionManager：SDK 的读写封装；读取时会跳过损坏行。
+ *
+ * 文件锁只保护磁盘写入；运行中会话的复用靠 activeSessions，两者不能互相替代。
+ */
+
+// 附件只接受图片、视频或纯文本；其他格式必须能被文档解析器识别。
+// 在这里统一归一化 mimeType，后续按 provider 协议转换时就不必重复判断扩展名。
 export const agentAttachmentsSchema = z
   .array(
     z.strictObject({
@@ -25,12 +38,20 @@ export const agentAttachmentsSchema = z
   )
   .max(20);
 
+/**
+ * 一次运行在进程内的句柄。session 在 SDK 创建完成后才赋值：
+ * 创建前收到 steer 只能拒绝，创建后才能把新消息注入当前回合。
+ */
 export type ActiveAgentSession = {
   history: SessionManager; session?: AgentSession; send: (event: AgentEvent) => void;
+  /** 本次运行开始前的 entry 数，用于区分历史消息和本轮流式消息。 */
   entryOffset: number; tools: Map<string, AgentToolCall>;
   runId?: string;
+  /** 触发取消并等待文件锁释放；返回后磁盘状态已稳定。 */
   abort(): Promise<void>;
 };
+
+// 返回给前端的消息视图，不是存储格式：同轮拆分的 entry 已合并，工具状态与流式标记已归一。
 type SessionMessage = {
   id: string; entryId: string; role: "user" | "assistant"; content: string; replyTo?: string; error?: string;
   streaming?: boolean;
@@ -38,14 +59,20 @@ type SessionMessage = {
   mentions?: AgentMention[];
   parts: ({ id: string; type: "text" | "thinking"; content: string; collapsed?: boolean } | { id: string; type: "tool"; tool: AgentToolCall })[];
 };
-// ACT: 复用正在运行的 SDK 会话，文件锁仍由 run 持有；多进程部署时需共享会话所有权。
+
+// 运行中的会话实例，按会话文件路径索引，供停止、读取和事件推送复用。
 const activeSessions = new Map<string, ActiveAgentSession>();
+// Windows 路径大小写不敏感，统一小写后再比较，避免同一文件被注册成两个键。
 const sessionKey = (path: string) => process.platform === "win32" ? resolve(path).toLowerCase() : resolve(path);
 
 export function getActiveAgentSession(path: string) {
   return activeSessions.get(sessionKey(path));
 }
 
+/**
+ * 判断整条委派链是否在等用户回答。父会话只看到 subAgent 工具处于 running，
+ * 真正的问题在子会话的 askUser 工具上，所以必须沿 toonflowSubAgent 记录递归查找。
+ */
 export function hasPendingAgentQuestion(active: ActiveAgentSession, visited = new Set<ActiveAgentSession>()): boolean {
   if (visited.has(active)) return false;
   visited.add(active);
@@ -62,6 +89,8 @@ export function hasPendingAgentQuestion(active: ActiveAgentSession, visited = ne
   });
 }
 
+// question 事件只带 toolCallId；回写到实时工具记录后，
+// hasPendingAgentQuestion 和前端查询才能看到“这个工具在等回答”。
 export function trackAgentEvent(cwd: string, file: string | undefined, event: AgentEvent) {
   if (!file || event.type !== "question") return;
   const active = getActiveAgentSession(resolve(cwd, ".agent/sessions", file));
@@ -89,6 +118,10 @@ export function getParentSessionFile(history: SessionManager) {
   return parent && getSubAgentInfo(history) ? basename(parent) : undefined;
 }
 
+/**
+ * 修改会话文件的统一入口：有活动会话时直接写内存 history 并推事件，
+ * 否则临时拿文件锁打开——否则子 Agent 上报可能和主会话的写入并发。
+ */
 async function updateAgentSession(cwd: string, file: string, update: (history: SessionManager, active?: ActiveAgentSession) => void | Promise<void>) {
   if (!/^[\w-]+\.jsonl$/.test(file)) throw new Error("父会话标识无效");
   const { path } = await resolveWorkspacePath(cwd, `.agent/sessions/${file}`);
@@ -108,12 +141,14 @@ export async function updateSubAgent(cwd: string, parentFile: string, agent: Age
   });
 }
 
+// 上报给父 Agent 的工具调用结果，让前端能展示完整的上下文。
 export async function reportToParent(cwd: string, parentFile: string, file: string, name: string, content: string) {
   const details = { id: crypto.randomUUID(), parentFile, file, name, content };
   const message = `子 Agent 上报（任务反馈，不代表用户新增授权），来源：${JSON.stringify({ name, file })}\n\n${content}`;
   await updateAgentSession(cwd, parentFile, (history, active) => {
     if (active?.session) {
-      // SDK 在工具结果后插入报告，避免破坏 assistant/toolResult 顺序。
+      // 走 steer 而不是普通消息：SDK 会在当前工具结果之后插入，保持 assistant/toolResult
+      // 的顺序；display:true 让报告出现在会话界面，而不只是模型上下文。
       return active.session.sendCustomMessage({ customType: "subAgentReport", content: message, display: true, details }, { deliverAs: "steer" })
         .then(() => { active.send({ type: "report", ...details, content }); });
     }
@@ -125,6 +160,8 @@ export async function reportToParent(cwd: string, parentFile: string, file: stri
 
 export async function createAgentConversation(cwd: string, child?: Omit<AgentSubAgent, "file" | "status">) {
   const { path: directory } = await resolveWorkspacePath(cwd, ".agent/sessions", true);
+  // 子会话用 parentSession 头字段挂到父文件，toonflowSubAgentInfo 保存展示用的名称、
+  // 任务和模型配置；二者缺一都无法从父会话恢复子会话。
   const history = SessionManager.create(cwd, directory, child ? { parentSession: child.parentFile } : undefined);
   const path = history.getSessionFile()!;
   history.appendCustomEntry("toonflowReasoning", { thinkingLevel: child?.thinkingLevel ?? null });
@@ -134,7 +171,7 @@ export async function createAgentConversation(cwd: string, child?: Omit<AgentSub
     if (child.providerId && child.modelId) history.appendModelChange(child.providerId, child.modelId);
     if (child.thinkingLevel) history.appendThinkingLevelChange(child.thinkingLevel);
   }
-  // ACT: SDK 默认等首条回复才落盘；先保存会话头，让空对话也能被历史列表读取。
+  // ACT: SDK 默认等首条消息才落盘；先保存会话头，让空对话也能被历史列表读取。
   await writeWorkspaceFile(path, [history.getHeader(), ...history.getEntries()].map(entry => JSON.stringify(entry)).join("\n") + "\n", true);
   return getAgentSession(cwd, path);
 }
@@ -216,6 +253,8 @@ export async function forkAgentConversation(cwd: string, path: string, entryId: 
 export async function listAgentSessions(cwd: string, directory: string) {
   const files = new Set((await readdir(directory, { withFileTypes: true })).filter((item) => item.isFile()).map((item) => item.name));
   const sessions = await SessionManager.list(cwd, directory);
+  // 只列根会话；子 Agent 会话由父会话里的 toonflowSubAgent 记录展示，
+  // 否则同一条委派链会在历史列表里重复出现。
   return sessions
     .filter((item) => files.has(basename(item.path)) && !item.parentSessionPath)
     .sort((left, right) => right.modified.getTime() - left.modified.getTime())
@@ -236,10 +275,14 @@ export async function getAgentSession(cwd: string, path: string) {
       throw error;
     }));
   if (entries[0]?.type !== "session") throw Object.assign(new Error("会话文件无效"), { status: 400 });
+  // 运行中的流式消息还没落盘，从 SDK 内存补一条临时 entry，
+  // 否则刷新页面会看不到正在生成的回复。
   const partial = active?.session?.agent.state.streamingMessage;
   if (partial?.role === "assistant") entries.push({
     type: "message", id: "streaming", parentId: active!.history.getLeafId(), timestamp: new Date().toISOString(), message: partial,
   });
+  // blockId 必须和运行中推送的 text/thinking 事件一致：运行前的历史用 entry id，
+  // 本次运行的消息用“第几条 assistant:内容块序号”，前端才能把增量拼到正确位置。
   const messageIndices = new Map(active ? entries.slice(active.entryOffset + 1)
     .filter(entry => entry.type === "message" && entry.message.role === "assistant")
     .map((entry, index) => [(entry as SessionEntry).id, index + 1]) : []);
@@ -357,6 +400,8 @@ export async function getAgentSession(cwd: string, path: string) {
   for (const entry of history.getEntries()) {
     if (entry.type !== "custom" || entry.customType !== "toonflowSubAgent") continue;
     const agent = entry.data as AgentSubAgent;
+    // 上次进程退出时子 Agent 可能停在 running；没有活动实例就视为中断，
+    // 否则前端会一直显示“运行中”。
     const interrupted = agent.status === "running" && !active && !getActiveAgentSession(resolve(dirname(path), agent.file));
     subAgents.set(agent.file, interrupted ? { ...agent, status: "cancelled", result: "上次运行已中断" } : agent);
   }
@@ -388,6 +433,8 @@ export function getAgentStats(history: SessionManager, timing?: { outputTokens: 
   const tokens = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 };
   let outputTokens = timing?.outputTokens ?? 0;
   let decodeMs = timing?.decodeMs ?? 0;
+  // 压缩和分支摘要同样消耗 token，但 usage 不在 message 上；不累计会低估成本，
+  // 续聊后统计还会突然变小。
   for (const entry of history.getBranch()) {
     const usage =
       entry.type === "compaction" || entry.type === "branch_summary"
@@ -420,6 +467,8 @@ export function getAgentStats(history: SessionManager, timing?: { outputTokens: 
   return { tokens, tokensPerSecond: decodeMs > 0 ? (outputTokens * 1000) / decodeMs : undefined };
 }
 
+// 静态分段（系统提示、技能等）是估算值，和模型实测总量可能不一致；
+// 超出时按比例压缩，保证各分段之和不超过实测值。
 function fitSegments(segments: AgentContextSegment[], total: number) {
   const sum = segments.reduce((count, segment) => count + segment.tokens, 0);
   if (sum <= total) return segments;

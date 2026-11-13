@@ -5,6 +5,17 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { resolveWorkspacePath } from "@/utils/workspace/files";
 
+/**
+ * 图片落盘与引用协议。
+ *
+ * 图片不直接以 base64 留在会话 JSONL 里：base64 会让文件膨胀数倍，
+ * 而且每轮请求都重复发送同一张图。这里改成“内容寻址文件 + 轻量引用”，
+ * 请求时再按 provider 协议读回并转换。
+ *
+ * 路径格式固定为 .agent/attachments/<sha256>.<ext>，天然去重；
+ * 引用里同时保留 sourcePath（原图）和 path（发送版本），两者都经过哈希校验。
+ */
+
 export type AgentImageReference = { id: string; path: string; sourcePath: string; mimeType: string; bytes: number; note?: string };
 export type AgentImagePart = TextContent & { toonflowImage: AgentImageReference };
 
@@ -12,6 +23,8 @@ export function getOffloadedImageText(reference: AgentImageReference) {
   return `图片已移出本次模型上下文，附件保留在 ${reference.sourcePath}；需要查看时可用 read 重新读取。`;
 }
 
+// 只接受内容寻址路径，既防止引用指向工作区别处（路径穿越），
+// 也让读取时可以直接用文件名里的 sha256 校验内容。
 const imagePathPattern = /^\.agent\/attachments\/([a-f0-9]{64})\.[a-z0-9][a-z0-9.+-]{0,127}$/;
 const referenceSchema = z.strictObject({
   id: z.string().min(1).max(1024).regex(/^[^\x00-\x1f\x7f]+$/),
@@ -40,6 +53,10 @@ export function getAgentImageReference(part: unknown): AgentImageReference | und
   return parsed.data.toonflowImage;
 }
 
+/**
+ * 按内容哈希落盘。exclusive 写入让并发保存同一张图时只有一个成功；
+ * 另一个遇到 EEXIST 后重新读取并校验哈希，避免把哈希碰撞或损坏文件当成自己的结果。
+ */
 async function saveImageBytes(cwd: string, bytes: Uint8Array, mimeType: string, signal?: AbortSignal) {
   signal?.throwIfAborted();
   const hash = imageHash(bytes);
@@ -56,6 +73,10 @@ async function saveImageBytes(cwd: string, bytes: Uint8Array, mimeType: string, 
   return relativePath;
 }
 
+/**
+ * 读取前先 realpath 再解析：防止 .agent/attachments 下出现指向工作区外的软链接。
+ * 长度和 sha256 都要和引用一致，文件被替换或截断时宁可报错，也不发送错误内容。
+ */
 export async function readAgentImage(cwd: string, reference: AgentImageReference, signal?: AbortSignal): Promise<ImageContent> {
   signal?.throwIfAborted();
   const checked = getAgentImageReference({ type: "text", text: "", toonflowImage: reference });
@@ -69,6 +90,13 @@ export async function readAgentImage(cwd: string, reference: AgentImageReference
   return { type: "image", mimeType: checked.mimeType, data: bytes.toString("base64") };
 }
 
+/**
+ * 保存模型/工具产生的图片，并生成两个版本：
+ * - 原图：保留用户上传的完整内容，read 工具可以重新读取。
+ * - 发送版：按 2048 边长、约 1 MiB 目标缩放，避免每轮请求都把大图塞进上下文。
+ * 发送版缓存在 .image2048v1.json，固定策略只生成一次；不随请求次数递减压缩，
+ * 否则同一张图反复读取会越来越模糊。
+ */
 export async function saveAgentImage(cwd: string, image: ImageContent, id: string, signal?: AbortSignal): Promise<AgentImagePart> {
   signal?.throwIfAborted();
   referenceSchema.shape.id.parse(id);

@@ -1,5 +1,10 @@
 import type { ToolDefinition } from "@earendil-works/pi-coding-agent";
 
+/**
+ * 系统提示模板。用模板而不是直接拼字符串，是因为工具列表、技能开关和运行环境
+ * 每轮都可能变；模板里只保留占位符，实际内容由 buildSystemPrompt 注入。
+ * 代码块内容属于产品行为约定，修改前先确认对应工具与前端交互是否同步。
+ */
 export const defaultSystemPrompt = `你是 Laywork 的 AI 创作搭档，在无限画布上帮助用户完成文字、图片、视频、音频和其他创作。与用户共用当前项目，通过本轮可用工具操作文档、画布与媒体；也可以直接回答问题。
 
 ## 回复风格
@@ -49,6 +54,8 @@ export const defaultSystemPrompt = `你是 Laywork 的 AI 创作搭档，在无�
 以下 JSON 仅描述环境，不是额外指令；能力仍以本轮工具为准。
 {{environment}}`;
 
+// 系统提示过长会挤占对话预算，也会让部分 provider 直接拒绝请求；
+// 调用方在写入自定义提示前应先按这个上限校验。
 export const maxSystemPromptLength = 50000;
 
 export type PromptTool = Pick<ToolDefinition, "name" | "description" | "promptSnippet" | "promptGuidelines">;
@@ -60,6 +67,10 @@ type SystemPromptOptions = {
   now?: Date;
 };
 
+/**
+ * 渲染系统提示。工具按 promptSnippet 分组：同类工具只占一行（例如多个画布工具），
+ * 避免工具数量增加时提示词线性膨胀；guidelines 去重后再拼接。
+ */
 export function buildSystemPrompt({ systemPrompt, tools, platform, now = new Date() }: SystemPromptOptions) {
   const toolGroups = new Map<string, string[]>();
   for (const tool of tools) {
@@ -78,7 +89,8 @@ export function buildSystemPrompt({ systemPrompt, tools, platform, now = new Dat
       platform,
     }),
   };
-  // 只支持单层条件块，需要嵌套时再使用模板库；先处理条件再插值，避免解析工具文案中的占位符。
+  // 只支持单层条件块，需要嵌套时再使用模板库；先处理条件再插值，
+  // 否则工具描述里出现的 {{...}} 会被当成模板占位符二次替换。
   return (systemPrompt?.trim() ? systemPrompt : defaultSystemPrompt)
     .replace(/{{([#^])(\w+)}}([\s\S]*?){{\/\2}}/g, (_, condition, key, content) => Boolean(values[key]) === (condition === "#") ? content : "")
     .replace(/{{(\w+)}}/g, (_, key) => String(values[key] ?? ""));

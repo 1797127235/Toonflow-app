@@ -1,5 +1,10 @@
 type agentRun = { cwd: string; abort: () => void; finished: Promise<void> };
 
+/**
+ * 运行级取消表。每次 run 用新 UUID 注册，stopAgentRun 只能命中这一轮；
+ * 如果按 sessionFile 存取消入口，用户点“停止”晚到一步就会误杀下一轮。
+ */
+
 // ACT: 每轮 HTTP 请求独立持有取消通道；迟到的停止请求不能取消同一会话的下一轮。
 const agentRuns = new Map<string, agentRun>();
 
