@@ -76,6 +76,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         // 工具结果落盘失败要等到发请求前才抛：SDK 在工具轮结束后会继续构造下一轮，
         // 若当场抛出，调用方拿到的是“工具失败”，而不是“这一轮无法继续”。
         if (toolFailure) { const { error } = toolFailure; toolFailure = undefined; throw error; }
+        // ── 1. 模型认证与传输 ──
         const providers = conf.get("settings", {}).customProviders;
         const provider = Array.isArray(providers) ? providers.find(item => item?.id === model.provider) : undefined;
         const auth = await session.modelRuntime.getAuth(model, { apiKey: options?.apiKey, env: options?.env, signal: options?.signal });
@@ -93,6 +94,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
         const references = new Map<string, AgentImageReference>();
         const offloaded = new Set<string>();
         const invalidThinking = new Set<string>();
+        // ── 2. 从历史恢复图片状态 ──
         // 这些状态不挂在上下文对象上，进程重启或重建请求后只能从落盘 custom entry 恢复；
         // 否则已卸载的图片会在下一轮重新发送，失效的 thinking 也会重新进入请求。
         const branch = history.getBranch();
@@ -142,6 +144,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           const index = branch.findIndex(entry => entry.id === entryId);
           return index >= 0 && branch.slice(index + 1).some(entry => entry.type === "message" && entry.message.role === "assistant");
         }
+        // ── 3. 重建循环与消息投影 ──
         let networkRecoveries = 0;
         // 重建请求的外层循环：每次 continue 都重新扫描上下文、重新分配图片引用，
         // 因为卸载会改变历史前缀，不能只在原 payload 上打补丁。
@@ -198,6 +201,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
               return content.length ? [{ ...message, content }] : [];
             }),
           };
+          // ── 4. 请求重建状态 ──
           let restart = false;
           const rebuildRequest = new Error("图片上下文已调整，重新构建请求");
           let http413 = false;
@@ -234,6 +238,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           const stream = await streamFunction(model, requestContext, {
             ...options,
             apiKey,
+            // ── 5. 载荷重写与传输拦截（本地预检超预算时直接造 413，不发网络）──
             onPayload: async (payload, requestModel) => {
               try {
                 // 先调用外部 onPayload，保持扩展可以改请求体；之后所有图片都必须
@@ -324,6 +329,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           let retry = false;
           // 只有“还没向用户输出任何可见内容”时才允许重试；已经推过 text/tool 事件后
           // 重建请求会造成重复输出，前端也无法合并。
+          // ── 6. 事件转发与重试判定 ──
           for await (const event of stream) {
             if ("partial" in event) partial = event.partial;
             if (event.type === "start") { start = event; continue; }
@@ -345,6 +351,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
             if (event.type === "done" || event.type === "error") return;
           }
           if (retry) continue;
+          // ── 7. 收尾 ──
           const message = await stream.result();
           if (start) output.push(start);
           output.push(message.stopReason === "error" || message.stopReason === "aborted"
