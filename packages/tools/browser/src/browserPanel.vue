@@ -50,9 +50,9 @@ import type { ToolCall } from "@toonflow/tools-scaffold/runtime";
 import type { BrowserInput, BrowserSessionState, BrowserStreamEvent } from "./protocol";
 
 type PanelSession = Pick<BrowserSessionState, "browserSessionId"> & Partial<Omit<BrowserSessionState, "browserSessionId">>;
-const props = withDefaults(defineProps<{ tools: ToolCall[]; directory?: string; toolSessionId?: string; active: boolean; live?: boolean; interactive?: boolean }>(), { interactive: true });
-type BrowserScope = { directory: string } | { toolSessionId: string };
-const browserScope = computed<BrowserScope | undefined>(() => props.toolSessionId ? { toolSessionId: props.toolSessionId } : props.directory ? { directory: props.directory } : undefined);
+const props = withDefaults(defineProps<{ tools: ToolCall[]; directory?: string; active: boolean; live?: boolean; interactive?: boolean }>(), { interactive: true });
+type BrowserScope = { directory: string };
+const browserScope = computed<BrowserScope | undefined>(() => props.directory ? { directory: props.directory } : undefined);
 const latestTool = computed(() => props.tools.at(-1));
 const session = shallowRef<PanelSession>();
 const frame = ref("");

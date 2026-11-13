@@ -50,8 +50,7 @@
     "apps/web/src/components/agent/attachmentPreview.vue"
   ],
   "对话消息": [
-    "apps/web/src/components/agent/conversation.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
+    "apps/web/src/components/agent/conversation.vue"
   ],
   "开始新对话": [
     "apps/web/src/components/agent/conversation.vue"
@@ -75,8 +74,7 @@
     "apps/web/src/components/agent/conversation.vue"
   ],
   "思考": [
-    "apps/web/src/components/agent/conversation.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
+    "apps/web/src/components/agent/conversation.vue"
   ],
   "{0} 秒": [
     "apps/web/src/components/agent/conversation.vue"
@@ -169,15 +167,13 @@
     "apps/web/src/components/agent/conversation.vue"
   ],
   "停止生成": [
-    "apps/web/src/components/agent/conversation.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
+    "apps/web/src/components/agent/conversation.vue"
   ],
   "重发消息": [
     "apps/web/src/components/agent/conversation.vue"
   ],
   "发送消息": [
-    "apps/web/src/components/agent/conversation.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
+    "apps/web/src/components/agent/conversation.vue"
   ],
   "输入消息，@ 提及节点输出或全局素材…": [
     "apps/web/src/components/agent/conversation.vue"
@@ -561,8 +557,7 @@
     "apps/web/src/components/agent/menu.vue"
   ],
   "执行中": [
-    "apps/web/src/components/agent/menu.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
+    "apps/web/src/components/agent/menu.vue"
   ],
   "已完成": [
     "apps/web/src/components/agent/menu.vue",
@@ -685,8 +680,7 @@
     "apps/web/src/components/agent/toolMessage.vue"
   ],
   "已中断": [
-    "apps/web/src/components/agent/toolMessage.vue",
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
+    "apps/web/src/components/agent/toolMessage.vue"
   ],
   "语言": [
     "apps/web/src/components/languageSelect.vue",
@@ -1474,8 +1468,7 @@
     "apps/web/src/components/settings/panels/developer/providerDebugDialog.vue"
   ],
   "已停止": [
-    "apps/web/src/components/settings/panels/developer/providerDebugDialog.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
+    "apps/web/src/components/settings/panels/developer/providerDebugDialog.vue"
   ],
   "请先选择供应商文件": [
     "apps/web/src/components/settings/panels/developer/providerDebugDialog.vue"
@@ -1878,8 +1871,7 @@
     "apps/web/src/components/settings/panels/languageModel/addCustomProviderDialog.vue",
     "apps/web/src/components/settings/panels/languageModel/addProviderDialog.vue",
     "apps/web/src/components/settings/panels/mediaModel/addCustomProviderDialog.vue",
-    "apps/web/src/components/settings/panels/mediaModel/modelEditorDialog.vue",
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
+    "apps/web/src/components/settings/panels/mediaModel/modelEditorDialog.vue"
   ],
   "模型显示名称": [
     "apps/web/src/components/settings/panels/languageModel/addCustomProviderDialog.vue",
@@ -2134,8 +2126,7 @@
     "apps/web/src/components/settings/panels/mediaModel/addCustomProviderDialog.vue"
   ],
   "供应商文件": [
-    "apps/web/src/components/settings/panels/mediaModel/addCustomProviderDialog.vue",
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
+    "apps/web/src/components/settings/panels/mediaModel/addCustomProviderDialog.vue"
   ],
   "尚未选择文件": [
     "apps/web/src/components/settings/panels/mediaModel/addCustomProviderDialog.vue"
@@ -2412,104 +2403,14 @@
   "模型配置无效": [
     "apps/web/src/components/settings/panels/mediaModel/modelEditorDialog.vue"
   ],
-  "AI 生成媒体供应商": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "发送接口文档链接、请求示例，或告诉助手需要接入的平台": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "正在检查供应商文件…": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "供应商文件格式检查通过，可在右侧预览": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "文件提交已中断": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "浏览器": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "正在浏览…": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "操作完成": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
   "操作失败": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue",
     "apps/web/src/components/settings/panels/pluginMarket/ffmpeg.vue",
     "apps/web/src/pages/workspace/panels/document/components/workspaceSearch.vue"
   ],
-  "发送平台网址或文档链接，助手会在这里浏览接口资料。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "需要登录时，可暂停后手动操作。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "文件已生成": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "格式检查通过": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "{0} · {1} 个模型": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "生成的模型列表": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
   "名称": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue",
     "apps/web/src/pages/home/workspacePicker.vue",
     "apps/web/src/pages/workspace/panels/canvas/components/assetMenu.vue",
     "apps/web/src/pages/workspace/panels/document/components/fileTree.vue"
-  ],
-  "生成的供应商代码": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "仅检查文件格式，尚未调用媒体生成接口。API Key 在添加后填写。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "等待生成供应商文件": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "生成后可在这里查看模型和源码，再使用或下载文件。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "下载 .ts 文件": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "使用此代码": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "请提交不超过 1 MB 的完整供应商源码": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "供应商文件检查失败": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "请把你想接入的 API 平台名称或网址发给我，有接口文档链接也可以直接发送。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "已暂停，可点击画面或放大后登录。操作完成后点击继续。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "正在等待当前操作结束，暂停后即可人工操作。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "可直接点击画面或放大操作，完成后在左侧继续对话。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "助手正在浏览。需要登录或人工操作时，先点击暂停。": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "下载文件失败": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue"
-  ],
-  "复制失败": [
-    "apps/web/src/components/settings/panels/mediaModel/providerAgentDialog.vue",
-    "apps/web/src/components/singleAgentDialog.vue"
   ],
   "Laywork 说明": [
     "apps/web/src/components/settings/panels/personalization.vue"
@@ -3415,51 +3316,6 @@
   ],
   "创建充值订单失败，请重试": [
     "apps/web/src/components/settings/tfRechargeDialog.vue"
-  ],
-  "我的消息": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "助手回复": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "· {0} 秒": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "正在处理…": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "对话消息输入": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "暂停": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "继续": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "输入消息": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "等待当前操作结束…": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "已暂停，可人工操作": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "对话执行失败": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "临时会话清理失败": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "对话已关闭": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "未找到工具：{0}": [
-    "apps/web/src/components/singleAgentDialog.vue"
-  ],
-  "请选择已配置的文本模型": [
-    "apps/web/src/components/singleAgentDialog.vue"
   ],
   "构建代码": [
     "apps/web/src/components/updateBox.vue"
@@ -5581,12 +5437,10 @@
   ],
   "模型请求失败": [
     "apps/server/src/agent/runtime/index.ts",
-    "apps/server/src/routes/ai/generate.ts",
-    "apps/server/src/utils/singleAgent/index.ts"
+    "apps/server/src/routes/ai/generate.ts"
   ],
   "模型回复因长度限制被截断，未能完整生成回答。": [
-    "apps/server/src/agent/runtime/index.ts",
-    "apps/server/src/utils/singleAgent/index.ts"
+    "apps/server/src/agent/runtime/index.ts"
   ],
   "引用内容须为深度不超过 32、长度不超过 100000 的 JSON 值": [
     "apps/server/src/agent/runtime/mentions.ts"
@@ -5775,8 +5629,7 @@
     "apps/server/src/agent/tools/index.ts"
   ],
   "工具名称重复：{0}": [
-    "apps/server/src/agent/tools/index.ts",
-    "apps/server/src/utils/singleAgent/index.ts"
+    "apps/server/src/agent/tools/index.ts"
   ],
   "全局记忆": [
     "apps/server/src/utils/personalization.ts"
@@ -5930,12 +5783,10 @@
     "apps/server/src/routes/agents/uninstall.ts"
   ],
   "工具参数必须是 JSON 对象结构，且不超过 100 KB": [
-    "apps/server/src/routes/ai/generate.ts",
-    "apps/server/src/routes/singleAgent/create.ts"
+    "apps/server/src/routes/ai/generate.ts"
   ],
   "工具名称不能重复": [
-    "apps/server/src/routes/ai/generate.ts",
-    "apps/server/src/routes/singleAgent/create.ts"
+    "apps/server/src/routes/ai/generate.ts"
   ],
   "模型上下文不能超过 8 MB": [
     "apps/server/src/routes/ai/generate.ts"
@@ -6087,15 +5938,6 @@
   ],
   "设置已保存": [
     "apps/server/src/routes/settings/save.ts"
-  ],
-  "清理临时对话失败：": [
-    "apps/server/src/routes/singleAgent/create.ts"
-  ],
-  "必须提供工具结果或错误信息": [
-    "apps/server/src/routes/singleAgent/toolResult.ts"
-  ],
-  "工具增量必须提供结果": [
-    "apps/server/src/routes/singleAgent/toolResult.ts"
   ],
   "请在桌面端或服务器本机新增技能文件": [
     "apps/server/src/routes/skills/create.ts"
@@ -7252,60 +7094,6 @@
   ],
   "工具配置无效": [
     "apps/server/src/utils/plugins/tools.ts"
-  ],
-  "临时对话不存在或已关闭": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "临时对话已结束": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "工具调用已取消": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "临时对话未在运行": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "工具插件 {0} 未安装或未启用": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "插件 {0} 未提供所选工具": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "插件返回了无效的工具": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "此对话正在运行，请等待当前回复完成": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "用户取消了提问": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "模型未返回回复": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "本次回复已停止": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "临时对话执行失败": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "当前回复已变化，控制请求已失效": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "工具调用不存在或已结束": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "提问不属于此对话或已结束": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "浏览器会话不属于此临时对话": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "请通过临时对话身份访问此浏览器": [
-    "apps/server/src/utils/singleAgent/index.ts"
-  ],
-  "临时对话已关闭": [
-    "apps/server/src/utils/singleAgent/index.ts"
   ],
   "技能根目录必须是非符号链接目录": [
     "apps/server/src/utils/skills/files.ts"

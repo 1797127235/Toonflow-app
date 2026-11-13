@@ -115,7 +115,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./../components/settings/index.vue')['default']
-    SingleAgentDialog: typeof import('./../components/singleAgentDialog.vue')['default']
     SkillMenu: typeof import('./../components/agent/skillMenu.vue')['default']
     TfAccount: typeof import('./../components/settings/tfAccount.vue')['default']
     TfRechargeDialog: typeof import('./../components/settings/tfRechargeDialog.vue')['default']

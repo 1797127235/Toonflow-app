@@ -5,17 +5,13 @@ import { validateFields } from "@/lib/middleware";
 import u from "@/utils";
 import { getRuntimePlatform } from "@/lib/platform";
 
-const inputSchema = z.object({ directory: z.string().min(1).max(4096).optional(), toolSessionId: z.uuid().optional(), sessionId: z.uuid() })
-  .refine(input => !!input.directory !== !!input.toolSessionId, "请提供工作目录或临时对话身份，不能同时提供");
+const inputSchema = z.object({ directory: z.string().min(1).max(4096), sessionId: z.uuid() });
 
 export default Router().get("/", validateFields(inputSchema.shape, "query"), async (req, res) => {
   u.mcpControl.assertAppRequest(req);
   if (!req.app.locals.desktop && !getRuntimePlatform().development) throw Object.assign(new Error("浏览器画面仅在桌面客户端中可用"), { status: 404 });
   const input = inputSchema.parse(req.query);
-  if (!input.toolSessionId) u.singleAgent.assertWorkspaceBrowserAccess(input.sessionId);
-  const cwd = input.toolSessionId
-    ? u.singleAgent.getBrowserScope(input.toolSessionId, input.sessionId)
-    : await u.workspace.resolveWorkspace(req, input.directory!);
+  const cwd = await u.workspace.resolveWorkspace(req, input.directory);
   if (!u.browser.browserRuntime.getSession(cwd, input.sessionId)) throw Object.assign(new Error("浏览器会话不存在或已关闭"), { status: 404 });
   res.set({ "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store, no-transform", "X-Accel-Buffering": "no" });
   res.flushHeaders();

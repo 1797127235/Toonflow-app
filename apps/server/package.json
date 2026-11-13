@@ -14,7 +14,6 @@
     "./mobileLink": "./src/utils/mobileLink/index.ts",
     "./browser": "./src/utils/browser/index.ts",
     "./agent/types": "./src/agent/runtime/types.ts",
-    "./singleAgent/types": "./src/utils/singleAgent/types.ts",
     "./agent/mentionSources": "./src/agent/mentionSources.ts",
     "./i18n": "./src/lib/i18n.ts"
   },
