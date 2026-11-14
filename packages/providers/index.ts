@@ -2,6 +2,7 @@
 
 import tfRouterLanguage from "./src/language/tfRouter";
 import deepSeek from "./src/language/deepSeek";
+import tfRouter from "./src/media/tfRouter";
 import c2a from "./src/media/c2a";
 import c2aYzh from "./src/media/c2aYzh";
 
@@ -15,4 +16,4 @@ export type AudioConvertOptions = Parameters<ProviderTools["audio"]["convert"]>[
 export type { FfmpegFactory, FfmpegCommand } from "@toonflow/ffmpeg/types";
 
 export const languageProviders = [tfRouterLanguage, deepSeek] as const;
-export const mediaProviders = [c2a, c2aYzh] as const;
+export const mediaProviders = [tfRouter, c2a, c2aYzh] as const;

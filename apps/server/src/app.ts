@@ -13,7 +13,7 @@ import initializePlugins from "@/utils/plugins/initialize";
 import { languageRequest, resolveRequestLocale, runWithLocale, setLocaleFallback, translateError, translateMessage } from "@/lib/i18n";
 import { detectLocale, normalizeLocale } from "@toonflow/i18n";
 
-const autoInstallProviders = ["c2a.ts", "c2aYzh.ts"];
+const autoInstallProviders = ["tfRouter.ts", "c2a.ts", "c2aYzh.ts"];
 
 export async function createApp({
   webRoot,
