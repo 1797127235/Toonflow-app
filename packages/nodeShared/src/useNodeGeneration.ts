@@ -21,8 +21,10 @@ export function useNodeGeneration(outputs: Readonly<Ref<NodeOutputs>>, cancel: (
   const generating = computed(() => status.value === "running");
   const getStatus = () => ({ status: status.value, outputs: outputs.value, ...(error.value ? { error: error.value } : {}) });
 
-  async function run<T>(task: () => Promise<T>): Promise<T> {
+  async function run<T>(task: () => Promise<T>, resuming = false): Promise<T> {
     if (generating.value) throw new Error("节点正在生成，请等待完成");
+    // 有未确认任务时不允许新提交，否则会在供应商侧重复建单；带任务号的局部重绘接回除外。
+    if (!resuming && media?.data.value.pendingTaskId) throw new Error("上一次生成结果尚未确认，请重新打开节点接回或先停止");
     status.value = "running";
     error.value = "";
     try {
@@ -33,9 +35,11 @@ export function useNodeGeneration(outputs: Readonly<Ref<NodeOutputs>>, cancel: (
     } catch (failure) {
       // 卸载/切画布 detach 保留 pendingTaskId 以便接回；显式停止已先清字段，终态失败清字段不重试。
       const aborted = (failure as Error)?.name === "AbortError";
+      // 499 表示提交后中断、结果未知：保留任务号，重开节点凭号续跑。
+      const uncertain = (failure as { code?: number })?.code === 499;
       status.value = aborted ? "idle" : "failed";
       if (!aborted) {
-        if (media) media.data.value.pendingTaskId = undefined;
+        if (media && !uncertain) media.data.value.pendingTaskId = undefined;
         const message = (failure as { response?: { data?: { message?: string } } })?.response?.data?.message;
         error.value = message || (failure instanceof Error ? failure.message : "生成失败");
       }

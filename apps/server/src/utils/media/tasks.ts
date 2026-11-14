@@ -27,6 +27,8 @@ type MediaTask = { record: MediaTaskRecord; controller: AbortController };
 
 const taskStates = new Set<MediaTaskState>(["created", "submitted", "succeeded", "failed", "cancelled", "interrupted"]);
 const terminalStates = new Set<MediaTaskState>(["succeeded", "failed", "cancelled", "interrupted"]);
+// 已拿到供应商任务号的记录即使落定也应能接回：续跑只轮询，不会重复提交。
+const resumableStates = new Set<MediaTaskState>(["submitted", "interrupted"]);
 // 磁盘是事实源，内存只做热缓存：结果内存保留 5 分钟、磁盘保留 7 天；页面断开不再心跳停止。
 const tasks = new Map<string, MediaTask>();
 const taskDuration = 30 * 60 * 1000;
@@ -62,8 +64,9 @@ function serialize<T>(taskId: string, fn: () => Promise<T>): Promise<T> {
 }
 
 // 单写者终态守卫：内存任务统一在此落定，终态永不被覆盖。
-function settle(task: MediaTask, state: "succeeded" | "failed" | "cancelled", result: ApiResponse<GeneratedMedia[]>) {
-  if (terminalStates.has(task.record.state)) return;
+function settle(task: MediaTask, state: "succeeded" | "failed" | "cancelled" | "interrupted", result: ApiResponse<GeneratedMedia[]>) {
+  // interrupted 允许被续跑结果覆盖，其余终态不可改写。
+  if (terminalStates.has(task.record.state) && task.record.state !== "interrupted") return;
   Object.assign(task.record, { state, result, settledAt: Date.now() });
   // 落盘失败仅降级为「重启后按中断处理」，不影响本进程返回结果。
   void persist(task.record).catch(cause => console.error("媒体任务落盘失败", task.record.taskId, cause));
@@ -104,7 +107,7 @@ function triggerResume(record: MediaTaskRecord) {
       // 认领与 cancel/status 落盘串行：重读磁盘确认仍 submitted；认领后内存接管，取消改走 stop。
       const claimed = await serialize(record.taskId, async () => {
         const latest = await readRecord(record.cwd, record.taskId);
-        if (!latest || latest.cwd !== record.cwd || latest.state !== "submitted" || !latest.remoteTaskId || latest.deadline <= Date.now() || tasks.has(record.taskId)) return null;
+        if (!latest || latest.cwd !== record.cwd || !resumableStates.has(latest.state) || !latest.remoteTaskId || latest.deadline <= Date.now() || tasks.has(record.taskId)) return null;
         const controller = new AbortController();
         const signal = AbortSignal.any([controller.signal, AbortSignal.timeout(latest.deadline - Date.now())]);
         const task: MediaTask = { record: latest, controller };
@@ -123,6 +126,7 @@ function triggerResume(record: MediaTaskRecord) {
           settle(task, "succeeded", success(files));
         }
       } catch (cause) {
+        // 续跑已有明确失败：判终态，避免每秒轮询无限重试供应商接口。
         settle(task, "failed", { ...errorFromCause(cause), data: null });
       }
     } catch (cause) {
@@ -147,12 +151,14 @@ async function scanRecords(interruptActive: boolean) {
       if (!record || typeof record.cwd !== "string" || !taskStates.has(record.state) || tasks.has(record.taskId)) continue;
       if (terminalStates.has(record.state)) {
         if (record.settledAt !== undefined && record.settledAt + 7 * 86400000 <= now) await unlink(path).catch(() => {});
+        // 提交后中断的记录在启动时也凭任务号接回一次。
+        else if (interruptActive && resumableStates.has(record.state) && record.remoteTaskId && record.deadline > now) triggerResume(record);
       } else if (interruptActive) {
         const timeout = record.deadline <= now;
         if (timeout) {
           await settleDisk(record.cwd, record.taskId, "failed", error<GeneratedMedia[]>("生成超时", null, 500))
             .catch(cause => console.error("媒体任务扫描失败", path, cause));
-        } else if (record.state === "submitted" && record.remoteTaskId) {
+        } else if (resumableStates.has(record.state) && record.remoteTaskId) {
           triggerResume(record);
         } else {
           await settleDisk(record.cwd, record.taskId, "interrupted", error<GeneratedMedia[]>("任务已中断（可能已提交）", null, 499))
@@ -197,7 +203,15 @@ export async function start(cwd: string, taskId: string, mediaType: "image" | "v
     },
   }).then(
     files => settle(task, "succeeded", success(files)),
-    cause => settle(task, "failed", { ...errorFromCause(cause), data: null }),
+    cause => {
+      // 已拿到供应商任务号：结果未知，标中断并移出内存，重开节点凭号续跑；没有任务号才确认失败。
+      if (task.record.remoteTaskId) {
+        settle(task, "interrupted", error<GeneratedMedia[]>("任务已中断（可能已提交）", null, 499));
+        tasks.delete(taskId);
+        return;
+      }
+      settle(task, "failed", { ...errorFromCause(cause), data: null });
+    },
   );
 }
 
@@ -211,18 +225,17 @@ export async function status(cwd: string, taskIds: string[]) {
     // 读盘期间任务可能已被 start/续跑认领，复查内存避免把运行中任务误标中断。
     const live = tasks.get(taskId);
     if (live && live.record.cwd === cwd) return { taskId, ...(live.record.result ? { result: live.record.result } : {}) };
-    if (!terminalStates.has(record.state)) {
-      // 磁盘上仍活跃说明所属进程已不在：可续跑的触发恢复，其余标终态。
-      const timeout = record.deadline <= Date.now();
-      if (timeout) {
+    // 有任务号说明已提交：无论记录是运行中还是已标中断，都凭号接回，不重复提交。
+    if (resumableStates.has(record.state) && record.remoteTaskId) {
+      if (record.deadline <= Date.now()) {
         const result = error<GeneratedMedia[]>("生成超时", null, 500);
         await settleDisk(cwd, taskId, "failed", result).catch(() => {});
         return { taskId, result };
       }
-      if (record.state === "submitted" && record.remoteTaskId) {
-        triggerResume(record);
-        return { taskId };
-      }
+      triggerResume(record);
+      return { taskId };
+    }
+    if (!terminalStates.has(record.state)) {
       const result = error<GeneratedMedia[]>("任务已中断（可能已提交）", null, 499);
       await settleDisk(cwd, taskId, "interrupted", result).catch(() => {});
       return { taskId, result };

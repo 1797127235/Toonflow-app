@@ -258,7 +258,7 @@ onMounted(() => {
     const inpaintData = data.value.inpaint;
     // 局部重绘需取回临时图后重新合成，普通生成直接接回结果。
     const resume = inpaintData
-      ? generationState.run(() => generateInpaint({ prompt: data.value.prompt } as NodeImageRequest, inpaintData, controller.signal, undefined, taskId))
+      ? generationState.run(() => generateInpaint({ prompt: data.value.prompt } as NodeImageRequest, inpaintData, controller.signal, undefined, taskId), true)
         .then(([result]) => { if (result) outputs.value.image = { dataType: "IMAGE", value: { url: result.path, mimeType: result.mimeType } }; })
       : generationState.reconnect(controller.signal);
     void resume

@@ -198,7 +198,8 @@ function createMediaTasks() {
         finish(result) {
           cleanup();
           if (result.code === 200 && result.data) resolve(result.data);
-          else reject(new Error(result.message || "媒体生成失败"));
+          // 保留状态码：499 表示任务可能已提交，调用方不能当成确定失败清掉任务号。
+          else reject(Object.assign(new Error(result.message || "媒体生成失败"), { code: result.code }));
         },
         fail(error) { cleanup(); reject(error); },
         stall,
