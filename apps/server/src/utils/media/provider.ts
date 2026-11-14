@@ -380,7 +380,7 @@ export async function deleteMediaProvider(fileName: string, revision: string) {
   } finally { release(); }
 }
 
-export async function loadMediaProviderSource(source: string, config: Record<string, unknown> = {}, signal?: AbortSignal, fetchRequest = fetch, cwd?: string) {
+export async function loadMediaProviderSource(source: string, config: Record<string, unknown> = {}, signal?: AbortSignal, fetchRequest = fetch, cwd?: string, onSubmitted?: (remoteTaskId: string) => void | Promise<void>) {
   signal?.throwIfAborted();
   const { id } = parseProvider(source);
   // VM 只隔离可信供应商的全局上下文；不可信代码需要独立进程等更强隔离。
@@ -412,6 +412,7 @@ export async function loadMediaProviderSource(source: string, config: Record<str
     sourceRevision: createHash("sha256").update(source).digest("hex"),
     config: providerConfig,
     signal,
+    onSubmitted,
     tool: {
       fetch: signal ? Object.assign((input: Parameters<typeof fetch>[0], init?: RequestInit) => {
         signal.throwIfAborted();
@@ -429,13 +430,9 @@ export async function loadMediaProviderSource(source: string, config: Record<str
       },
     } satisfies ProviderTools,
   };
-  for (const [name, generate] of [
-    ["generateImage", definition.generateImage],
-    ["generateVideo", definition.generateVideo],
-    ["generateAudio", definition.generateAudio],
-  ] as const) {
-    if (!generate) continue;
-    Object.assign(provider, { [name]: async (request: ImageRequest | VideoRequest | AudioRequest) => {
+  // generate* 与 resume 共用同一套请求跟踪与错误富化包装。
+  const wrapCall = <TArgs extends unknown[]>(invoke: (context: ProviderContext, ...args: TArgs) => Promise<MediaAsset[]>) =>
+    async (...args: TArgs): Promise<MediaAsset[]> => {
       let failure: { status?: number; message: string } | undefined;
       let pendingRequests = 0;
       let overlappingRequests = false;
@@ -468,13 +465,7 @@ export async function loadMediaProviderSource(source: string, config: Record<str
         } finally { pendingRequests--; }
       }, { preconnect: provider.tool.fetch.preconnect }) as typeof fetch };
       const context = { ...provider, tool };
-      try {
-        const prepared = definition.processMedia ? await definition.processMedia.call(context, request) : request;
-        // 预处理沿用原生成类型，在动态分发边界按对应方法收窄请求。
-        if (name === "generateImage") return await generate.call(context, prepared as ImageRequest);
-        if (name === "generateVideo") return await generate.call(context, prepared as VideoRequest);
-        return await generate.call(context, prepared as AudioRequest);
-      }
+      try { return await invoke(context, ...args); }
       catch (error) {
         const info = error as { name?: unknown; message?: unknown } | null;
         if (signal?.aborted || info?.name === "AbortError") throw error;
@@ -490,7 +481,24 @@ export async function loadMediaProviderSource(source: string, config: Record<str
         if (message === (typeof error === "string" ? error : info?.message)) throw error;
         throw Object.assign(new Error(message), typeof error === "object" ? error : undefined, { message, cause: error });
       }
-    } });
+    };
+  for (const [name, generate] of [
+    ["generateImage", definition.generateImage],
+    ["generateVideo", definition.generateVideo],
+    ["generateAudio", definition.generateAudio],
+  ] as const) {
+    if (!generate) continue;
+    Object.assign(provider, { [name]: wrapCall(async (context, request: ImageRequest | VideoRequest | AudioRequest) => {
+      const prepared = definition.processMedia ? await definition.processMedia.call(context, request) : request;
+      // 预处理沿用原生成类型，在动态分发边界按对应方法收窄请求。
+      if (name === "generateImage") return generate.call(context, prepared as ImageRequest);
+      if (name === "generateVideo") return generate.call(context, prepared as VideoRequest);
+      return generate.call(context, prepared as AudioRequest);
+    }) });
+  }
+  if (definition.resume) {
+    const resume = definition.resume;
+    Object.assign(provider, { resume: wrapCall((context, remoteTaskId: string, mediaType: "image" | "video" | "audio") => resume.call(context, remoteTaskId, mediaType)) });
   }
   return provider;
 }

@@ -134,11 +134,11 @@ async function prepareRequest<T>(directory: string | undefined, mediaType: "imag
   };
 }
 
-async function configuredProvider(request: MediaGenerationRequest, mediaType: "image" | "video" | "audio", signal?: AbortSignal, directory?: string) {
-  const info = await getMediaProvider(request.providerId);
-  if (!info.models.some(model => model.id === request.modelId && model.type === mediaType)) invalid("所选媒体模型不存在或类型不匹配，请重新选择");
+async function configuredProvider(providerId: string, modelId: string, mediaType: "image" | "video" | "audio", signal?: AbortSignal, directory?: string, onSubmitted?: (remoteTaskId: string) => void | Promise<void>) {
+  const info = await getMediaProvider(providerId);
+  if (!info.models.some(model => model.id === modelId && model.type === mediaType)) invalid("所选媒体模型不存在或类型不匹配，请重新选择");
   const configurations = record(conf.get("settings", {}).mediaProviderConfigs);
-  return loadMediaProviderSource(info.source, record(configurations[info.id]), signal, undefined, directory);
+  return loadMediaProviderSource(info.source, record(configurations[info.id]), signal, undefined, directory, onSubmitted);
 }
 
 async function preparePriceRequest(directory: string | undefined, mediaType: "image" | "video" | "audio", request: MediaGenerationRequest, signal?: AbortSignal) {
@@ -154,40 +154,18 @@ async function preparePriceRequest(directory: string | undefined, mediaType: "im
 
 export async function getMediaPrice(directory: string | undefined, mediaType: "image" | "video" | "audio", request: MediaGenerationRequest, signal?: AbortSignal) {
   signal?.throwIfAborted();
-  const provider = await configuredProvider(request, mediaType, signal, directory);
+  const provider = await configuredProvider(request.providerId, request.modelId, mediaType, signal, directory);
   if (!provider.getPrice) return null;
   const prepared = await preparePriceRequest(directory, mediaType, request, signal);
   signal?.throwIfAborted();
   return getProviderPrice(provider, prepared);
 }
 
-export async function generateMedia(
-  cwd: string,
-  mediaType: "image" | "video" | "audio",
-  request: MediaGenerationRequest,
-  signal?: AbortSignal,
-): Promise<GeneratedMedia[]> {
-  signal?.throwIfAborted();
-  if (!request.prompt.trim()) invalid("请输入生成提示词");
-  const directory = await realpath(cwd);
-  const outputDirectory = request.outputDirectory ?? "assets/generated";
-  await resolveWorkspacePath(directory, outputDirectory, true);
-  const provider = await configuredProvider(request, mediaType, signal, directory);
-  const generate = mediaType === "image" ? provider.generateImage : mediaType === "video" ? provider.generateVideo : provider.generateAudio;
-  if (typeof generate !== "function") invalid(t`此供应商不支持${translateMessage({ image: "图片", video: "视频", audio: "音频" }[mediaType])}生成`);
-  const rules = Array.isArray(provider.rules) ? provider.rules : [];
-  if (rules.some(rule => rule.field === "apiKey") && (typeof provider.config.apiKey !== "string" || !provider.config.apiKey.trim())) invalid("请先在媒体模型设置中配置供应商 API Key");
-  const prepared = await prepareRequest(directory, mediaType, request, readReference, signal);
-  signal?.throwIfAborted();
-  const finish = beginGeneration(provider);
+/** 生成与续跑共用的落盘尾段：下载/解码 → 独占写入 → 失败回滚本批文件。 */
+export async function persistAssets(directory: string, outputDirectory: string, mediaType: "image" | "video" | "audio", assets: MediaAsset[], signal?: AbortSignal): Promise<GeneratedMedia[]> {
   const written: string[] = [];
   const result: GeneratedMedia[] = [];
   try {
-    signal?.throwIfAborted();
-    const { type, ...parameters } = prepared;
-    const assets = type === "audio" ? await provider.generateAudio!(parameters as AudioRequest)
-      : type === "image" ? await provider.generateImage!(parameters as ImageRequest) : await provider.generateVideo!(parameters as VideoRequest);
-    if (!Array.isArray(assets) || !assets.length) invalid("供应商未返回生成结果");
     for (const asset of assets) {
       signal?.throwIfAborted();
       const { bytes, mimeType } = await assetBytes(asset, mediaType, signal);
@@ -210,5 +188,56 @@ export async function generateMedia(
     // 只回滚本次创建的文件，保留目录中已有的节点资源。
     await Promise.all(written.map(path => unlink(path).catch((error: NodeJS.ErrnoException) => { if (error.code !== "ENOENT") throw error; })));
     throw err;
+  }
+}
+
+export async function generateMedia(
+  cwd: string,
+  mediaType: "image" | "video" | "audio",
+  request: MediaGenerationRequest,
+  signal?: AbortSignal,
+  hooks?: { onSubmitted?: (remoteTaskId: string) => void | Promise<void> },
+): Promise<GeneratedMedia[]> {
+  signal?.throwIfAborted();
+  if (!request.prompt.trim()) invalid("请输入生成提示词");
+  const directory = await realpath(cwd);
+  const outputDirectory = request.outputDirectory ?? "assets/generated";
+  await resolveWorkspacePath(directory, outputDirectory, true);
+  const provider = await configuredProvider(request.providerId, request.modelId, mediaType, signal, directory, hooks?.onSubmitted);
+  const generate = mediaType === "image" ? provider.generateImage : mediaType === "video" ? provider.generateVideo : provider.generateAudio;
+  if (typeof generate !== "function") invalid(t`此供应商不支持${translateMessage({ image: "图片", video: "视频", audio: "音频" }[mediaType])}生成`);
+  const rules = Array.isArray(provider.rules) ? provider.rules : [];
+  if (rules.some(rule => rule.field === "apiKey") && (typeof provider.config.apiKey !== "string" || !provider.config.apiKey.trim())) invalid("请先在媒体模型设置中配置供应商 API Key");
+  const prepared = await prepareRequest(directory, mediaType, request, readReference, signal);
+  signal?.throwIfAborted();
+  const finish = beginGeneration(provider);
+  try {
+    signal?.throwIfAborted();
+    const { type, ...parameters } = prepared;
+    const assets = type === "audio" ? await provider.generateAudio!(parameters as AudioRequest)
+      : type === "image" ? await provider.generateImage!(parameters as ImageRequest) : await provider.generateVideo!(parameters as VideoRequest);
+    if (!Array.isArray(assets) || !assets.length) invalid("供应商未返回生成结果");
+    return await persistAssets(directory, outputDirectory, mediaType, assets, signal);
+  } finally { finish(); }
+}
+
+/** 续跑已提交的远程任务：仅轮询并下载落盘，不重新创建任务；供应商不支持 resume 时返回 null。 */
+export async function resumeMedia(
+  record: { cwd: string; mediaType: "image" | "video" | "audio"; providerId: string; modelId: string; outputDirectory: string; remoteTaskId: string },
+  signal?: AbortSignal,
+): Promise<GeneratedMedia[] | null> {
+  signal?.throwIfAborted();
+  const directory = await realpath(record.cwd);
+  await resolveWorkspacePath(directory, record.outputDirectory, true);
+  const provider = await configuredProvider(record.providerId, record.modelId, record.mediaType, signal, directory);
+  if (typeof provider.resume !== "function") return null;
+  const rules = Array.isArray(provider.rules) ? provider.rules : [];
+  if (rules.some(rule => rule.field === "apiKey") && (typeof provider.config.apiKey !== "string" || !provider.config.apiKey.trim())) invalid("请先在媒体模型设置中配置供应商 API Key");
+  const finish = beginGeneration(provider);
+  try {
+    signal?.throwIfAborted();
+    const assets = await provider.resume(record.remoteTaskId, record.mediaType);
+    if (!Array.isArray(assets) || !assets.length) invalid("供应商未返回生成结果");
+    return await persistAssets(directory, record.outputDirectory, record.mediaType, assets, signal);
   } finally { finish(); }
 }

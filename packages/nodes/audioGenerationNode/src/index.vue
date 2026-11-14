@@ -17,7 +17,7 @@
       <el-button :icon="IconTransfer" :loading="uploading" :disabled="busy" text title="替换音频" aria-label="替换音频" @click.stop="fileInput?.click()">替换音频</el-button>
       <input ref="fileInput" type="file" accept="audio/*" hidden aria-label="选择替换音频" :disabled="busy" @change="replaceOutput" />
     </template>
-    <div v-loading="generating || uploading" class="audioContent nopan" :aria-busy="generating || uploading">
+    <div v-loading="generating || uploading" :element-loading-text="stalled ? '连接中断，正在重试…' : undefined" class="audioContent nopan" :aria-busy="generating || uploading">
       <audioPlayer v-if="previewUrl" ref="player" class="audioPreview" :src="previewUrl" @loadedmetadata="updateNodeInternals" />
       <div v-else class="audioEmpty" role="img" aria-label="暂无生成音频"><icon-music-bolt :size="48" stroke="1.25" aria-hidden="true" /></div>
     </div>
@@ -52,7 +52,7 @@
               :disabled="deleting || uploading || transcribing || actions?.processing || (!generating && (!generationPrompt || !selectedModel))"
               :title="generating ? '停止生成' : '生成音频'"
               :aria-label="generating ? '停止生成' : '生成音频'"
-              @click="generating ? generationController?.abort() : startGeneration().catch(error => showNodeError(error, '音频生成失败'))" />
+              @click="generating ? generationState.stop() : startGeneration().catch(error => showNodeError(error, '音频生成失败'))" />
           </div>
         </div>
       </el-card>
@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onScopeDispose, ref, watch } from "vue";
+import { computed, inject, onMounted, onScopeDispose, ref, watch } from "vue";
 import { ElButton, ElCard, ElLoading, ElOption, ElOptionGroup, ElSelect } from "element-plus";
 import { IconArrowUp, IconGauge, IconMusicBolt, IconPlayerStop, IconScissors, IconTransfer, IconTextRecognition } from "@tabler/icons-vue";
 import { getTargetValues, isTypeCompatible, nodeSkeleton, nodeTools, useNode, z, type NodeAudioRequest, type NodeHandle, type NodeInputValue, type NodeMediaModel } from "@toonflow/nodes-scaffold/runtime";
@@ -90,7 +90,7 @@ defineOptions({
 const vLoading = ElLoading.directive;
 const { id, node, nodeProps, nodeEvent, outputs, files, ai, updateNodeInternals } = useNode({ label: "音频生成" });
 type PromptModel = NonNullable<InstanceType<typeof promptInput>["$props"]["modelValue"]>;
-const data = computed(() => node.data as { prompt: string; promptModel: PromptModel; model: string; language: string; sampleRate: number; format: string });
+const data = computed(() => node.data as { prompt: string; promptModel: PromptModel; model: string; language: string; sampleRate: number; format: string; pendingTaskId?: string });
 data.value.prompt ??= "";
 data.value.promptModel ??= [];
 data.value.model ??= "";
@@ -113,8 +113,16 @@ let generationController: AbortController | undefined;
 let generation: Promise<void> | undefined;
 let modelsRequest: Promise<void> | undefined;
 let modelsRefreshPending = false;
-const generationState = useNodeGeneration(outputs, () => generationController?.abort());
-const { generating } = generationState;
+const flushCanvasSave = inject<() => Promise<void>>("flushCanvasSave", async () => {});
+const generationState = useNodeGeneration(outputs, () => generationController?.abort(), {
+  data,
+  watch: ai.watchMediaTask,
+  cancelTask: ai.cancelMediaTask,
+  directory: () => files.getWorkspaceFiles().list().then(({ directory }) => directory),
+  flush: flushCanvasSave,
+  apply: ([result]) => { if (result) outputs.value.audio = { dataType: "AUDIO", value: { url: result.path, mimeType: result.mimeType } }; },
+});
+const { generating, stalled } = generationState;
 const busy = computed(() => generating.value || uploading.value || deleting.value || transcribing.value || !!actions.value?.processing);
 watch(busy, value => { if (!value && modelsRefreshPending) void refreshProviderModels(); });
 const selectedModel = computed(() => models.value.find(item => JSON.stringify([item.providerId, item.modelId]) === data.value.model));
@@ -153,6 +161,13 @@ onMounted(() => {
   window.addEventListener("toonflow:plugin-installed", refreshProviderModels);
   window.addEventListener("toonflow:provider-config-changed", refreshProviderModels);
   void refreshProviderModels();
+  if (data.value.pendingTaskId) {
+    const controller = new AbortController();
+    generationController = controller;
+    void generationState.reconnect(controller.signal)
+      .catch(error => { if ((error as Error)?.name !== "AbortError") showNodeError(error, "音频生成失败"); })
+      .finally(() => { if (generationController === controller) generationController = undefined; });
+  }
 });
 onScopeDispose(() => {
   disposed = true;
@@ -211,11 +226,11 @@ async function startGeneration() {
   generation = generationState.run(async () => {
     const { directory } = await workspace.list();
     controller.signal.throwIfAborted();
-    const [result] = await ai.generateAudio({ ...input, directory }, controller.signal);
+    const [result] = await ai.generateAudio({ ...input, directory }, controller.signal, generationState.onTaskId);
     controller.signal.throwIfAborted();
     if (!result) throw new Error("供应商未返回音频");
     outputs.value.audio = { dataType: "AUDIO", value: { url: result.path, mimeType: result.mimeType } };
-  }).catch(error => showNodeError(error, "音频生成失败")).finally(() => {
+  }).catch(error => { if ((error as Error)?.name !== "AbortError") showNodeError(error, "音频生成失败"); }).finally(() => {
     generationController = undefined;
   });
   return { status: "generating" };
@@ -251,7 +266,7 @@ nodeEvent.on("save", reason => {
 nodeEvent.on("delete", async () => {
   if (uploading.value) throw new Error("音频正在替换，请稍后删除节点");
   deleting.value = true;
-  generationController?.abort();
+  generationState.stop();
   try {
     await Promise.all([generation, actions.value?.cancelAndWait(), cancelTranscriptionAndWait()]);
     await files.removeNodeFiles();

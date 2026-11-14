@@ -9,5 +9,5 @@ export default Router().post("/", validateFields({
 }), async (req, res) => {
   const { directory, taskIds } = req.body;
   const cwd = await u.workspace.resolveWorkspace(req, directory);
-  res.set("Cache-Control", "no-store").json(success(u.mediaTasks.status(cwd, taskIds)));
+  res.set("Cache-Control", "no-store").json(success(await u.mediaTasks.status(cwd, taskIds)));
 });

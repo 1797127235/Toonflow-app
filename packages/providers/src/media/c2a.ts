@@ -672,6 +672,8 @@ async function generateGrokVideo(context: ProviderContext, request: VideoRequest
   const requestId = task.request_id ?? task.id ?? task.task_id;
   if (typeof requestId !== "string" || !requestId) throw new Error("C2A Grok 视频接口没有返回 request_id");
 
+  // 先落盘远程任务 ID 再轮询：进程中断后可凭此续跑，避免重复提交计费。
+  await context.onSubmitted?.(requestId);
   const url = await pollUntil(signal, 5000, 600_000, async () => {
     const value = await get(context, `${baseUrl}/videos/${encodeURIComponent(requestId)}`, signal);
     const data = taskOf(value);
@@ -746,6 +748,24 @@ function videoModes(spec: VideoSpec): (ImageMode | VideoMode)[] {
   ].filter(Boolean);
   if (references.length) modes.push(references as unknown as VideoMode);
   return modes;
+}
+
+/** 轮询统一视频任务直到完成并下载成片；generateVideoById 与 resume 共用。 */
+async function pollVideoTask(context: ProviderContext, endpoint: string, taskId: string, apiKey: string, signal: AbortSignal, timeoutMs: number, label: string): Promise<MediaAsset[]> {
+  const url = await pollUntil(signal, 5000, timeoutMs, async () => {
+    const task = taskOf(await get(context, `${endpoint}/${encodeURIComponent(taskId)}`, signal));
+    const status = String(task.status ?? "").toLowerCase();
+    if (taskFailed(task))
+      throw new Error(`${label} 任务 ${taskId} ${status}：${readError(task) || task.message || task.code || "生成失败"}；请核对原任务，不要重复提交`);
+    if (!taskDone(task)) return null;
+    const content = task.content && typeof task.content === "object" && !Array.isArray(task.content) ? record(task.content) : {};
+    const video = task.video && typeof task.video === "object" && !Array.isArray(task.video) ? record(task.video) : {};
+    const found = content.video_url ?? task.video_url ?? task.url ?? video.url ?? task.result_url;
+    if (typeof found === "string" && found) return found;
+    // 多数账号只在 /content 上给成片，交给 finalizeVideo 下载。
+    return `${endpoint}/${encodeURIComponent(taskId)}/content`;
+  });
+  return finalizeVideo(context, url, apiKey, signal);
 }
 
 async function generateVideoById(context: ProviderContext, request: VideoRequest): Promise<MediaAsset[]> {
@@ -834,19 +854,9 @@ async function generateVideoById(context: ProviderContext, request: VideoRequest
   const taskId = created.id ?? created.task_id;
   if (typeof taskId !== "string" || !taskId) throw new Error(readError(created) || `${spec.label} 创建响应缺少任务 ID；请核对任务记录，不要重复提交`);
 
-  const url = await pollUntil(signal, 5000, 30 * 60_000, async () => {
-    const task = taskOf(await get(context, `${endpoint}/${encodeURIComponent(taskId)}`, signal));
-    const status = String(task.status ?? "").toLowerCase();
-    if (taskFailed(task))
-      throw new Error(`${spec.label} 任务 ${taskId} ${status}：${readError(task) || task.message || task.code || "生成失败"}；请核对原任务，不要重复提交`);
-    if (!taskDone(task)) return null;
-    const content = task.content && typeof task.content === "object" && !Array.isArray(task.content) ? record(task.content) : {};
-    const found = content.video_url ?? task.video_url ?? task.url;
-    if (typeof found === "string" && found) return found;
-    // 多数账号只在 /content 上给成片，交给 finalizeVideo 下载。
-    return `${endpoint}/${encodeURIComponent(taskId)}/content`;
-  });
-  return finalizeVideo(context, url, apiKey, signal);
+  // 先落盘远程任务 ID 再轮询：进程中断后可凭此续跑，避免重复提交计费。
+  await context.onSubmitted?.(taskId);
+  return pollVideoTask(context, endpoint, taskId, apiKey, signal, 30 * 60_000, spec.label);
 }
 
 // ─────────────────────────────── 估价 ───────────────────────────────
@@ -1143,5 +1153,12 @@ export default {
     // Grok 视频用 xAI 参数（reference_images / image / last_frame），其余走统一 OpenAI Videos 入口。
     if (/^grok-imagine-video/i.test(String(request.model))) return generateGrokVideo(this, request);
     return generateVideoById(this, request);
+  },
+  async resume(remoteTaskId: string): Promise<MediaAsset[]> {
+    const apiKey = apiKeyOf(this);
+    if (!apiKey) throw new Error("请填写 C2A API Key");
+    // 续跑只用宿主传入的剩余时限信号，不另起超时；缺省时兜底 30 分钟。
+    const signal = this.signal ?? AbortSignal.timeout(30 * 60_000);
+    return pollVideoTask(this, `${gateway(this)}/videos`, remoteTaskId, apiKey, signal, Infinity, "C2A");
   },
 } satisfies ProviderDefinition<typeof rules>;

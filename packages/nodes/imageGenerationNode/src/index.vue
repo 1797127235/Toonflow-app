@@ -23,7 +23,7 @@
     <template #topRightActions>
       <el-button :icon="IconPencil" :disabled="generating || deleting || uploading || lighting?.generating || multiAngle?.generating || panorama?.busy || !previewUrl || gridSplit?.splitting" text title="标记" aria-label="标记" @click.stop="startEditor('mark')" />
     </template>
-    <div v-loading="generating || uploading" class="imageContent nopan" :aria-busy="generating || uploading">
+    <div v-loading="generating || uploading" :element-loading-text="stalled ? '连接中断，正在重试…' : undefined" class="imageContent nopan" :aria-busy="generating || uploading">
       <imageEditor
         v-if="previewUrl"
         ref="editor"
@@ -91,7 +91,7 @@
               :disabled="deleting || uploading || (!generating && (editor?.busy || !generationPrompt || !selectedModel))"
               :title="generating ? '停止生成' : '生成图片'"
               :aria-label="generating ? '停止生成' : '生成图片'"
-              @click="generating ? generationController?.abort() : startGeneration().catch((error) => showNodeError(error, '图片生成失败'))" />
+              @click="generating ? generationState.stop() : startGeneration().catch((error) => showNodeError(error, '图片生成失败'))" />
           </div>
         </div>
       </el-card>
@@ -110,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onScopeDispose, ref, watch } from "vue";
+import { computed, inject, nextTick, onMounted, onScopeDispose, ref, watch } from "vue";
 import { ElButton, ElCard, ElSelect, ElOption, ElOptionGroup, ElLoading, ElImageViewer } from "element-plus";
 import { IconCheck, IconPhotoAi, IconSparkles, IconArrowUp, IconPlayerStop, IconTransfer, IconLayoutGrid, IconBrush, IconPencil, IconSun, IconCameraRotate, IconPanoramaHorizontal, IconChevronDown } from "@tabler/icons-vue";
 import { nodeSkeleton, nodeTools, useNode, z, type NodeMediaModel, type NodeImageRequest, type NodeHandle } from "@toonflow/nodes-scaffold/runtime";
@@ -143,7 +143,7 @@ const { id, node, nodeProps, nodeEvent, outputs, files, ai, updateNodeInternals 
   label: "图片生成",
 });
 type PromptModel = NonNullable<InstanceType<typeof promptInput>["$props"]["modelValue"]>;
-const data = computed(() => node.data as { prompt: string; promptModel: PromptModel; inpaintPrompt: string; inpaintPromptModel: PromptModel; model: string; size: string; ratio: string; inpaint?: ImageInpaint });
+const data = computed(() => node.data as { prompt: string; promptModel: PromptModel; inpaintPrompt: string; inpaintPromptModel: PromptModel; model: string; size: string; ratio: string; inpaint?: ImageInpaint; pendingTaskId?: string });
 data.value.prompt ??= "";
 data.value.promptModel ??= [];
 data.value.inpaintPrompt ??= "";
@@ -173,8 +173,16 @@ const previewVisible = ref(false);
 const inpaintPreviewVisible = ref(false);
 const imageWidth = ref(0);
 let generationController: AbortController | undefined;
-const generationState = useNodeGeneration(outputs, () => generationController?.abort());
-const { generating } = generationState;
+const flushCanvasSave = inject<() => Promise<void>>("flushCanvasSave", async () => {});
+const generationState = useNodeGeneration(outputs, () => generationController?.abort(), {
+  data,
+  watch: ai.watchMediaTask,
+  cancelTask: ai.cancelMediaTask,
+  directory: () => files.getWorkspaceFiles().list().then(({ directory }) => directory),
+  flush: flushCanvasSave,
+  apply: ([result]) => { if (result) outputs.value.image = { dataType: "IMAGE", value: { url: result.path, mimeType: result.mimeType } }; },
+});
+const { generating, stalled } = generationState;
 let generation: Promise<void> | undefined;
 let modelsRequest: Promise<void> | undefined;
 const selectedModel = computed(() => models.value.find((item) => JSON.stringify([item.providerId, item.modelId]) === data.value.model));
@@ -243,6 +251,20 @@ onMounted(() => {
   window.addEventListener("toonflow:plugin-installed", refreshProviderModels);
   window.addEventListener("toonflow:provider-config-changed", refreshProviderModels);
   void loadModels().catch(error => { if (!disposed) showNodeError(error, "模型读取失败"); });
+  const taskId = data.value.pendingTaskId;
+  if (taskId) {
+    const controller = new AbortController();
+    generationController = controller;
+    const inpaintData = data.value.inpaint;
+    // 局部重绘需取回临时图后重新合成，普通生成直接接回结果。
+    const resume = inpaintData
+      ? generationState.run(() => generateInpaint({ prompt: data.value.prompt } as NodeImageRequest, inpaintData, controller.signal, undefined, taskId))
+        .then(([result]) => { if (result) outputs.value.image = { dataType: "IMAGE", value: { url: result.path, mimeType: result.mimeType } }; })
+      : generationState.reconnect(controller.signal);
+    void resume
+      .catch(error => { if ((error as Error)?.name !== "AbortError") showNodeError(error, "图片生成失败"); })
+      .finally(() => { if (generationController === controller) generationController = undefined; });
+  }
 });
 onScopeDispose(() => {
   disposed = true;
@@ -339,15 +361,15 @@ async function startGeneration() {
     .then(({ directory }) => {
       controller.signal.throwIfAborted();
       return inpaintData
-        ? generateInpaint({ ...input, directory }, inpaintData, controller.signal)
-        : ai.generateImage({ ...input, directory }, controller.signal);
+        ? generateInpaint({ ...input, directory }, inpaintData, controller.signal, generationState.onTaskId)
+        : ai.generateImage({ ...input, directory }, controller.signal, generationState.onTaskId);
     })
     .then(([result]) => {
       controller.signal.throwIfAborted();
       if (!result) throw new Error("供应商未返回图片");
       outputs.value.image = { dataType: "IMAGE", value: { url: result.path, mimeType: result.mimeType } };
     }))
-    .catch((error) => showNodeError(error, "图片生成失败"))
+    .catch((error) => { if ((error as Error)?.name !== "AbortError") showNodeError(error, "图片生成失败"); })
     .finally(() => {
       generationController = undefined;
     });
@@ -360,7 +382,7 @@ nodeEvent.on("save", (reason) => {
 nodeEvent.on("delete", async () => {
   if (uploading.value || lighting.value?.generating || multiAngle.value?.generating || panorama.value?.busy || (editor.value?.busy && !generating.value)) throw new Error("图片处理中，请稍后删除节点");
   deleting.value = true;
-  generationController?.abort();
+  generationState.stop();
   try {
     await generation;
     await files.removeNodeFiles();

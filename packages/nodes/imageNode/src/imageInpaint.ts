@@ -25,14 +25,14 @@ export function useImageInpaint() {
   const files = useNodeFiles();
   const ai = useNodeAi();
 
-  return async function generateInpaint(input: NodeImageRequest, inpaint: ImageInpaint, signal: AbortSignal): Promise<NodeImageResult[]> {
+  return async function generateInpaint(input: NodeImageRequest, inpaint: ImageInpaint, signal: AbortSignal, onTaskId?: (taskId: string) => void | Promise<void>, resumeTaskId?: string): Promise<NodeImageResult[]> {
     signal.throwIfAborted();
     if (!inpaint || ![inpaint.original, inpaint.guide, inpaint.mask].every(path => typeof path === "string" && path.trim())
       || !Array.isArray(inpaint.images) || inpaint.images.some(image => !image || typeof image.path !== "string" || !image.path.trim() || typeof image.mimeType !== "string" || !image.mimeType.startsWith("image/"))) {
       throw new Error("局部重绘素材无效，请重新创建重绘节点");
     }
     const workspace = files.getWorkspaceFiles();
-    const temporaryId = crypto.randomUUID();
+    let tempDirectory = `assets/${crypto.randomUUID()}`;
     const canvas = document.createElement("canvas");
     const urls: string[] = [];
     let outputPath = "";
@@ -68,13 +68,20 @@ export function useImageInpaint() {
       signal.throwIfAborted();
       requested = true;
       // 供应商尚未统一支持原生 mask；使用涂色参考引导，再按本地蒙版合成，严格保留区域外像素。
-      const [result] = await ai.generateImage(buildInpaintRequest({
-        ...input,
-        directory,
-        outputDirectory: `assets/${temporaryId}`,
-      }, inpaint), signal);
+      // 续跑时凭任务 ID 取回已生成的临时图，再走同一套合成，不重复提交计费。
+      const [result] = resumeTaskId
+        ? await ai.watchMediaTask(directory, resumeTaskId, signal)
+        : await ai.generateImage(buildInpaintRequest({
+          ...input,
+          directory,
+          outputDirectory: tempDirectory,
+        }, inpaint), signal, onTaskId);
       signal.throwIfAborted();
       if (!result) throw new Error("供应商未返回图片");
+      if (resumeTaskId) {
+        const separator = result.path.lastIndexOf("/");
+        if (separator > 0) tempDirectory = result.path.slice(0, separator);
+      }
       const generated = await readImage(result.path, result.mimeType);
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.drawImage(generated, 0, 0, canvas.width, canvas.height);
@@ -87,7 +94,7 @@ export function useImageInpaint() {
       outputPath = await uploadNodeFile(workspace, id, new File([blob], "image.png", { type: "image/png" }));
       signal.throwIfAborted();
       if (findNode(id) !== node) throw new Error("重绘节点已移除");
-      await workspace.remove(`assets/${temporaryId}`, true).catch(error => {
+      await workspace.remove(tempDirectory, true).catch(error => {
         if (error?.response?.data?.data?.code !== "ENOENT") showNodeError(error, "重绘临时文件清理失败");
       });
       requested = false;
@@ -98,7 +105,8 @@ export function useImageInpaint() {
       urls.forEach(url => URL.revokeObjectURL(url));
       canvas.width = canvas.height = 0;
       if (outputPath && !committed) await workspace.remove(outputPath).catch(error => showNodeError(error, "重绘临时文件清理失败"));
-      if (requested) await workspace.remove(`assets/${temporaryId}`, true).catch(error => {
+      // 中止（切画布/卸载）保留临时目录：续跑需凭它取回已付费的生成结果，不能删。
+      if (requested && !signal.aborted) await workspace.remove(tempDirectory, true).catch(error => {
         if (error?.response?.data?.data?.code !== "ENOENT") showNodeError(error, "重绘临时文件清理失败");
       });
     }

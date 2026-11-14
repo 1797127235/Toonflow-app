@@ -44,6 +44,7 @@
 
 - [ACP 外部 pi 接入规格](./acpPi/spec.md)：需求真源与功能对等矩阵。
 - [C2A 提供商真实调用测试计划](./c2aProvider/testPlan.md)：环境、成本策略与实测记录；配套[测试用例](./c2aProvider/testCases.md)。
+- [媒体生成任务持久化规格](./mediaTaskPersistence.md)：失败场景、落盘模型、重启续跑与验收。
 
 ## 目录约定
 
@@ -51,6 +52,7 @@
 docs/
   readme.md          文档入口
   development.md     开发与扩展指南
+  mediaTaskPersistence.md  媒体生成任务持久化规格
   acpPi/             ACP 外部 pi 接入规格
   c2aProvider/       C2A 提供商真实调用测试计划与用例
   readme/            各语言项目介绍

@@ -30,7 +30,7 @@
         </template>
       </el-dropdown>
     </template>
-    <div v-loading="generating || uploading" class="videoContent nopan" :aria-busy="generating || uploading">
+    <div v-loading="generating || uploading" :element-loading-text="stalled ? '连接中断，正在重试…' : undefined" class="videoContent nopan" :aria-busy="generating || uploading">
       <videoPlayer
         v-if="previewUrl"
         ref="player"
@@ -90,7 +90,7 @@
               :disabled="deleting || uploading || (!generating && (!generationPrompt || !selectedModel))"
               :title="generating ? '停止生成' : '生成视频'"
               :aria-label="generating ? '停止生成' : '生成视频'"
-              @click="generating ? generationController?.abort() : startGeneration().catch((error) => showNodeError(error, '视频生成失败'))" />
+              @click="generating ? generationState.stop() : startGeneration().catch((error) => showNodeError(error, '视频生成失败'))" />
           </div>
         </div>
       </el-card>
@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onScopeDispose, ref, watch } from "vue";
+import { computed, inject, nextTick, onMounted, onScopeDispose, ref, watch } from "vue";
 import { ElButton, ElCard, ElSelect, ElOption, ElOptionGroup, ElLoading, ElDropdown, ElDropdownMenu, ElDropdownItem } from "element-plus";
 import { IconCameraAi, IconSparkles, IconArrowUp, IconPlayerStop, IconTransfer, IconMusic, IconLayersSubtract, IconScissors, IconMovie, IconPhotoScan, IconPlayerSkipBack, IconPlayerSkipForward } from "@tabler/icons-vue";
 import { nodeSkeleton, nodeTools, useNode, z, type NodeMediaModel, type NodeVideoRequest, type NodeHandle } from "@toonflow/nodes-scaffold/runtime";
@@ -129,7 +129,7 @@ const { id, node, nodeProps, nodeEvent, outputs, files, ai, updateNodeInternals 
   label: "视频生成",
 });
 type PromptModel = NonNullable<InstanceType<typeof promptInput>["$props"]["modelValue"]>;
-const data = computed(() => node.data as { prompt: string; promptModel: PromptModel; model: string; duration?: number; resolution: string; ratio: string; mode: string; generateAudio: boolean });
+const data = computed(() => node.data as { prompt: string; promptModel: PromptModel; model: string; duration?: number; resolution: string; ratio: string; mode: string; generateAudio: boolean; pendingTaskId?: string });
 data.value.prompt ??= "";
 data.value.promptModel ??= [];
 data.value.model ??= "";
@@ -148,8 +148,16 @@ const player = ref<InstanceType<typeof videoPlayer>>();
 const actions = ref<InstanceType<typeof videoActions>>();
 const videoWidth = ref(0);
 let generationController: AbortController | undefined;
-const generationState = useNodeGeneration(outputs, () => generationController?.abort());
-const { generating } = generationState;
+const flushCanvasSave = inject<() => Promise<void>>("flushCanvasSave", async () => {});
+const generationState = useNodeGeneration(outputs, () => generationController?.abort(), {
+  data,
+  watch: ai.watchMediaTask,
+  cancelTask: ai.cancelMediaTask,
+  directory: () => files.getWorkspaceFiles().list().then(({ directory }) => directory),
+  flush: flushCanvasSave,
+  apply: ([result]) => { if (result) outputs.value.video = { dataType: "VIDEO", value: { url: result.path, mimeType: result.mimeType } }; },
+});
+const { generating, stalled } = generationState;
 let generation: Promise<void> | undefined;
 let modelsRequest: Promise<void> | undefined;
 // 供应商未声明视频比例范围，沿用界面的通用比例，具体支持范围由供应商校验。
@@ -246,6 +254,13 @@ onMounted(() => {
   window.addEventListener("toonflow:plugin-installed", refreshProviderModels);
   window.addEventListener("toonflow:provider-config-changed", refreshProviderModels);
   void loadModels().catch(error => { if (!disposed) showNodeError(error, "模型读取失败"); });
+  if (data.value.pendingTaskId) {
+    const controller = new AbortController();
+    generationController = controller;
+    void generationState.reconnect(controller.signal)
+      .catch(error => { if ((error as Error)?.name !== "AbortError") showNodeError(error, "视频生成失败"); })
+      .finally(() => { if (generationController === controller) generationController = undefined; });
+  }
 });
 onScopeDispose(() => {
   disposed = true;
@@ -324,14 +339,14 @@ async function startGeneration() {
     .list()
     .then(({ directory }) => {
       controller.signal.throwIfAborted();
-      return ai.generateVideo({ ...input, directory }, controller.signal);
+      return ai.generateVideo({ ...input, directory }, controller.signal, generationState.onTaskId);
     })
     .then(([result]) => {
       controller.signal.throwIfAborted();
       if (!result) throw new Error("供应商未返回视频");
       outputs.value.video = { dataType: "VIDEO", value: { url: result.path, mimeType: result.mimeType } };
     }))
-    .catch((error) => showNodeError(error, "视频生成失败"))
+    .catch((error) => { if ((error as Error)?.name !== "AbortError") showNodeError(error, "视频生成失败"); })
     .finally(() => {
       generationController = undefined;
     });
@@ -344,7 +359,7 @@ nodeEvent.on("save", (reason) => {
 nodeEvent.on("delete", async () => {
   if (uploading.value) throw new Error("视频正在替换，请稍后删除节点");
   deleting.value = true;
-  generationController?.abort();
+  generationState.stop();
   try {
     await generation;
     await files.removeNodeFiles();

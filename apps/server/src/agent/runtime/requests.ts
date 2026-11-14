@@ -110,9 +110,8 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           if (entry.customType === "toonflowImageAttachment") {
             // 日志里存的就是 toonflowImage 对象本身；拼一个空文本 part 只为复用 schema 校验
             // （id、path 正则、mime、字节数）。校验失败说明日志损坏，直接报错而不跳过：
-            // 跳过会让模型静默地少看一张图，比报错更难排查。
             const reference = getAgentImageReference({ type: "text", text: "", toonflowImage: entry.data });
-            if (!reference) throw new Error("历史图片附件记录无效");
+            if (!reference) throw new Error("历史图片附件记录无效"); // 直接报错，避免跳过后模型静默少看图。
             references.set(reference.id, reference);
           }
 
@@ -152,7 +151,7 @@ export function configureAgentRequests(session: AgentSession, limits?: { maxRequ
           const index = branch.findIndex(entry => entry.id === entryId);
           return index >= 0 && branch.slice(index + 1).some(entry => entry.type === "message" && entry.message.role === "assistant");
         }
-        
+
         // ── 3. 重建循环与消息投影 ──
         let networkRecoveries = 0;
         // 重建请求的外层循环：每次 continue 都重新扫描上下文、重新分配图片引用，

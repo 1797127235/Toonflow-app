@@ -39,6 +39,8 @@ interface ProviderContext<TConfig = Record<string, unknown>> {
   signal?: AbortSignal;
   /** 宿主直接注入工具，供应商无需 import；FFmpeg 为按需安装的插件能力。 */
   tool: ProviderTools;
+  /** 宿主注入：远程任务创建成功后立即调用并等待完成，宿主据此持久化 remoteTaskId 供重启续跑。 */
+  onSubmitted?: (remoteTaskId: string) => void | Promise<void>;
 }
 
 interface MediaRequest {
@@ -227,6 +229,8 @@ interface ProviderDefinition<TRules extends readonly ProviderFormRule[] = readon
   generateImage?: GenerateMedia<ImageRequest, ProviderConfig<TRules>>;
   generateVideo?: GenerateMedia<VideoRequest, ProviderConfig<TRules>>;
   generateAudio?: GenerateMedia<AudioRequest, ProviderConfig<TRules>>;
+  /** 按远程任务 ID 恢复轮询并返回最终媒体数组；剩余时限由 this.signal 注入，不要另起超时。未实现的供应商任务重启后标中断。 */
+  resume?: (this: ProviderContext<ProviderConfig<TRules>>, remoteTaskId: string, mediaType: "image" | "video" | "audio") => Promise<MediaAsset[]>;
   /** 可选的供应商媒体预处理；未实现时保持原请求。 */
   processMedia?: (this: ProviderContext<ProviderConfig<TRules>>, request: ImageRequest | VideoRequest | AudioRequest) => Promise<ImageRequest | VideoRequest | AudioRequest>;
 }

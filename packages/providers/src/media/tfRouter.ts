@@ -85,15 +85,16 @@ function wait(signal: AbortSignal) {
   });
 }
 
-async function generateTask(context: ProviderContext, mediaType: "image" | "video" | "audio", body: unknown, mimeType?: string) {
-  // 单次生成最多等待 30 分钟；供应商开放任务恢复能力后再单独保存任务 ID。
-  const signal = AbortSignal.any([AbortSignal.timeout(30 * 60_000), ...(context.signal ? [context.signal] : [])]);
+function taskEndpoint(mediaType: "image" | "video" | "audio") {
   const path = mediaType === "audio" ? "tts" : mediaType;
   const name = { image: "Image", video: "Video", audio: "Audio" }[mediaType];
-  const task = await fetchJson(context, `${path}/${mediaType === "audio" ? "create" : `generate${name}`}`, body, signal);
-  if (typeof task.data !== "string" || !task.data.trim()) throw new Error("TF-router 未返回任务 ID");
+  return { path, name };
+}
+
+async function pollTask(context: ProviderContext, mediaType: "image" | "video" | "audio", taskICode: string, signal: AbortSignal, mimeType?: string): Promise<MediaAsset[]> {
+  const { path, name } = taskEndpoint(mediaType);
   while (true) {
-    const result = await fetchJson(context, `${path}/get${name}Status`, { taskICode: task.data }, signal);
+    const result = await fetchJson(context, `${path}/get${name}Status`, { taskICode }, signal);
     const data = result.data == null ? {} : object(result.data);
     const status = String(result.status ?? data.status ?? "").toLowerCase();
     if (status === "success" || status === "completed") return mediaAsset(data.data, mediaType, mimeType);
@@ -102,6 +103,17 @@ async function generateTask(context: ProviderContext, mediaType: "image" | "vide
     }
     await wait(signal);
   }
+}
+
+async function generateTask(context: ProviderContext, mediaType: "image" | "video" | "audio", body: unknown, mimeType?: string) {
+  // 单次生成最多等待 30 分钟。
+  const signal = AbortSignal.any([AbortSignal.timeout(30 * 60_000), ...(context.signal ? [context.signal] : [])]);
+  const { path, name } = taskEndpoint(mediaType);
+  const task = await fetchJson(context, `${path}/${mediaType === "audio" ? "create" : `generate${name}`}`, body, signal);
+  if (typeof task.data !== "string" || !task.data.trim()) throw new Error("TF-router 未返回任务 ID");
+  // 先落盘远程任务 ID 再轮询：进程中断后可凭此续跑，避免重复提交计费。
+  await context.onSubmitted?.(task.data);
+  return pollTask(context, mediaType, task.data, signal, mimeType);
 }
 
 export default {
@@ -353,5 +365,9 @@ export default {
       resolution: request.resolution,
       metadata,
     });
+  },
+  async resume(remoteTaskId: string, mediaType: "image" | "video" | "audio"): Promise<MediaAsset[]> {
+    const signal = this.signal ?? AbortSignal.timeout(30 * 60_000);
+    return pollTask(this, mediaType, remoteTaskId, signal);
   },
 } satisfies ProviderDefinition<typeof rules>;

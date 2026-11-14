@@ -282,6 +282,8 @@ provide("copyNodeToClipboard", async (node: Parameters<typeof copyNodeToClipboar
 provide("retainNodeFiles", true);
 provide("selectionConnection", shallowRef<NodeConnectionFeedback>());
 provide("saveNodeToAssets", (label: string, outputs: { label: string; output: NodeOutput }[]) => assetLibraryRef.value?.openSave(label, outputs));
+// 生成节点提交前 flush 画布保存，确保 pendingTaskId 落盘后刷新可接回（同 batchCanvasHistory 专用 key 模式）。
+provide("flushCanvasSave", flushCanvasSave);
 let canvasController = new AbortController();
 let workspaceController = new AbortController();
 const createCanvasContext = useCanvasTools({
