@@ -1,14 +1,19 @@
 <template>
   <component v-if="error" :is="UI.ErrorComponent" variant="image" :message="error" />
-  <component v-else-if="pending" :is="UI.Spin" />
-  <component v-else :is="COMPONENT_RENDERERS.image" :key="directory + image.node.url" v-bind="image" :node="resolvedNode" />
+  <component v-else-if="pending || (!displayUrl && image.node.loading)" :is="UI.Spin" />
+  <img v-else-if="displayUrl" class="chatImage" :src="displayUrl" :alt="image.node.alt || image.node.title || ''" @error="error = '图片预览失败'" />
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import axios from "axios";
-import { COMPONENT_RENDERERS, UI, useContext, type ImageNodeRendererProps } from "vue-stream-markdown";
+import { UI, type ImageNodeRendererProps } from "vue-stream-markdown";
 import useWorkspaceFiles from "@/lib/workspaceFiles";
+
+const imageMimeTypes: Record<string, string> = {
+  png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", webp: "image/webp", gif: "image/gif",
+  avif: "image/avif", bmp: "image/bmp", svg: "image/svg+xml",
+};
 
 const props = defineProps<{ image: ImageNodeRendererProps; directory: string }>();
 const imageUrl = ref("");
@@ -17,42 +22,11 @@ const remoteImage = computed(() => /^(?:https?:)?\/\//i.test(props.image.node.ur
 const workspaceImage = computed(() => remoteImage.value || (!!props.image.node.url && !/^(?:[a-z][a-z\d+.-]*:|[\\/]|#)/i.test(props.image.node.url)));
 // 工作区图在拿到 blob 前不要把空 url 交给库；库把「无 url」当成永久 loading。
 const pending = computed(() => workspaceImage.value && !imageUrl.value && !error.value);
-const resolvedNode = computed(() => workspaceImage.value
-  ? { ...props.image.node, url: imageUrl.value, loading: false }
-  : props.image.node);
-const { parsedNodes, provideContext } = useContext();
-// 落盘图片按单张预览；多图切换需集中维护解析后的地址，避免重新请求原网址或相对路径。
-provideContext({ parsedNodes: computed(() => workspaceImage.value ? [resolvedNode.value] : parsedNodes.value) });
+const displayUrl = computed(() => workspaceImage.value ? imageUrl.value : props.image.node.url);
 
-function preloadImage(url: string, signal: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    if (signal.aborted) {
-      reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
-      return;
-    }
-    const image = new Image();
-    const stop = () => {
-      image.onload = null;
-      image.onerror = null;
-      image.src = "";
-    };
-    const onAbort = () => {
-      stop();
-      reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
-    };
-    signal.addEventListener("abort", onAbort, { once: true });
-    image.onload = () => {
-      signal.removeEventListener("abort", onAbort);
-      stop();
-      resolve();
-    };
-    image.onerror = () => {
-      signal.removeEventListener("abort", onAbort);
-      stop();
-      reject(new Error("图片预览失败"));
-    };
-    image.src = url;
-  });
+function imageMimeType(path: string) {
+  const extension = path.split(/[?#]/, 1)[0]?.split(".").pop()?.toLowerCase() ?? "";
+  return imageMimeTypes[extension];
 }
 
 // 流式未闭合时允许暂时无地址；静态空地址不再交给库转圈。
@@ -80,8 +54,13 @@ watch([() => props.directory, () => props.image.node.url] as const, async ([dire
     const saved = remoteImage.value ? await files.importImage(url.startsWith("//") ? `https:${url}` : url) : undefined;
     if (cancelled) return;
     const path = saved?.path ?? decodeURIComponent(url.split(/[?#]/, 1)[0]!);
-    const preview = files.acquireUrl(path, saved?.mimeType);
+    const preview = files.acquireUrl(path, saved?.mimeType ?? imageMimeType(path));
     release = preview.release;
+    // 同一轮读取已经完成时直接显示，避免虚拟列表重新挂载后又从转圈开始。
+    if (preview.ready) {
+      imageUrl.value = preview.ready;
+      return;
+    }
     const resolvedUrl = await Promise.race([
       preview.url,
       new Promise<never>((_, reject) => {
@@ -89,7 +68,7 @@ watch([() => props.directory, () => props.image.node.url] as const, async ([dire
         else controller.signal.addEventListener("abort", () => reject(controller.signal.reason ?? new Error("图片读取超时")), { once: true });
       }),
     ]);
-    await preloadImage(resolvedUrl, controller.signal);
+    // 不在文档外的 Image 上等待解码。虚拟列表里的懒加载图也不会触发 load，转圈就停住。
     if (!cancelled) imageUrl.value = resolvedUrl;
   } catch (cause) {
     if (cancelled) return;
@@ -101,3 +80,13 @@ watch([() => props.directory, () => props.image.node.url] as const, async ([dire
   }
 }, { immediate: true });
 </script>
+
+<style scoped lang="scss">
+.chatImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+</style>

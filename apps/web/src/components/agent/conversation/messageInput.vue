@@ -80,6 +80,8 @@ import mentionMenu from "../mentionMenu.vue";
 import mentionContent from "../mentionContent.vue";
 import mentionThumbnail from "../mentionThumbnail.vue";
 import { mentionName, mentionParts, mentionThumbnailProps } from "../mentionText";
+import { readClipboardFiles } from "@/lib/clipboard";
+import { isDesktop } from "@/lib/platform";
 import attachmentList from "../attachmentList.vue";
 import { createPastedTextFile, readTextAttachment } from "../textAttachments";
 import type { AgentAttachment, AgentMessage } from "../types";
@@ -87,6 +89,35 @@ import contextUsagePopover from "./contextUsage.vue";
 import useVoiceInput from "./useVoiceInput";
 import xSender, { type AnyTagProps } from "x-sender";
 import "x-sender/lib/XSender.css";
+
+class SkillToken extends xSender.Component {
+  render() {
+    const name = String(this.data.name ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[char] ?? char);
+    return `<span class="skillToken">/skill:${name}</span>`;
+  }
+}
+
+type SkillTag = { type: "skill"; data: { name: string } };
+type EditorTag = AnyTagProps | SkillTag;
+
+function isSkillTag(tag: EditorTag): tag is SkillTag {
+  return tag.type === "skill";
+}
+
+function highlightSkill(line: EditorTag[]): EditorTag[] {
+  const tags: EditorTag[] = [];
+  for (const tag of line) {
+    if (isSkillTag(tag)) continue;
+    const previous = tags.at(-1);
+    if (tag.type === "Write" && previous?.type === "Write") tags[tags.length - 1] = { type: "Write", text: previous.text + tag.text };
+    else tags.push(tag);
+  }
+  const first = tags[0];
+  if (first?.type !== "Write") return tags;
+  const matched = /^\/skill:(\S+)(\s*)/.exec(first.text);
+  if (!matched?.[1]) return tags;
+  return [{ type: "skill", data: { name: matched[1] } }, { type: "Write", text: `${matched[2] || " "}${first.text.slice(matched[0].length)}` }, ...tags.slice(1)];
+}
 
 const props = defineProps<{ active: boolean; disabled: boolean; busy: boolean; stopping?: boolean; remoteRunning: boolean; directory?: string; contextUsage?: AgentContext; stats?: AgentStats; contextWindow: number; showModel?: boolean; acpModels?: { value: string; label: string }[]; acpModelsLoading?: boolean; acpModelsError?: string }>();
 const emit = defineEmits<{ submit: []; stop: [] }>();
@@ -159,10 +190,12 @@ watch(() => props.active, active => {
 
 function getDraftContent() {
   return sender?.getModel().map((line, lineIndex) => line.map((tag, tagIndex) => {
+    const node = tag as EditorTag;
+    if (isSkillTag(node)) return `/skill:${node.data.name}`;
     if (tag.type === "Mention") return `{{mention:${tag.id}}}`;
     if (tag.type === "Write") return tag.text;
     return sender?.chatEditor.NODES[lineIndex]?.children[tagIndex]?.$el.textContent ?? "";
-  }).join("")).join("\n").replace(/[\ufeff\u200b]/g, "") ?? "";
+  }).join("").replace(/^(\/skill:\S+)(?=\S)/, "$1 ")).join("\n").replace(/[\ufeff\u200b]/g, "") ?? "";
 }
 
 function captureMentionPosition() {
@@ -222,14 +255,26 @@ async function removeDraftMention(id: string) {
 async function selectSkill(name: string) {
   const instance = sender;
   if (!instance || locked.value) return;
-  const model = instance.getModel();
-  const first = model[0]?.[0];
-  if (first?.type === "Write") first.text = `/skill:${name} ${first.text.replace(skillQuery.value !== undefined ? /^\/\S*/ : /^\s*\/skill:\S+(?:\s+|$)/, "")}`;
+  const model = instance.getModel() as EditorTag[][];
   if (!model.length) model.push([]);
-  if (first?.type !== "Write") model[0]!.unshift({ type: "Write", text: `/skill:${name} ` });
+  const line = model[0]!.filter(tag => !isSkillTag(tag));
+  for (let index = line.length - 1; index > 0; index -= 1) {
+    const tag = line[index];
+    const previous = line[index - 1];
+    if (tag?.type === "Write" && previous?.type === "Write") {
+      previous.text += tag.text;
+      line.splice(index, 1);
+    }
+  }
+  const first = line[0];
+  const rest = first?.type === "Write" ? first.text.replace(skillQuery.value !== undefined ? /^\/\S*/ : /^\s*\/skill:\S+(?:\s+|$)/, "") : "";
+  const text = `/skill:${name}${/^\s/.test(rest) ? "" : " "}${rest}`;
+  if (first?.type === "Write") first.text = text;
+  else line.unshift({ type: "Write", text });
+  model[0] = highlightSkill(line);
   skillQuery.value = undefined;
   mentionMenuRef.value?.closeMenu();
-  await instance.reset({ clearHistory: false, chatNode: model });
+  await instance.reset({ clearHistory: false, chatNode: model as AnyTagProps[][] });
   if (sender === instance) instance.focus("last");
 }
 
@@ -238,7 +283,7 @@ async function fillPrompt(prompt: string, attachments?: AgentAttachment[]) {
   if (!instance || locked.value) return false;
   draftMentions.value = [];
   if (attachments) draftAttachments.value = [...attachments];
-  await instance.reset({ clearHistory: false, chatNode: [[{ type: "Write", text: prompt }]] });
+  await instance.reset({ clearHistory: false, chatNode: [highlightSkill([{ type: "Write", text: prompt }])] as AnyTagProps[][] });
   if (sender === instance) instance.focus("last");
   return sender === instance;
 }
@@ -251,9 +296,10 @@ async function editMessage(item: AgentMessage) {
   draftMentions.value = [...item.mentions ?? []];
   draftAttachments.value = [...item.attachments ?? []];
   mentionMenuRef.value?.closeMenu();
-  const model: AnyTagProps[][] = item.content.split("\n").map(line => mentionParts(line, item.mentions).map(part => part.mention
+  const model: EditorTag[][] = item.content.split("\n").map(line => mentionParts(line, item.mentions).map(part => part.mention
     ? { type: "Mention", id: part.mention.id, name: mentionName(part.mention) } : { type: "Write", text: part.text }));
-  await instance.reset({ chatNode: model });
+  if (model[0]) model[0] = highlightSkill(model[0]);
+  await instance.reset({ chatNode: model as AnyTagProps[][] });
   if (sender === instance) instance.focus("last");
 }
 
@@ -314,11 +360,49 @@ async function restoreTextAttachment(index: number) {
   }
 }
 
+function pastedFiles(transfer: DataTransfer | null) {
+  if (!transfer) return [];
+  const files: File[] = [];
+  for (const item of transfer.items) {
+    if (item.kind !== "file") continue;
+    const file = item.getAsFile();
+    if (file?.size) files.push(file);
+  }
+  if (!files.length) for (const file of transfer.files) if (file.size) files.push(file);
+  return files;
+}
+
+function clipboardText(transfer: DataTransfer | null) {
+  try { return transfer?.getData("text/plain") ?? ""; }
+  catch { return ""; }
+}
+
+function clipboardMediaPaths(text: string) {
+  const lines = text.split(/\r?\n/).map(line => line.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+  return lines.length > 0 && lines.every(line => {
+    let value = line;
+    if (/^file:/i.test(value)) {
+      try { value = decodeURIComponent(new URL(value).pathname); }
+      catch { return false; }
+    }
+    const absolute = /^[a-zA-Z]:[\\/]/.test(value) || value.startsWith("\\\\") || value.startsWith("/");
+    return absolute && /\.(avif|bmp|gif|jpe?g|png|svg|webp|avi|m4v|mkv|mov|mp4|webm)$/i.test(value);
+  });
+}
+
 function pasteAttachments(event: ClipboardEvent) {
-  const files = Array.from(event.clipboardData?.files ?? []);
+  const files = pastedFiles(event.clipboardData);
+  const text = clipboardText(event.clipboardData);
+  // 桌面 WebView 不把截图和复制的图片放进 paste 的 files，改读原生剪贴板。
+  if (!files.length && isDesktop && (!text || clipboardMediaPaths(text))) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    void pasteDesktopFiles(text);
+    return;
+  }
   if (!files.length) {
     try {
-      const file = createPastedTextFile(event.clipboardData?.getData("text/plain") ?? "");
+      const file = createPastedTextFile(text);
       if (file) files.push(file);
     } catch (error) {
       event.preventDefault();
@@ -331,6 +415,31 @@ function pasteAttachments(event: ClipboardEvent) {
   event.preventDefault();
   event.stopImmediatePropagation();
   addAttachments(files);
+}
+
+async function pasteDesktopFiles(text: string) {
+  const instance = sender;
+  try {
+    const files = await readClipboardFiles();
+    if (sender !== instance) return;
+    if (files.length) {
+      addAttachments(files);
+      return;
+    }
+  } catch (error) {
+    if (!text) {
+      ElMessage.warning(error instanceof Error ? error.message : "无法读取剪贴板图片");
+      return;
+    }
+  }
+  if (!text || sender !== instance) return;
+  try {
+    const file = createPastedTextFile(text);
+    if (file) addAttachments([file]);
+    else await instance?.setText(text);
+  } catch (error) {
+    ElMessage.warning(error instanceof Error ? error.message : "无法添加文本附件");
+  }
 }
 
 function selectAttachments(event: Event) {
@@ -408,6 +517,7 @@ watch(senderElement, (element, _previous, onCleanup) => {
     keyboardSendFun: event => event.key === "Enter" && !event.shiftKey && !event.isComposing,
     keyboardWrapFun: event => event.key === "Enter" && event.shiftKey && !event.isComposing,
   });
+  instance.useComponent("skill", SkillToken);
   sender = instance;
   senderReady.value = true;
   if (!props.active || locked.value) instance.disable();
@@ -636,6 +746,11 @@ defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restor
       font-size: 14px;
       font-style: normal;
       line-height: 24px;
+    }
+
+    .senderEditor .skillToken {
+      border-radius: 4px;
+      background: color-mix(in srgb, #e6a23c 34%, transparent);
     }
 
     .editingBanner {

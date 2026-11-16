@@ -8,7 +8,9 @@ type WorkspaceEntry = { name: string; path: string; type: "file" | "directory" }
 export type TextSnapshot = { text: string; revision: string; encoding: "utf-8" | "utf-8-bom" | "utf-16le" | "utf-16be" };
 const client = axios.create({ baseURL: "/api/workspaces/files", headers: { "x-toonflow-workspace": "1" } });
 registerApiLanguage(client);
-const fileUrls = new Map<string, { directory: string; path: string; url: Promise<string>; users: number }>();
+const previewUrlIdleMs = 30_000;
+type FileUrlEntry = { directory: string; path: string; url: Promise<string>; ready?: string; users: number; idle?: ReturnType<typeof setTimeout> };
+const fileUrls = new Map<string, FileUrlEntry>();
 
 function cachePath(path: string) {
   return path.replaceAll("\\", "/").split("/").filter(part => part && part !== ".").join("/").toLowerCase();
@@ -20,7 +22,11 @@ function invalidateUrls(directory: string, path: string) {
   path = cachePath(path);
   for (const [key, entry] of fileUrls) {
     const entryPath = cachePath(entry.path);
-    if (cachePath(entry.directory) === directory && (entryPath === path || entryPath.startsWith(`${path}/`))) fileUrls.delete(key);
+    if (cachePath(entry.directory) !== directory || (entryPath !== path && !entryPath.startsWith(`${path}/`))) continue;
+    if (entry.idle) clearTimeout(entry.idle);
+    fileUrls.delete(key);
+    // 仍在显示的地址由最后一个使用者离开时撤销，避免把画面上的图撤掉。
+    if (entry.users === 0) void entry.url.then(url => URL.revokeObjectURL(url), () => {});
   }
 }
 
@@ -62,20 +68,36 @@ export default function useWorkspaceFiles(directory?: MaybeRefOrGetter<string | 
       entry = { directory, path, url, users: 0 };
       fileUrls.set(key, entry);
       const current = entry;
-      void url.catch(() => { if (fileUrls.get(key) === current) fileUrls.delete(key); });
+      void url.then(
+        value => { current.ready = value; },
+        () => { if (fileUrls.get(key) === current) fileUrls.delete(key); },
+      );
     }
     const current = entry;
+    if (current.idle) clearTimeout(current.idle);
+    current.idle = undefined;
     current.users++;
     let released = false;
     return {
       url: current.url,
+      ready: current.ready,
       release() {
         if (released) return;
         released = true;
-        if (--current.users) return;
-        if (fileUrls.get(key) === current) fileUrls.delete(key);
-        // 等待中的读取也要在最后一个使用者离开后释放，不撤销其他节点仍使用的 URL。
-        void current.url.then(url => URL.revokeObjectURL(url), () => {});
+        current.users--;
+        if (current.users > 0) return;
+        if (fileUrls.get(key) !== current) {
+          void current.url.then(url => URL.revokeObjectURL(url), () => {});
+          return;
+        }
+        // 对话虚拟列表会在滚动和高度变化时卸掉再挂上同一张图。立刻撤销会把尚未完成的读取作废，挂上后又重新下载，界面就停在转圈。
+        // 空闲 30 秒后再释放。客户端写入、改名或删除会立刻失效；服务端单独覆盖同一路径时，要等这段空闲结束才会重新读取。
+        current.idle = setTimeout(() => {
+          current.idle = undefined;
+          if (current.users > 0 || fileUrls.get(key) !== current) return;
+          fileUrls.delete(key);
+          void current.url.then(url => URL.revokeObjectURL(url), () => {});
+        }, previewUrlIdleMs);
       },
     };
   }
