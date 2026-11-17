@@ -145,7 +145,7 @@ import {
   IconRestore,
 } from "@tabler/icons-vue";
 import { defaultUiSettings, uiSettings, updateUiSettings } from "@/stores/settings";
-import { isMobile } from "@/lib/platform";
+import { isDesktop, isMobile } from "@/lib/platform";
 import languageSelect from "@/components/languageSelect.vue";
 
 const mobileScale = ref(uiSettings.value.mobileScale);
@@ -180,15 +180,17 @@ function captureThemeClickPoint(event: MouseEvent) {
   themeClickPoint = { x: event.clientX, y: event.clientY };
 }
 function changeTheme(value: string) {
+  // 桌面 WebView 的 WebKit 执行 startViewTransition 截取根节点时会段错误，整个进程退出。
+  const webKitDesktop = isDesktop && !/\bChrome\//.test(navigator.userAgent);
+  if (webKitDesktop || typeof document.startViewTransition !== "function") {
+    updateUiSettings({ theme: value });
+    return;
+  }
   const { x, y } = themeClickPoint;
   const root = document.documentElement;
   root.style.setProperty("--themeX", `${x}px`);
   root.style.setProperty("--themeY", `${y}px`);
   root.style.setProperty("--themeR", `${Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))}px`);
-  if (!document.startViewTransition) {
-    updateUiSettings({ theme: value });
-    return;
-  }
   document.startViewTransition(async () => {
     updateUiSettings({ theme: value });
     await nextTick();
