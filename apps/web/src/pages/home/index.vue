@@ -118,7 +118,6 @@
               </el-card>
             </div>
           </section>
-          <remixGallery :disabled="creating || opening" :busy="creating || opening || relocationPicker?.selecting" @start="createProject(false, $event)" />
         </el-main>
       </div>
     </el-scrollbar>
@@ -139,7 +138,7 @@ import { ElMessage, ElMessageBox, type InputInstance, type ScrollbarInstance } f
 import { getReadableFileMimeType, readableFileAccept } from "@toonflow/server/documentFormats";
 import {
   IconQrcode, IconDeviceDesktop, IconHome,
-  IconArrowUp, IconPlus, IconLoader2,
+  IconArrowUp, IconLoader2,
   IconFolder, IconEdit,
   IconTrash, IconPaperclip,
 } from "@tabler/icons-vue";
@@ -158,7 +157,6 @@ import assetLibraryDialog from "./assetLibraryDialog.vue";
 import bg from "./bg.vue";
 import projectCover from "./projectCover.vue";
 import workspacePicker from "./workspacePicker.vue";
-import remixGallery from "./remixGallery.vue";
 import type { RemixRequest } from "./remixTemplates";
 import { createRemixCanvas } from "./remixCanvas";
 
@@ -172,7 +170,6 @@ const activeSection = ref("home");
 const homeSections = [
   { id: "home", label: "首页", icon: IconHome },
   { id: "projects", label: "项目", icon: IconFolder },
-  { id: "workflows", label: "一键生同款", icon: IconPlus },
 ];
 const mobileConnect = defineAsyncComponent(() => import("@/components/mobileConnect.vue"));
 const router = useRouter();
