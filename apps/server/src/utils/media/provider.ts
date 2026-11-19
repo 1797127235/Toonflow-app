@@ -2,7 +2,7 @@ import { t, translateMessage, validationOptions } from "@/lib/i18n";
 
 import { createHash } from "node:crypto";
 import { lstat, mkdir, readFile, readdir, unlink } from "@toonflow/file";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { createContext, SourceTextModule } from "node:vm";
 import type { AudioConvertOptions, Provider, ProviderTools } from "@toonflow/providers";
 import tfRouter from "@toonflow/providers/media/tfRouter";
@@ -17,6 +17,19 @@ type Expression = Extract<ReturnType<typeof parseExpression>, { type: "Parenthes
 type ObjectExpression = Extract<Expression, { type: "ObjectExpression" }>;
 
 const providerTranspiler = new Bun.Transpiler({ loader: "ts", target: "bun", define: { require: "undefined" } });
+let builtinProvidersRoot = resolve(import.meta.dir, "../../../../../packages/providers/src");
+let c2aProtocolSourceCache: Promise<string> | undefined;
+
+export function setBuiltinProvidersRoot(root: string) {
+  const resolved = resolve(root);
+  if (resolved === builtinProvidersRoot) return;
+  builtinProvidersRoot = resolved;
+  c2aProtocolSourceCache = undefined;
+}
+
+function getC2aProtocolSource() {
+  return (c2aProtocolSourceCache ??= readFile(join(builtinProvidersRoot, "media/c2aProtocol.ts"), "utf8"));
+}
 
 const providerIdSchema = z.string().max(96).regex(/^[a-z][a-zA-Z0-9]*$/)
   .refine(value => !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i.test(value), "供应商 ID 不能是系统保留文件名");
@@ -172,7 +185,12 @@ function parseProvider(source: string) {
     if (legacy) invalid("检测到旧版 Laywork 供应商 TS，无法在 Laywork 2.0 中使用。请在「添加自定义媒体供应商」中点击「一键复制提示词」，结合旧代码和接口资料重新生成新版代码后再导入。");
     invalid("供应商须通过 export default 导出对象");
   }
-  const object = unwrap(exported.declaration as Expression);
+  const declaration = unwrap(exported.declaration as Expression);
+  const factory = declaration.type === "CallExpression"
+    && declaration.callee.type === "Identifier"
+    && declaration.callee.name === "createC2aProvider"
+    && declaration.arguments.length === 1;
+  const object = factory ? unwrap(declaration.arguments[0] as Expression) : declaration;
   if (object.type !== "ObjectExpression") invalid("供应商须直接导出对象字面量");
   const entries = properties(object);
   function value(name: string) {
@@ -210,7 +228,7 @@ function parseProvider(source: string) {
   const rules = z.array(z.record(z.string(), z.json())).safeParse(value("rules") ?? []);
   if (!rules.success) invalid("供应商 rules 必须为表单配置对象数组");
   return { object, modelProperty: entries.get("models"), id: id as string, label, icon, version: version?.trim(), readme, modelsUrl: modelsUrl as string | undefined, rules: rules.data, models: models.data,
-    supportsPrice: entries.has("getPrice") || id === tfRouter.id, supportsBalance: entries.has("getBalance") || id === tfRouter.id };
+    supportsPrice: entries.has("getPrice") || factory || id === tfRouter.id, supportsBalance: entries.has("getBalance") || id === tfRouter.id };
 }
 
 function metadata(fileName: string, source: string) {
@@ -389,12 +407,21 @@ export async function loadMediaProviderSource(source: string, config: Record<str
     AbortController, AbortSignal, setTimeout, clearTimeout,
   }, { codeGeneration: { strings: false, wasm: false } });
   const rejectImport = () => { throw new Error("供应商不能导入模块，请使用 this.tool 中的宿主工具"); };
+  // 只放行内置 C2A 协议。协议源码由宿主提供，在同一个沙箱里求值，不能借此导入其它模块。
+  const linkC2aProtocol = async (specifier: string) => {
+    if (specifier !== "./c2aProtocol" && specifier !== "./c2aProtocol.ts") rejectImport();
+    const protocol = new SourceTextModule(providerTranspiler.transformSync(await getC2aProtocolSource()), {
+      context, identifier: "c2aProtocol.ts", importModuleDynamically: rejectImport,
+    });
+    await protocol.link(rejectImport);
+    return protocol;
+  };
   const module = new SourceTextModule(providerTranspiler.transformSync(source), {
     context,
     identifier: `${id}.ts`,
     importModuleDynamically: rejectImport,
   });
-  await module.link(rejectImport);
+  await module.link(linkC2aProtocol);
   await module.evaluate({ timeout: 1000 });
   signal?.throwIfAborted();
   const definition = (module.namespace as { default: Provider }).default;

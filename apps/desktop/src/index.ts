@@ -16,6 +16,7 @@ import saveFile, { selectSaveFile } from "./saveFile";
 import createWindowsUpdater, { confirmWindowsUpdateStartup } from "./update/windowsUpdater";
 import prepareWebviewRuntime from "./webviewRuntime";
 
+
 const execFileAsync = promisify(execFile);
 
 function createLinuxPackageUpdater(): DesktopRuntime["updater"] {

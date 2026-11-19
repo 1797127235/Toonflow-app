@@ -51,6 +51,10 @@ export async function createApp({
     await initializeExt(resolve(dataDirectory, "ext"), extRoot, pluginRevision);
   }
   // 内置媒体供应商随构建同步，其他供应商文件和独立保存的配置保留。
+  if (providersRoot) {
+    const { setBuiltinProvidersRoot } = await import("@/utils/media/provider");
+    setBuiltinProvidersRoot(providersRoot);
+  }
   if (dataDirectory && providersRoot) {
     const sourceDirectory = resolve(providersRoot, "media");
     let providerRevision = pluginRevision;

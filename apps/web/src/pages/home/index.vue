@@ -562,6 +562,8 @@ async function createProject(fromPrompt = true, remixRequest?: RemixRequest) {
           width: 30px;
           height: 30px;
           transition: opacity var(--sidebarFade) ease;
+
+          .dark & { filter: invert(1); }
         }
 
         .brandName {
@@ -703,6 +705,8 @@ async function createProject(fromPrompt = true, remixRequest?: RemixRequest) {
               flex-shrink: 0;
               width: clamp(28px, 3.4vw, 44px);
               height: clamp(28px, 3.4vw, 44px);
+
+              .dark & { filter: invert(1); }
             }
 
             h1 {
