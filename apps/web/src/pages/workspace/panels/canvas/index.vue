@@ -2,8 +2,8 @@
   <div
     ref="canvasElement"
     class="canvas"
-    :class="{ edgesHidden: !showEdges, handMode, multiSelectionMode: flow.multiSelectionActive.value, compositingEnabled: generalSettings.canvasCompositingEnabled }"
-    :style="{ '--canvasEdgeColor': generalSettings.canvasEdgeColorMode === 'custom' ? generalSettings.canvasEdgeColor : 'var(--el-color-primary)' }"
+    :class="{ edgesHidden: !showEdges, handMode, multiSelectionMode: flow.multiSelectionActive.value, compositingEnabled: generalSettings.canvasCompositingEnabled, assetOpen: assetsVisible }"
+    :style="{ '--canvasEdgeColor': generalSettings.canvasEdgeColorMode === 'custom' ? generalSettings.canvasEdgeColor : 'var(--el-color-primary)', '--assetDrawerWidth': `${assetsWidth}px` }"
     @dblclick="openNodeMenu"
     @wheel.capture="zoomCanvas"
     @gesturestart.capture="zoomCanvas"
@@ -69,7 +69,6 @@
         :availableNodes="availableNodes"
         @create="createEmptyNode" />
       <canvasMenu ref="canvasMenuRef" v-model:canvasId="canvasId" :directory="project?.directory" :initialCanvasId="initialCanvasId" :activateCanvas="activateCanvas" :flushSave="flushCanvases ?? flushCanvasSave">
-        <assetLibrary ref="assetLibraryRef" v-model="assetsVisible" :directory="project?.directory" />
       </canvasMenu>
       <canvasControls
         ref="canvasControlsRef"
@@ -102,6 +101,20 @@
         :disabled="!canvasId || !project?.directory" />
       <nodeSearch ref="nodeSearchRef" :disabled="!active || settingsVisible || !canvasId || !project?.directory" />
     </vue-flow>
+    <button
+      class="assetHandle"
+      :class="{ open: assetsVisible }"
+      type="button"
+      :aria-label="assetsVisible ? '关闭素材库' : '打开素材库'"
+      :aria-expanded="assetsVisible"
+      @click="assetsVisible = !assetsVisible">
+      <icon-x v-if="assetsVisible" :size="18" />
+      <icon-folders v-else :size="18" />
+      <span class="handleLabel">{{ assetsVisible ? "关闭" : "素材库" }}</span>
+    </button>
+    <div class="assetDock">
+      <assetLibrary ref="assetLibraryRef" v-model="assetsVisible" :directory="project?.directory" @width="assetsWidth = $event" />
+    </div>
     <teleport to="body">
       <el-button
         v-if="edgeDisconnect && findEdge(edgeDisconnect.id)"
@@ -129,7 +142,7 @@ import { debounce } from "lodash-es";
 import { ElMessage } from "element-plus";
 import { isMobile, isDesktop } from "@/lib/platform";
 import { storeToRefs } from "pinia";
-import { IconUnlink } from "@tabler/icons-vue";
+import { IconFolders, IconUnlink, IconX } from "@tabler/icons-vue";
 import * as vueRuntime from "vue";
 import * as vueFlowRuntime from "@vue-flow/core";
 import * as elementPlusRuntime from "element-plus";
@@ -233,6 +246,7 @@ let gestureScale: number | undefined;
 let copyingNodes = false;
 const showEdges = ref(true);
 const assetsVisible = ref(false);
+const assetsWidth = ref(360);
 const assetLibraryRef = ref<InstanceType<typeof assetLibrary>>();
 const edgeDisconnect = ref<{ id: string; x: number; y: number }>();
 const flow = useVueFlow(props.runtimeKey);
@@ -1225,6 +1239,137 @@ const defaultEdgeOptions = markRaw({
 </script>
 
 <style lang="scss" scoped>
+.assetDock {
+  position: absolute;
+  top: 48px;
+  bottom: 0;
+  left: 0;
+  z-index: 6;
+  width: var(--assetDrawerWidth, 360px);
+  pointer-events: none;
+  transform: translateX(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease, visibility 0s 0.24s;
+
+  :deep(.assetLibrary) { pointer-events: auto; }
+}
+
+.canvas.assetOpen .assetDock {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease, visibility 0s;
+}
+
+.assetHandle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 34px;
+  padding: 12px 0;
+  border: 1px solid var(--el-border-color-light);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  background: var(--el-bg-color);
+  box-shadow: 2px 0 10px var(--el-box-shadow-light);
+  color: var(--el-text-color-regular);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: left 0.24s cubic-bezier(0.4, 0, 0.2, 1), color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    color: var(--el-color-primary);
+    box-shadow: 2px 0 12px var(--el-box-shadow);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.canvas.assetOpen .assetHandle {
+  left: var(--assetDrawerWidth, 360px);
+  border-radius: 0 10px 10px 0;
+  border-left: none;
+  border-right: 1px solid var(--el-border-color-light);
+  color: var(--el-color-primary);
+  box-shadow: -2px 0 10px var(--el-box-shadow-light);
+}
+
+.handleLabel {
+  font-size: 12px;
+  letter-spacing: 3px;
+  writing-mode: vertical-rl;
+}
+
+.canvas :deep(.vue-flow) {
+  transition: margin-left 0.24s cubic-bezier(0.4, 0, 0.2, 1), width 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.canvas.assetOpen :deep(.vue-flow) {
+  margin-left: var(--assetDrawerWidth, 360px);
+  width: calc(100% - var(--assetDrawerWidth, 360px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assetDock,
+  .assetHandle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 34px;
+  padding: 12px 0;
+  border: 1px solid var(--el-border-color-light);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  background: var(--el-bg-color);
+  box-shadow: 2px 0 10px var(--el-box-shadow-light);
+  color: var(--el-text-color-regular);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: left 0.24s cubic-bezier(0.4, 0, 0.2, 1), color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    color: var(--el-color-primary);
+    box-shadow: 2px 0 12px var(--el-box-shadow);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--el-color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.canvas.assetOpen .assetHandle {
+  left: var(--assetDrawerWidth, 360px);
+  border-radius: 0 10px 10px 0;
+  border-left: none;
+  border-right: 1px solid var(--el-border-color-light);
+  color: var(--el-color-primary);
+  box-shadow: -2px 0 10px var(--el-box-shadow-light);
+}
+
+.handleLabel {
+  font-size: 12px;
+  letter-spacing: 3px;
+  writing-mode: vertical-rl;
+}
+
+.canvas :deep(.canvasControlsPanel) { transition: none; }
+}
+
 .canvas {
   width: 100%;
   height: 100%;

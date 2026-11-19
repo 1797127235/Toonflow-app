@@ -80,7 +80,6 @@ declare module 'vue' {
     IconBook: typeof import('@tabler/icons-vue')['IconBook']
     IconBorderRadius: typeof import('@tabler/icons-vue')['IconBorderRadius']
     IconExternalLink: typeof import('@tabler/icons-vue')['IconExternalLink']
-    IconFolders: typeof import('@tabler/icons-vue')['IconFolders']
     IconLanguage: typeof import('@tabler/icons-vue')['IconLanguage']
     IconLayoutSidebarLeftCollapse: typeof import('@tabler/icons-vue')['IconLayoutSidebarLeftCollapse']
     IconLayoutSidebarLeftExpand: typeof import('@tabler/icons-vue')['IconLayoutSidebarLeftExpand']

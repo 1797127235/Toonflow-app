@@ -10,17 +10,6 @@
   <panel class="canvasControlsPanel" position="bottom-left">
     <el-card class="canvasControlsCard" shadow="never" :bodyStyle="{ padding: '2px 4px' }">
       <div class="canvasControls">
-        <el-tooltip :showArrow="false" :content="assetsVisible ? '关闭素材库' : '打开素材库'" placement="top" :hideAfter="0" :enterable="false" :triggerKeys="[]">
-          <el-button
-            class="toolButton"
-            text
-            :type="assetsVisible ? 'primary' : 'default'"
-            :aria-pressed="assetsVisible"
-            aria-label="素材库"
-            @click="assetsVisible = !assetsVisible">
-            <icon-folders :size="18" />
-          </el-button>
-        </el-tooltip>
         <!-- trigger 用 contextmenu 是为了让整理按钮只由 arrangeNodes 控制显隐，同时仍保留点击外部自动关闭 -->
         <el-tooltip :showArrow="false" content="整理画布" placement="top" :hideAfter="0" :enterable="false" :triggerKeys="[]" :disabled="undoPopoverVisible">
           <span class="toolTrigger">

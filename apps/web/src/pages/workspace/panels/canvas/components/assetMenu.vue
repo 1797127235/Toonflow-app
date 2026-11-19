@@ -1,7 +1,7 @@
 <template>
   <el-dropdown ref="menu" trigger="contextmenu" virtualTriggering :virtualRef="menuAnchor" placement="bottom-start" :showArrow="false" :hideOnClick="false" popperClass="assetActionMenu" @command="handleCommand" @visibleChange="(opened: boolean) => { if (!opened) moveVisible = false; }">
     <template #dropdown>
-      <el-dropdown-menu v-if="activeEntry">
+      <el-dropdown-menu v-if="activeEntry && !activeEntry.readOnly">
         <el-dropdown-item command="move" :disabled="busy">
           <el-popover v-model:visible="moveVisible" trigger="hover" placement="right-start" :width="220" :offset="0" :showArrow="false" :showAfter="0" :hideAfter="150" appendTo=".assetActionMenu">
             <template #reference>
@@ -19,6 +19,9 @@
         <el-dropdown-item command="rename" :disabled="busy">重命名</el-dropdown-item>
         <el-dropdown-item class="deleteAction" command="delete" :disabled="busy || !!activeEntry.children?.length" :title="activeEntry.children?.length ? '请先删除文件夹内的素材' : undefined">删除</el-dropdown-item>
       </el-dropdown-menu>
+      <el-dropdown-menu v-else-if="activeEntry?.type === 'file'">
+        <el-dropdown-item command="download">下载</el-dropdown-item>
+      </el-dropdown-menu>
     </template>
   </el-dropdown>
 </template>
@@ -31,7 +34,7 @@ import saveFile from "@/lib/saveFile";
 import { ElMessage, ElMessageBox, type DropdownInstance } from "element-plus";
 import { IconChevronRight, IconFolder, IconFolderPlus } from "@tabler/icons-vue";
 
-type AssetEntry = { name: string; path: string; type: "file" | "directory"; children?: AssetEntry[] };
+type AssetEntry = { name: string; path: string; type: "file" | "directory"; children?: AssetEntry[]; readOnly?: boolean };
 const props = defineProps<{ entries: AssetEntry[] }>();
 const emit = defineEmits<{ changed: [path?: string, target?: string] }>();
 const menu = ref<DropdownInstance>();
@@ -56,6 +59,7 @@ function destinationDisabled(path: string) {
 }
 
 async function openMenu(event: MouseEvent, entry: AssetEntry) {
+  if (entry.readOnly && entry.type === "directory") return;
   menu.value?.handleClose();
   moveVisible.value = false;
   activeEntry.value = entry;
