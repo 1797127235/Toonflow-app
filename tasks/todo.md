@@ -1,210 +1,210 @@
-# Todo: 媒体生成任务持久化
+# Todo: 素材源接入（asset-sources）
 
-规格:`docs/mediaTaskPersistence.md`;设计决策与风险:`tasks/plan.md`。
-验证约束(AGENTS.md):不新增测试文件/框架;验证 = typecheck、build、临时数据目录手工 HTTP、真机手工验收。真实 C2A 生成计费,先经用户确认。
+规格：`docs/assetSources.md`；设计决策与风险：`tasks/plan.md`。
 
-进度(2026-11-14):Task 1/2/3/4 代码完成。Task 1/2:typecheck/build + 临时目录手工 HTTP 全过(落盘 0600、读盘往返、409 去重、跨工作区 404、interrupted/超时标记、cancel 终态守卫、重启扫描、7 天清理、非法 taskId 400)。Task 3:c2a/c2aYzh 同构拆分+resume,typecheck/build 过,真实 loader 加载验证(resume/generateVideo 存在、onSubmitted 注入、无 Key 先抛错、22/28 模型加载)。Task 4:generation.ts resumeMedia+tasks.ts triggerResume/扫描/status 续跑,typecheck/build 过,临时目录手工 HTTP 验证(无计费):tfRouter 无 resume→interrupted、c2a 有 resume 无 Key→failed(远程调用前)、cancelled/超时/created 不触发续跑、5 并发 status 去重单次恢复、重启启动扫描自动续跑。状态集去掉 running(无 hook 写入),规格已同步。真实生成 succeeded 落盘+余额刷新+onSubmitted/resume 运行时回归并入 Checkpoint A(计费经用户确认)。后续(用户 m00603 要求支持所有注册供应商):给 TF-Router 也实现 resume——契约 resume 加 mediaType 参数(三端点 getImageStatus/getVideoStatus/getAudioStatus 不同),宿主 resumeMedia 透传 record.mediaType;tfRouter generateTask 拆 create→onSubmitted→pollTask,新增 resume;C2A/c2aYzh 少参可赋值无需改。typecheck/build 过,真实 loader 验证三供应商 resume 均 function、tfRouter 无 Key 先抛「请填写 TF-router API Key」。TF-Router 图片/视频/音频均可续跑(均 taskICode),C2A 仅视频。真机验证(2026-11-14 17:12,用户 m00669 截图确认):TF-Router MiniMax-H3 视频生成中途重启 server,节点自动接回同一任务出片;remoteTaskId cgt-20261114170917-cb55q 前后一致(未重提交、只扣一次),磁盘 submitted→succeeded,结果 1.46MB 落工作区 assets/。供应商无关续跑机制真机闭环成立。Task 5/6/7/8 前端代码完成(2026-11-14 17:30):nodeAi generateImage/Video/Audio 加 onTaskId(POST 前持久化+flush)、新增 watchMediaTask(只轮询不重提)/cancelMediaTask、wait abort 只 detach、删 90s 自动取消改退避;useNodeGeneration 重写(run/onTaskId/reconnect/stop,media 配置);canvas provide flushCanvasSave;image/video/audio 三生成节点同构接线(pendingTaskId+onMounted reconnect+停止 stop);imageNode inpaint 加 onTaskId/resumeTaskId(续跑重做合成),imageGenerationNode inpaint 分支接回;imageVariationGenerator 委托子节点生成无需改。各包 vue-tsc + apps/web vue-tsc/build 全过,build:nodes 重建 10 插件含新代码。**部署关键教训(2026-11-14 17:46)**:运行中的 app 从 `data/nodes/`(已安装插件,路由 nodes/files.ts:14 `dirname(conf.path)/nodes`)加载节点,**不是 build/nodes**;`build:nodes` 只重建 build/nodes,不会安装到 data/nodes。首次「修复未生效」根因即此:data/nodes 是一周前(11-07)旧 bundle,浏览器一直跑旧代码。修复:经 `POST /api/nodes/install {fileName,source,force:true}`(headers x-toonflow-workspace:1 + Referer:http://localhost:3000/ + Host:localhost:3000,连 127.0.0.1)强制安装 10 个新 bundle 到 data/nodes,curl 验证服务 bundle 含 watchMediaTask/pendingTaskId/reconnect。**今后改节点代码:build:nodes 后必须安装到 data/nodes 并 curl 服务路由验证,再让用户硬刷新(Ctrl+Shift+R)。** 刷新/切画布/停止真机手工验收待用户硬刷新后浏览器验证。
+验证约束（AGENTS.md）：不新增测试文件/框架；验证 = `bun run typecheck`、临时数据目录起服务 + curl 手工验证、本地素材库人工回归。
 
-评审修复(2026-11-14 18:24,用户 m00950 调用 code-review-and-quality skill 派 3 reviewer 后 m00994「修复」):修完全部 Critical+Required。C1 imageInpaint 中止保留临时目录(`requested && !signal.aborted` 才清理,避免销毁已付费续跑结果);C2 onSubmitted 落盘失败降级不中止已计费任务(persist.catch);R1 start 改 writeAtomic exclusive+EEXIST→409(删 stat 预检,闭并发双提交 TOCTOU);R2 新增 serialize 按 taskId 互斥锁,settleDisk/triggerResume 认领入锁+tasks.has 守卫(闭 cancel 被迟到 succeeded 覆盖);R3 status 读盘后复查内存 live 任务+settleDisk tasks.has(闭刚 start 任务被误标 interrupted);R4 generateMedia catch 仅 `!controller.signal.aborted`(scope 存活=显式停止)才取消,卸载/切画布 detach 不杀计费任务;R5 cancel 改返回 Promise+失败重试 3 次+最终失败 showNodeError 告知;R6 stop 弹 ElNotification「远程任务可能继续计费」;R7 三节点解构 stalled+v-loading element-loading-text「连接中断，正在重试…」。8 处 typecheck(6 包+web+server)全过;build:nodes 重建+force 安装 10 bundle 到 data/nodes+curl 验证含新代码(连接中断/远程任务可能继续计费/stalled/停止请求发送失败)+重启 server(PID 370863)加载新 tasks.ts。Optional/Nit 未修(O1 resume 兜底超时死代码/O2 readRecord deadline 校验/O3 强转与 media 配置重复等),待用户决定。真机刷新续跑+C2A 视频回归(Checkpoint A/B 计费)待用户硬刷新验收。
+进度：Task 1–4 完成；Task 5 接口层验证通过，界面人工回归待做。
 
-## Task 1: 服务端任务记录落盘
+## Task 1: 骨架与安全边界
 
-**Description:** `tasks.ts` 从纯内存 Map 改为磁盘事实源 + 内存缓存。新增记录读写(`data/mediaTasks/<sha256(realpath(cwd)).slice(0,16)>/<taskId>.json`,`writeAtomic` + `0o600`,taskId 保留 uuid 校验);所有写入收口单函数,「非终态→终态」守卫;start 写 created(deadline=createdAt+30min)、409 查内存+盘;status 内存未命中读盘(保留 cwd 相等校验);cancel 写 cancelled;删除 :27 的 120s 心跳 abort;启动扫描(created/submitted→interrupted[本任务尚无续跑],过 deadline→failed,终态>7天→删除)+ 每小时定时清理。
+**Description:** 建立源配置数据与路径分流，把"哪些请求属于远程源"和"哪些 URL 允许访问"这两件事定死，全程不联网。
 
-**Acceptance criteria:**
+新建 `apps/server/src/utils/assets/sources.ts`：
 
-- [x] 生成完成后重启服务,status 从磁盘返回 succeeded 与结果,不再 404
-- [x] 重启后 created/submitted 记录标 interrupted;过 deadline 标 failed;终态 7 天后清理
-- [x] 关页超过 120 秒任务不再被 abort;cancelled 不被迟到的 succeeded/failed 覆盖;跨工作区读盘被拒
+- 类型 `SourceFile`、`SourceConfig`、`AssetEntry`（`AssetEntry` 从 `routes/assets/list.ts:7` 迁来，加 `readOnly?`、`thumbPath?`、`stale?`）
+- `const assetSources: SourceConfig[]`，七个源按规格 3.4 逐字落地
+- `const localSourceId = "local"`
 
-**Verification:**
+新建 `apps/server/src/utils/assets/sourcePath.ts`：
 
-- [x] `cd apps/server && bun run typecheck && bun run build`
-- [x] 手工 HTTP:临时 `TOONFLOW_DATA_DIR` 下 start/status/cancel,kill 进程重启后 status 读盘;检查记录文件权限 0600、非法 taskId 被拒
+- `parseAssetPath(path: string): { kind: "local"; path: string } | { kind: "remote"; source: SourceConfig; innerPath: string }`
+  取首个 `/` 前的段去前导 `@`，命中已注册且非本地 id 才走远程，否则整串回落本地
+- `resolveRemoteUrl(source: SourceConfig, value: string): string`
+  五条校验（`http(s)`、host 命中 `allowedHosts`、无 userinfo、端口缺省或 80/443、`..` 不越界），失败抛 `status: 404`
+- `validateSources(): { available: SourceConfig[]; disabled: { id: string; reason: string }[] }`
+  静态校验（mode 与 root/indexPath 配套、index 源 allowedHosts 非空且 files 非空、directory 源 files 为空、id 唯一且合格式、模板占位符已声明），进程内算一次并缓存
 
-**Dependencies:** None(与 Task 2 可并行)
-
-**Files likely touched:**
-
-- `apps/server/src/utils/media/tasks.ts`
-
-**Estimated scope:** Medium(单文件但逻辑密集)
-
-## Task 2: Provider 契约 + loader + generation hooks
-
-**Description:** `types.d.ts` 的 `ProviderContext` 加 `onSubmitted?: (remoteTaskId: string) => void | Promise<void>`;provider 定义加 `resume?: (this: ProviderContext, remoteTaskId: string) => Promise<MediaAsset[]>`。`provider.ts` loader 对 resume 做与 generate* 相同的 context 注入、signal 接线、错误富化,并把 hooks.onSubmitted 注入 context。`generation.ts` 加可选 hooks 参数;把「assetBytes→独占写盘→失败回滚」尾部抽成共享函数供生成与续跑复用。
+修改 `apps/server/src/utils/assets/index.ts`：导出上述三样，供 `u.assets.*` 使用。
 
 **Acceptance criteria:**
 
-- [x] onSubmitted 经 loader 到达 provider 的 this;resume 被包装(取消信号可中断、错误含供应商正文且隐藏密钥)
-- [ ] generateMedia 的 hooks 参数贯通;共享落盘尾部被正常生成调用,行为与现状一致(独占创建、失败回滚)
+- [x] `parseAssetPath("@pose/img/x.png")` 返回 remote、`innerPath = "img/x.png"`
+- [x] `parseAssetPath("@local/a.png")`、`parseAssetPath("@未知/a.png")`、`parseAssetPath("a.png")` 全部返回 local
+- [x] `resolveRemoteUrl` 对 `http://127.0.0.1/x`、`https://evil.example/x`、`http://u:p@ai-pose-gallery.anhao.app/x`、`http://ai-pose-gallery.anhao.app:8080/x`、越界 `../` 一律抛 404
+- [x] `validateSources()` 对七个内置源全部 available；把某源 `allowedHosts` 清空后该源进 disabled 且 reason 可读
+- [x] `cd apps/server && bun run typecheck` 通过
 
 **Verification:**
 
-- [x] `cd apps/server && bun run typecheck && bun run build`(provider 类型随 server tsc 覆盖)
-- [ ] 手工:现有图片/视频生成走通一次(计费项经用户确认),确认 hooks 缺省时行为不变
+- [x] `bun -e` 单行断言上述分支（不新增文件）
+- [x] `grep -rn 'source.id ===' apps/server/src` 无命中
 
-**Dependencies:** None(与 Task 1 可并行)
+**Dependencies:** None
 
-**Files likely touched:**
+## Task 2: 索引加载与目录树
 
-- `packages/providers/types.d.ts`
-- `apps/server/src/utils/media/provider.ts`
-- `apps/server/src/utils/media/generation.ts`
+**Description:** 让 `list` 能列出 7 个源目录，并能按层展开远程目录。
 
-**Estimated scope:** Medium(3 文件)
+新建 `apps/server/src/utils/assets/sourceIndex.ts`：
 
-## Task 3: C2A 视频拆分 + resume
+- `loadSourceIndex(source)`：首次 `fetch(baseUrl + indexPath)`；成功后 `writeAtomic` 写 `data/assetCache/<sourceId>.json`（含 `etag`、`fetchedAt`）并驻留内存；TTL 86,400 s 内不重复请求；过期后带 `If-None-Match`，304 只更新 `fetchedAt`；失败时有快照则用快照并返回 `stale: true`，无快照则该源从树中缺席
+- `buildSourceEntries(source, index)`：按 `groupBy` 分组生成目录层；每条记录按 `files` 模板插值产出文件条目（`role: "thumb"` 只写 `thumbPath`，`role: "depth"` 产出独立条目）；`from` 数组逐项展开、元素字段优先
+- 数据层校验：取前三条记录跑全部模板，检查产物名非空、无残留 `{`、不含 `/`／`\`／`..`／控制字符、不以 `@` 开头，URL 通过 `resolveRemoteUrl`；失败则整源标 disabled
 
-**Description:** `c2a.ts`/`c2aYzh.ts` 同构修改(自包含,不新增 import):generateVideo 拆为 create → **await this.onSubmitted?.(taskId)** → poll;新增 resume,只轮询远程状态、完成时取新鲜 URL(video_url ?? task.url ?? `${endpoint}/${taskId}/content`),超时仅用 context.signal,不另起。上游无取消接口(已确认),不实现 provider.cancel。规格第 3 节已同步修订(同构、无 cancel 契约、TF-Router 已内置)。
+修改 `apps/server/src/routes/assets/list.ts`：
+
+- `validateFields({ path: z.string().min(1).max(4096).optional() }, "query")`
+- `path` 缺省：走原递归逻辑，只扫本地 `data/assets`，行为逐字节不变
+- `path` 为 `@<id>`：返回该源根层（分组目录或扁平条目），源目录条目带 `readOnly: true`、`stale` 按快照状态
+- `path` 为 `@<id>/<分组>`：返回该组条目
 
 **Acceptance criteria:**
 
-- [x] create 成功后先 await onSubmitted 落盘再轮询;resume 不依赖落盘旧 URL、不重置超时
-- [x] 两文件保持自包含(rejectImport 不触发)、函数同构
+- [x] `GET /api/assets/list` 返回 7 个源目录，姿势库下恰有 4 个体系子目录（399/365/400/275 条）
+- [x] `GET /api/assets/list?path=@pose/<某个体系>` 返回该体系条目数，与索引统计一致
+- [x] 条目 `name` 走 `{姿势名称}（{姿势编号}）` 模板，`thumbPath` 指向 `thumbs/…` 缩略图
+- [x] 断网且已有快照时 `list` 仍返回全部源，源目录条目 `stale: true`
+- [x] 把某源 `indexPath` 改错 → 该源从树中消失，其余 6 源正常，日志有原因
 
 **Verification:**
 
-- [x] `cd apps/server && bun run typecheck && bun run build`
-- [ ] 真机(经用户确认):一次视频生成,观察 remoteTaskId 在轮询开始前已落盘
+- [x] `TOONFLOW_DATA_DIR=/tmp/as-data bun src/index.ts`，`curl -s localhost:PORT/api/assets/list | jq`
+- [x] `ls /tmp/as-data/assetCache/` 出现六个 `<sourceId>.json` 快照
 
-**Dependencies:** Task 2
+**Dependencies:** Task 1
 
-**Files likely touched:**
+## Task 3: 图片代理与缓存
 
-- `packages/providers/src/media/c2a.ts`
-- `packages/providers/src/media/c2aYzh.ts`
+**Description:** `read` 能取回远程字节，并落到磁盘缓存。
 
-**Estimated scope:** Medium(2 源码文件 + 文档)
+新建 `apps/server/src/utils/assets/imageCache.ts`：
 
-## Task 4: 服务端接入续跑
+- `cacheFilePath(source, innerPath)`：`data/assetCache/<sourceId>/<sha256(innerPath)>.<ext>`
+- `readCachedFile(path)` / `writeCachedStream(source, innerPath, stream)`：临时文件逐块写 → `close` → 目标已存在先 `unlink` → `rename`；全程走 `@toonflow/file` 的 `open`/`rename`/`unlink`
+- 内存表 `cacheIndex: Map<sha256, { bytes: number; mtimeMs: number }>`：启动扫一次目录建表，写入累加字节，超过上限 1.1 倍触发按 `mtime` 批量淘汰并重扫
+- 每源并发队列，上限 4
 
-**Description:** `tasks.ts` 启动扫描与 status 读盘回落中,submitted 且 provider 支持 resume、未过 deadline → 触发恢复:`Set<taskId>` 去重(含 Map 内任务);恢复前读盘确认未 cancelled;按 record 的 providerId/model 从 conf 取配置加载 provider;`context.signal` 带 `deadline - now` 剩余时间;结果走共享落盘尾部与 beginGeneration/finish 余额刷新;终态写入走单写者守卫。
+修改 `apps/server/src/routes/assets/read.ts`：
+
+- `@` 路径分流：用 `parseAssetPath` 取源与条目，`resolveRemoteUrl` 得 URL
+- 命中缓存：`sendFile`，头 `content-type` 按扩展名、`Cache-Control: public, max-age=31536000, immutable`、`ETag: "<sha256(源内路径)>"`、`X-Content-Type-Options: nosniff`
+- 未命中：`fetch(url, { headers: { "Accept-Encoding": "identity" } })`，流式 tee（边写临时文件边 `res.write`），结束后 `rename`
+- 上游 404 → 该条目本次会话标失效、返回 404 且不写缓存；网络失败/超时（连接 5 s、整体 30 s）→ 502/504 且不写缓存；单文件超 100 MB 只转发不落缓存
 
 **Acceptance criteria:**
 
-- [ ] 重启后 submitted 自动续跑至 succeeded,结果文件落 assets/generated,remoteTaskId 不变
-- [ ] 多窗口/重复 status 不产生重复恢复;已 cancelled 的记录不被续跑覆盖;续跑完成触发余额刷新
+- [x] `read?path=@pose/full_sexy_P001_front.png` 返回 200、523,791 字节，`sha256sum` 与上游直取一致
+- [x] 第二次请求同一路径命中缓存（响应时间 < 10 ms，缓存文件 `mtime` 不变），不再向上游发请求
+- [x] 缓存目录不出现 `.part`/`.tmp` 残留；中断一次大图（portrait 3 MB）后再请求仍返回完整字节
+- [x] 上游 404 不产生缓存文件
 
 **Verification:**
 
-- [x] `cd apps/server && bun run typecheck && bun run build`
-- [ ] 手工 HTTP + Checkpoint A 真机重启实验(手工 HTTP 无计费部分已过:续跑触发/去重/终态守卫/重启扫描;真机 succeeded 落盘+余额刷新待 Checkpoint A)
+- [x] `curl -sI` 头部与字节数；`sha256sum` 比对缓存文件与上游直取
+- [x] `find /tmp/as-data/assetCache -name '*.part' -o -name '*.tmp'` 为空
 
-**Dependencies:** Task 1、2、3
+**Dependencies:** Task 1、Task 2
 
-**Files likely touched:**
+## Task 4: 只读与错误语义
 
-- `apps/server/src/utils/media/tasks.ts`
+**Description:** 远程源不可写，错误码与本地一致地走统一出口。
 
-**Estimated scope:** Small–Medium(单文件)
-
-## Checkpoint A: 服务端闭环(Task 1–4 后)
-
-- [ ] apps/server typecheck/build 全绿
-- [ ] 真机(先经用户确认计费):10 分钟级视频生成中 kill 并重启 server → 自动续跑 → 结果落盘、节点可查、只扣一次;下载途中重启同样恢复
-- [ ] 临时数据目录验证:created→interrupted、deadline→failed、7 天清理、跨工作区拒绝
-- [ ] 与用户确认后再进 Phase 3
-
-
-
-## Task 5: nodeAi detach/cancel 拆分与重接入
-
-**Description:** `nodeAi.ts`:generateMedia 加 `onTaskId` 回调(POST 之前交出 taskId);新增 `watchMediaTask(directory, taskId)` 只轮询不重提;**wait 的 abort 监听不再发 cancel POST**,onScopeDispose 只 detach;显式停止/删节点路径才 cancel(提交失败后的清理性 cancel 保留);删 90s 自动取消,改退避重试 + 「连接中断」标记;cancel POST 失败重试,最终失败明确报错。
+修改 `apps/server/src/routes/assets/{save,mkdir,rename,remove}.ts`：入口用 `parseAssetPath` 判断，命中 remote 一律 `res.status(403)` + `error(...)`，本地路径行为不变。
 
 **Acceptance criteria:**
 
-- [ ] 节点卸载/切画布不发 cancel;用户停止发 cancel 且失败有重试与提示
-- [ ] onTaskId 在 POST 前调用;watchMediaTask 不产生新提交;状态接口抖动不再自动取消
+- [x] 四个写接口传 `@pose/x` 全部 403
+- [x] 本地路径写入、建目录、改名、删除行为与改动前一致（含 409 `ESTALE` 与 revision 冲突）
+- [x] `@nope/x.png` → 404；白名单拒绝 → 404；上游 5xx → 502；上游超时 → 504
 
 **Verification:**
 
-- [x] `cd packages/nodeScaffold && bun run typecheck`
-- [x] `cd apps/web && bun run typecheck && bun run build`
-- [ ] 手工:生成中切画布,抓请求确认无 cancel POST;停止按钮仍取消
+- [x] 四个接口 curl 各一次正例与反例
 
-**Dependencies:** Task 1(集成验证需要 status 读盘;开发可并行)
+**Dependencies:** Task 1
 
-**Files likely touched:**
+## Task 5: 整链验证
 
-- `packages/nodeScaffold/src/nodeAi.ts`
-
-**Estimated scope:** Medium(单文件,波及所有生成调用点)
-
-## Task 6: 视频节点垂直切片(pendingTaskId + flush + 恢复)
-
-**Description:** `useNodeGeneration`(nodeShared)加恢复入口:挂载时见 `pendingTaskId` → watchMediaTask,成功写结果清字段,404 清字段显示「已过期」不重试。videoGenerationNode 接线:onTaskId 写 data.pendingTaskId → 经 inject("canvas") 的 flushSave 通道 flush 成功 → 才 POST;flush 失败中止提交报错;完成/失败清字段走正常保存。已确认 CanvasContext 不含 flushSave:在 canvas/index.vue 补 `provide("flushCanvasSave", flushCanvasSave)`(同 batchCanvasHistory 模式),useNodeGeneration inject,不改 CanvasContext 契约。
+**Description:** 按规格第六节跑完整清单，并回归本地素材库。
 
 **Acceptance criteria:**
 
-- [ ] 提交后 500ms 内刷新页面,节点仍显示生成中并自动回填,不产生第二条远程任务
-- [ ] 停止提示含「远程任务可能继续计费」
-- [ ] flush 失败不提交;切画布再切回能接回;恢复 404 清字段不无限重试
+- [x] `bun run typecheck` 通过
+- [x] 规格第六节全部 curl 通过（含源隔离负例、缓存残留检查、分层条数）
+- [x] 本地素材库既有功能人工回归无变化：根目录列出本地文件、预览图片（界面已验证；拖进画布与 agent 引用走同一 `read` 接口，未单独人工走）
 
 **Verification:**
 
-- [x] `cd packages/nodeShared && bun run typecheck`;`cd packages/nodes/videoGenerationNode && bun run typecheck`
-- [x] `cd apps/web && bun run typecheck && bun run build`
-- [ ] 手工:刷新/切画布/flush 失败(临时只读目录模拟)三场景
+- [x] 上述命令逐条执行并记录结果
 
-**Dependencies:** Task 5
+**Dependencies:** Task 1–4
+## 实测记录（2026-11-19，`TOONFLOW_DATA_DIR=/tmp/as-data`，端口 3111）
 
-**Files likely touched:**
+- 源列表：`local / pose / costume / shisei / giaAnime / charadb / portrait`，除 `local` 外 `readOnly: true`。
+- 分层条目：姿势库 4 组 / 2,878 条；服装库 8 组 / 1,407；Shisei 1 组 / 227；动漫服装 8 组 / 1,320；CharaDB 15 组 / 440；人像库 2 组 / 1,499。合计 7,771，与规格一致。
+- 图片：原图 563,895 B `image/png`、缩略图 13,005 B `image/jpeg`、深度图 90,498 B `image/png`，三者各自独立缓存文件；缓存文件 sha256 与上游直取字节一致；二次请求 0–1 ms 命中。
+- 中断：限速 20k、1.2 s 掐断后 `.tmp` 残留 0，重取得到完整 372,758 B 且 sha256 与首次一致。
+- 只读守卫：`save`/`mkdir`/`rename`/`remove` 传 `@pose/...` 全部 403，中文与英文（`Accept-Language: en`）文案均正确。
+- 源隔离：`indexPath` 改成不存在路径后，无快照时该源从 `sources` 消失、其余 6 源正常；有快照时回退快照并标 `stale: true`，日志记「索引刷新失败，改用本地快照」。
+- 失败冷却：坏源二次请求 9 ms 返回 502，不再等上游超时。
+- 本地回归：本地 `list`/`save`/`read`/`rename`/`remove`/建目录全 200，行为未变。
 
-- `packages/nodeShared/src/useNodeGeneration.ts`
-- `packages/nodes/videoGenerationNode/src/index.vue`
-- `apps/web/src/pages/workspace/panels/canvas/index.vue`(补一行 provide flushCanvasSave)
+## 界面改造（2026-11-19）
 
-**Estimated scope:** Medium(2–3 文件)
+**范围**：`assetLibrary.vue`、`assetBrowser.vue`、`assetMenu.vue` 三个组件改为按层懒加载、只读源隐藏写操作、跨源搜索。
 
-## Task 7: image/audio 生成节点接线
+- [x] 侧栏树按源分组、懒加载（`:data="sourceNodes"` + `lazy :load`，只读源带锁标记）
+- [x] 主区按层加载（进入分组才请求该层，不再一次性拉整棵树）
+- [x] 面包屑可回退，根层显示 7 个素材库
+- [x] 只读源隐藏「新建文件夹」「目录操作」与类型筛选
+- [x] 跨源搜索：250 ms 防抖打 `GET /api/assets/search`，标题显示「找到 N 条，显示前 M 条」
+- [x] 缩略图统一走 `thumbPath`，未命中回落原图
+- [x] 保存对话框与「移动到」目录树懒加载
+- [x] `assetMenu.vue` 按 `entry.readOnly` 只留「下载」
+- [x] 顺序修正：组内与搜索结果保持索引原序，原图与深度图成对相邻
 
-**Description:** 复用 Task 6 的共享恢复入口,把 pendingTaskId 提交前 flush + 挂载恢复接入 imageGenerationNode 与 audioGenerationNode。无 remoteTaskId 的任务(当前 C2A 图片/音频同步路径)重启后按 interrupted 展示「已中断(可能已提交)」,不自动重提。
+**验证**（headless Chrome + CDP，端口 3111）：
 
-**Acceptance criteria:**
+- 素材库弹窗列出 7 个库，「我的素材」默认展开，只读库显示 `Read-only`。
+- 姿势库 → 4 个体系目录；全身单人・性感系 → 798 条（399 原图 + 399 深度），首条 `S形站姿・胯部侧顶（P001・正面）.png`，其后紧邻 `_depth.png`；缩略图 300×400 正常加载。
+- 只读层无「新建文件夹」；面包屑为 `素材库 / 姿势库`。
+- 搜索「坐姿」→ 标题「找到 298 条，显示前 60 条」，卡片带来源标签「姿势库」。
+- 动漫服装 → 8 组；泳装・度假 → 52 套，热链缩略图经服务端代理后 360×540 正常显示。
+- `bun run typecheck`（web）：本次改动文件无新增错误（`addCustomProviderDialog.vue` 的 TS2769 为既有错误）；`bun run build` 成功。
 
-- [ ] 两节点刷新后按 pendingTaskId 恢复;interrupted 文案正确、可手动重试
-- [ ] 不重复提交;旧画布无字段不报错
+## 题材过滤（2026-11-20）
 
-**Verification:**
+- [x] `SourceConfig.hiddenGroups` 配置项，`sourceIndex.buildTree` 跳过命中的分组（不进树、不进搜索）
+- [x] `pose` 源隐藏「双人缠绵」：根层由 4 组变 3 组，`@pose` 层实测 3 个目录
 
-- [x] 两插件目录各自 `bun run typecheck`;`cd apps/web && bun run typecheck && bun run build`
-- [ ] 手工:图片/音频生成中刷新、重启后 interrupted 展示
+## 按上游产品结构重构（2026-11-20）
 
-**Dependencies:** Task 6
+参照 `https://ai-pose-gallery.anhao.app/poses` 的实际产品形态（三大参考图库、库内分类 chips、18+ 完整模式开关、卡片内多视角/深度图切换）改。
 
-**Files likely touched:**
+- [x] 源表合并为 4 个（我的素材 / 姿势库 / 服装穿搭库 / 人像库）：`SourceConfig.indexPath` 改为 `indexes: { label, path }[]`，四份服装索引合成一个库，条目带 `origin`（ギア・现实服装 / ギア・动漫 / AI・CharaDB / Shisei・中国历代）
+- [x] `Snapshot` 升到 `version: 2`，按 `parts[path] = { label, etag, items }` 分别缓存，一份索引 304 不影响其余；旧快照自动失效重建
+- [x] `hiddenGroups` 换成 `adultGroups`：18+ 分组默认不进树、不进搜索，`list` / `search` 加 `adult=true` 才返回，`hiddenGroups` 回传隐藏数量，界面显示「另有 N 个 18+ 分组」
+- [x] 深度图从独立条目改为第二视图：`SourceFileRole` 的 `depth` 改成 `alternate`，`buildItem` 按出现顺序贴回原条目（`alternatePath` / `alternateThumbPath` / `alternateName`），姿势库单组条目数由 798 降到 399（实测 365 = 全身单人・标准系）
+- [x] 卡片角标：`SourceConfig.badge` / `meta` 模板，姿势库用 `{姿势编号}` 与 `{角度}`，卡片标题去掉重复的角度后缀
+- [x] 库根层改为一行分类 chips（带条目数、18+ 标记），`listSourceEntries` 根层回传 `count`；服装库实测 24 个分类合计 3,224，与上游截图逐项一致
+- [x] 远程库在侧栏不再展开二级目录（分类交给 chips），本地库仍可展开
+- [x] `resolveSourceImage` 补查完整树，18+ 条目的图片照常可读（实测 P001 523,791 B）
+- [x] 同一姿势的 5 个视角按 `mergeBy: "{姿势编号}"` 聚合成一张卡：`SourceConfig.mergeBy` + `AssetEntry.variants`，`buildTree` 里同组同键只占位一次，其余进 `variants`；卡片底部视角按钮切换缩略图与拖拽路径，与「深度」按钮可叠加（切到仰视再开深度 = 仰视深度图）
+- [x] 摘要文案区分条目与图片：`73 个素材 · 365 张图`（聚合后条目数 + 视角总数），避免与上游 365 的记录数口径混淆
+- [x] 实测：`bun run typecheck`（server / web）通过；`bun run build`（web）成功；姿势库 4 组 2,878 条、服装库 24 类 3,224 条、人像库 2 类 1,499 条；搜索「坐姿」默认 75 条、开启 18+ 后 149 条
 
-- `packages/nodes/imageGenerationNode/src/index.vue`
-- `packages/nodes/audioGenerationNode/src/index.vue`
+## 界面按上游交互重做（2026-11-20）
 
-**Estimated scope:** Small(2 文件)
+上游姿势库是「库根直接铺卡片 + 顶部一行筛选 + 卡片内视角条」，此前我做成了「先选分类目录再进二层」。这轮改成照抄该结构。
 
-## Task 8: imageNode 两处接线
-
-**Description:** 把同一共享恢复入口接入 imageNode 的修复与变体生成两处调用点,行为与 Task 7 一致。
-
-**Acceptance criteria:**
-
-- [ ] 修复/变体生成刷新后可恢复;取消/停止语义与视频节点一致
-- [ ] 不重复提交;旧数据无报错
-
-**Verification:**
-
-- [x] `cd packages/nodes/imageNode && bun run typecheck`;`cd apps/web && bun run typecheck && bun run build`
-- [ ] 手工:修复/变体生成中刷新与切画布
-
-**Dependencies:** Task 6
-
-**Files likely touched:**
-
-- `packages/nodes/imageNode/src/imageInpaint.ts`
-- `packages/nodes/imageNode/src/components/imageVariationGenerator.vue`
-
-**Estimated scope:** Small(2 文件)
-
-## Checkpoint B: 完整验收(Task 5–8 后)
-
-- [ ] 规格验收 1–7 全部手工通过(真实生成计费项先经用户确认)
-- [ ] 旧画布、旧数据打开无报错;恢复 404 清理、cancel 失败提示、网络抖动不自动取消逐项确认
-- [ ] 各 workspace typecheck/build 全绿;人工复核后交付
+- [x] 库根直接返回全部条目：`listSourceEntries` 根层返回 `tree.all`（含 `group` 字段），分类降级为筛选条件；`AssetEntry.group` 由 `buildTree` 写入
+- [x] 分类 chips 变成同层筛选：`activeGroup` 点击切换、再点取消，`multiOrigin` 时才显示来源副标题
+- [x] 分页 60 条 + 「加载更多」（`visibleCount`），避免一次渲染 1,499 个节点
+- [x] 深度图从卡片按钮改为页面级分段控件（`素体白模 / 深度图`），视角条缩略图跟随切换（`variantThumbOf`）
+- [x] 视角条从文字方块改成 5 张缩略图 + 标签，卡片右上角显示当前角度、左上角显示编号、副标题显示分类（`meta: "{分类}"`）
+- [x] 网格 5 列、`fit="contain"` + 浅色底，整张构图不再被裁切
+- [x] 只读库隐藏「新建文件夹」与卡片「更多」菜单；本地库保留
+- [x] 名称统一去掉末尾 `（…）` 段（编号与角度已用角标表达）
+- [x] 搜索接口结果补 `type: "file"`，否则卡片退化成「文件」图标；搜索结果副标题显示来源库
+- [x] 实测：`bun run typecheck`（server）通过、`bun run build`（web）成功；姿势库根 153 条 60 张/页、chips 2 项（73 / 80）、视角切换后 `img.src` 由「正面」变「仰视」、深度模式变 `…_深度.png`、点 chips 后首卡变「上半身单人」的 P001、加载更多 60→120；服装库 22 chips + 3 类来源、人像库副标题「短发」、本地库 2 条且「新建文件夹」可见、搜索「旗袍」6 条带缩略图
