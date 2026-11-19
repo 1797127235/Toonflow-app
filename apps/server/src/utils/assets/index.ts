@@ -5,6 +5,10 @@ import conf from "@/utils/conf";
 import { isWithin, lockWorkspaceFiles, protectWorkspaceRoot, renameWorkspaceFile, resolveWorkspacePath, writeWorkspaceFile } from "@/utils/workspace/files";
 import { mentionAssetType, type MentionAsset, type MentionQuery } from "@/agent/mentionSources";
 
+export { assetSources, localSourceId, type AssetEntry, type SourceConfig, type SourceFile, type SourceFileRole } from "./sources";
+export { parseAssetPath, resolveRemoteUrl, sourceById, validateSources, type AssetPathTarget, type SourceValidation } from "./sourcePath";
+import { parseAssetPath } from "./sourcePath";
+
 const maxAssetBytes = 100 * 1024 * 1024;
 type AssetSearch = { key: string; directory: string; offset: number; touched: number; busy: boolean; iterator: AsyncGenerator<MentionAsset>;
   timer: ReturnType<typeof setTimeout>; closing?: Promise<void> };
@@ -20,11 +24,27 @@ export async function getAssetsDirectory() {
   }
 }
 
+/** 远程源的索引快照与图片缓存都放在这里，可随时删除，删掉只损失一次下载。 */
+export async function getAssetCacheDirectory() {
+  const directory = join(dirname(conf.path), "assetCache");
+  try { return await realpath(directory); }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    await mkdir(directory, { recursive: true });
+    return realpath(directory);
+  }
+}
+
 async function resolveAssetPath(path: string) {
   const root = await getAssetsDirectory();
   const resolved = await resolveWorkspacePath(root, path);
   protectWorkspaceRoot(resolved.directory, resolved.path);
   return resolved;
+}
+
+/** 远程源只读：写操作在统一入口拦下，路由与未来的调用方都不必各自判断 */
+function assertWritableAsset(path: string) {
+  if (parseAssetPath(path).kind === "remote") throw Object.assign(new Error("远程素材库是只读的，不能修改"), { status: 403 });
 }
 
 async function readAssetContents(path: string, signal?: AbortSignal) {
@@ -48,6 +68,7 @@ export async function readAssetFile(path: string, signal?: AbortSignal) {
 }
 
 export async function writeAssetFile(path: string, content: string | Uint8Array, revision?: string) {
+  assertWritableAsset(path);
   if (Buffer.byteLength(content) > maxAssetBytes) throw new Error("素材文件不能超过 100 MB");
   const target = await resolveAssetPath(path);
   const release = lockWorkspaceFiles([target.path]);
@@ -62,6 +83,7 @@ export async function writeAssetFile(path: string, content: string | Uint8Array,
 }
 
 export async function createAssetDirectory(path: string) {
+  assertWritableAsset(path);
   const target = await resolveAssetPath(path);
   const release = lockWorkspaceFiles([target.path]);
   try { await mkdir(target.path); }
@@ -69,6 +91,8 @@ export async function createAssetDirectory(path: string) {
 }
 
 export async function moveAsset(path: string, target: string) {
+  assertWritableAsset(path);
+  assertWritableAsset(target);
   const source = await resolveAssetPath(path);
   const destination = await resolveAssetPath(target);
   destination.path = resolve(dirname(destination.path), basename(resolve(destination.directory, target)));
@@ -86,6 +110,7 @@ export async function moveAsset(path: string, target: string) {
 }
 
 export async function removeAsset(path: string) {
+  assertWritableAsset(path);
   const target = await resolveAssetPath(path);
   const release = lockWorkspaceFiles([target.path]);
   try {
