@@ -13,11 +13,15 @@
         </button>
       </div>
       <nav class="sidebarNav" aria-label="首页导航">
-        <button v-for="section in homeSections" :key="section.id" class="sidebarItem" :class="{ active: activeSection === section.id }" type="button" :aria-current="activeSection === section.id ? 'location' : undefined" :aria-label="translate(section.label)" :title="translate(section.label)" @click="scrollToSection(section.id)">
+        <button v-for="section in homeSections" :key="section.id" class="sidebarItem" :class="{ active: !skillsOpen && activeSection === section.id }" type="button" :aria-current="!skillsOpen && activeSection === section.id ? 'location' : undefined" :aria-label="translate(section.label)" :title="translate(section.label)" @click="scrollToSection(section.id)">
           <component :is="section.icon" :size="18" aria-hidden="true" />
           <span class="sidebarText">{{ translate(section.label) }}</span>
         </button>
         <hr class="sidebarDivider" />
+        <button class="sidebarItem" :class="{ active: skillsOpen }" type="button" aria-label="技能" title="技能" :aria-current="skillsOpen ? 'page' : undefined" @click="skillsOpen = true">
+          <icon-book :size="18" aria-hidden="true" />
+          <span class="sidebarText">技能</span>
+        </button>
         <button class="sidebarItem" :class="{ active: assetsVisible }" type="button" aria-label="素材库" title="素材库" aria-haspopup="dialog" :aria-expanded="assetsVisible" @click="assetsVisible = true">
           <icon-library-photo :size="18" aria-hidden="true" />
           <span class="sidebarText">素材库</span>
@@ -40,7 +44,7 @@
         </button>
       </div>
     </aside>
-    <el-scrollbar ref="pageScroll" class="pageScroll" @scroll="updateActiveSection">
+    <el-scrollbar v-show="!skillsOpen" ref="pageScroll" class="pageScroll" @scroll="updateActiveSection">
       <div class="pageBody">
         <el-main class="pageContent">
           <section class="creationPanel" data-home-section="home" aria-label="创建项目">
@@ -121,6 +125,7 @@
         </el-main>
       </div>
     </el-scrollbar>
+    <skillsPage v-if="skillsOpen" class="skillsView" />
     <assetLibraryDialog v-model="assetsVisible" />
     <settings v-model="settingsVisible" />
     <mobileConnect v-model="mobileConnectVisible" />
@@ -154,6 +159,7 @@ import useWorkspaceFiles from "@/lib/workspaceFiles";
 import { waitForControlValue } from "@/lib/mcpControl";
 import settings from "@/components/settings/index.vue";
 import assetLibraryDialog from "./assetLibraryDialog.vue";
+import skillsPage from "./skillsPage.vue";
 import bg from "./bg.vue";
 import projectCover from "./projectCover.vue";
 import workspacePicker from "./workspacePicker.vue";
@@ -162,6 +168,7 @@ import { createRemixCanvas } from "./remixCanvas";
 
 const settingsVisible = ref(false);
 const assetsVisible = ref(false);
+const skillsOpen = ref(false);
 const mobileConnectVisible = ref(false);
 const sidebarCollapsed = ref(false);
 const pageScroll = ref<ScrollbarInstance>();
@@ -267,6 +274,11 @@ const sortedProjects = computed(() => [...projectList.value].sort((left, right) 
 const visibleProjects = computed(() => projectListExpanded.value ? sortedProjects.value : sortedProjects.value.slice(0, projectPreviewCount));
 
 function scrollToSection(section: string) {
+  if (skillsOpen.value) {
+    skillsOpen.value = false;
+    nextTick(() => scrollToSection(section));
+    return;
+  }
   const wrap = pageScroll.value?.wrapRef;
   const target = wrap?.querySelector<HTMLElement>(`[data-home-section="${section}"]`);
   if (!wrap || !target) return;
@@ -652,6 +664,14 @@ async function createProject(fromPrompt = true, remixRequest?: RemixRequest) {
       --sidebarMotion: 0ms;
       --sidebarFade: 0ms;
     }
+  }
+
+  .skillsView {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
   }
 
   .pageScroll {

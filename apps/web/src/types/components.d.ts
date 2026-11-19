@@ -77,6 +77,7 @@ declare module 'vue' {
     General: typeof import('./../components/settings/panels/general/index.vue')['default']
     IconArrowGuide: typeof import('@tabler/icons-vue')['IconArrowGuide']
     IconArrowRight: typeof import('@tabler/icons-vue')['IconArrowRight']
+    IconBook: typeof import('@tabler/icons-vue')['IconBook']
     IconBorderRadius: typeof import('@tabler/icons-vue')['IconBorderRadius']
     IconExternalLink: typeof import('@tabler/icons-vue')['IconExternalLink']
     IconFolders: typeof import('@tabler/icons-vue')['IconFolders']

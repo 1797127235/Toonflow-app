@@ -1,7 +1,7 @@
 <template>
   <div class="pluginMarket">
     <div class="marketToolbar">
-      <nav class="marketNav" aria-label="插件列表">
+      <nav v-if="!initialType" class="marketNav" aria-label="插件列表">
         <button class="navButton" type="button" :aria-pressed="activeTab === 'installed'" @click="activeTab = 'installed'">已安装</button>
         <button class="navButton" type="button" :aria-pressed="activeTab === 'mcp'" @click="activeTab = 'mcp'">MCP</button>
         <button class="navButton" type="button" :aria-pressed="activeTab === 'ffmpeg'" @click="activeTab = 'ffmpeg'">FFmpeg</button>
@@ -9,17 +9,17 @@
       <div class="marketActions">
         <template v-if="activeTab === 'installed'">
           <el-button v-if="selectedType === 'ext' || selectedType === 'all'" size="small" :icon="IconSettings" @click="associationsVisible = true">默认打开方式</el-button>
-          <el-button size="small" type="primary" :icon="IconUpload" :loading="installing" aria-label="安装本地插件" @click="pluginFileInput?.click()">
-            安装插件
+          <el-button size="small" type="primary" :icon="IconUpload" :loading="installing" :aria-label="initialType ? `安装${pluginTypes[initialType].label}` : '安装本地插件'" @click="pluginFileInput?.click()">
+            {{ initialType ? `安装${pluginTypes[initialType].label}` : "安装插件" }}
           </el-button>
-          <input ref="pluginFileInput" type="file" :accept="agentMarketEnabled ? '.umd.js,.tool.js,.agent.zip,.zip,.md,.tar,.tar.gz,.tgz' : '.umd.js,.tool.js,.zip,.md,.tar,.tar.gz,.tgz'" hidden @change="installFile" />
+          <input ref="pluginFileInput" type="file" :accept="initialType === 'skill' ? '.zip,.md,.tar,.tar.gz,.tgz' : agentMarketEnabled ? '.umd.js,.tool.js,.agent.zip,.zip,.md,.tar,.tar.gz,.tgz' : '.umd.js,.tool.js,.zip,.md,.tar,.tar.gz,.tgz'" hidden @change="installFile" />
           <template v-if="agentMarketEnabled && selectedType === 'agent'">
             <el-button size="small" :icon="IconLink" :disabled="loading || !canManageAgents" @click="agentConnectVisible = true">连接远程 Agent</el-button>
             <el-button size="small" :icon="IconSettings" :disabled="loading || !canManageAgents" @click="a2aSettingsVisible = true">A2A 服务</el-button>
           </template>
         </template>
       </div>
-      <div v-if="isMarketTab || activeTab === 'installed'" class="typeFilters" role="group" aria-label="插件类型">
+      <div v-if="!initialType && (isMarketTab || activeTab === 'installed')" class="typeFilters" role="group" aria-label="插件类型">
         <button class="filterButton" type="button" :aria-pressed="selectedType === 'all'" @click="selectedType = 'all'">
           全部
           <span v-if="activeTab === 'installed' && installedCounts.all !== undefined" class="filterCount">{{ installedCounts.all }}</span>
@@ -38,7 +38,7 @@
         </button>
       </div>
       <form v-if="isMarketTab || activeTab === 'installed'" class="marketSearch" role="search" @submit.prevent="applySearch">
-        <el-input v-model="searchQuery" size="small" placeholder="搜索插件" aria-label="搜索插件" clearable @clear="applySearch" />
+        <el-input v-model="searchQuery" size="small" :placeholder="initialType ? `搜索${pluginTypes[initialType].label}` : '搜索插件'" :aria-label="initialType ? `搜索${pluginTypes[initialType].label}` : '搜索插件'" clearable @clear="applySearch" />
         <el-button size="small" type="primary" nativeType="submit">搜索</el-button>
       </form>
     </div>
@@ -277,7 +277,7 @@ import a2aSettingsDialog from "./a2aSettingsDialog.vue";
 import type { Plugin, PluginType } from "./types";
 import { installPluginFile } from "../../installPluginFile";
 
-const { visible = true } = defineProps<{ visible?: boolean }>();
+const { visible = true, initialType } = defineProps<{ visible?: boolean; initialType?: PluginType }>();
 const associationsVisible = ref(false);
 // Agent 插件市场仍在测试，暂时关闭入口。
 const agentMarketEnabled = false;
@@ -294,7 +294,7 @@ const isMarketTab = computed(() => activeTab.value === "discover");
 const marketPage = ref(1);
 const marketPageSize = 20;
 const marketTotal = ref(0);
-const selectedTypes = ref<{ discover: PluginType | "all" | "collection" | "my"; installed: PluginType | "all" }>({ discover: "all", installed: "all" });
+const selectedTypes = ref<{ discover: PluginType | "all" | "collection" | "my"; installed: PluginType | "all" }>({ discover: initialType ?? "all", installed: initialType ?? "all" });
 const selectedType = computed({
   get: () => selectedTypes.value[activeTab.value === "installed" ? "installed" : "discover"],
   set: (type: PluginType | "all" | "collection" | "my") => {
@@ -921,6 +921,11 @@ async function updatePlugin(plugin: Plugin, action: "setEnabled" | "uninstall", 
       flex-basis: 100%;
       min-width: 0;
       gap: 8px;
+
+      :deep(.el-input) {
+        flex: 1 1 0;
+        min-width: 0;
+      }
     }
   }
 
