@@ -1,5 +1,6 @@
 {
   "name": "toonflow",
+  "version": "0.0.2",
   "description": "Laywork 是一款开源 AI 创作工具，用无限画布和 Agent 助手组织文字、图片、视频、音频与自定义节点。",
   "author": "HBAI-Ltd <ltlctools@outlook.com>",
   "license": "MIT",

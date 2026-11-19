@@ -1,12 +1,12 @@
 import type { ElectrobunConfig } from "./.hutch/devkit/api/config/ElectrobunConfig";
+import pkg from "./package.json";
 
 const startupTarget = process.platform === "darwin" ? (process.arch === "x64" ? "macX64" : "macArm64")
   : process.platform === "win32" ? "windowsX64" : undefined;
 
 function appVersion() {
-  if (process.env.appVersion) return process.env.appVersion;
-  // 本地维护版本号；git 标签来自上游历史，脱钩后不再作为版本来源。
-  return "0.0.2";
+  // 版本号只有一处记录：根 package.json 的 version，发布时由 workflow 输入或 tag 覆盖。
+  return process.env.appVersion ?? pkg.version;
 }
 
 export default {
