@@ -18,7 +18,7 @@
       <button class="upButton" type="button" @click="goUp">‹ 上级</button>
     </div>
     <div v-if="!searchQuery.trim() && chips.length > 6" class="chipSelectRow">
-      <el-select v-model="activeGroup" class="chipSelect" filterable placeholder="全部分类" @change="selectChip($event, chipPathOf($event))">
+      <el-select v-model="activeGroup" class="chipSelect" filterable placeholder="全部分类" @change="onGroupSelect">
         <el-option label="全部分类" value="all" />
         <el-option v-for="item in chips" :key="item.path" :label="`${item.name}　${item.count ?? 0}`" :value="item.name" />
       </el-select>
@@ -470,6 +470,12 @@ function onChipsWheel(event: WheelEvent) {
   if (!el || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
   el.scrollLeft += event.deltaY;
   event.preventDefault();
+}
+
+// 下拉是单选语义：v-model 已经写入，这里不能再走 selectGroup 的「点同一个取消」逻辑，否则选完立刻回到全部分类。
+function onGroupSelect(name: string) {
+  activeGroup.value = name || "all";
+  visibleCount.value = 24;
 }
 
 function selectChip(name: string, path: string, event?: MouseEvent) {
