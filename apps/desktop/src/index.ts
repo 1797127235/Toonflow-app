@@ -2,10 +2,10 @@ import { setLocaleFallback, t, translateMessage } from "@toonflow/server/i18n";
 import { setRuntimeHost } from "@toonflow/server/platform";
 import { detectLocale, normalizeLocale } from "@toonflow/i18n";
 import { execFile } from "node:child_process";
-import { accessSync, constants, cp, existsSync, mkdir, mkdirSync, writeAtomicSync } from "@toonflow/file";
+import { accessSync, constants, cp, existsSync, mkdir, mkdirSync, realpath, writeAtomicSync } from "@toonflow/file";
 import { file } from "@toonflow/file/bun";
 import { homedir } from "node:os";
-import { join, resolve } from "node:path";
+import { join, resolve, sep } from "node:path";
 import { promisify } from "node:util";
 import { dlopen, ptr } from "bun:ffi";
 import type { DesktopRuntime, PluginInstallRequest } from "@toonflow/server/desktop";
@@ -299,7 +299,14 @@ async function start() {
       },
       async selectDirectory() {
         const [path] = await Utils.openFileDialog({ canChooseFiles: false, canChooseDirectory: true, allowsMultipleSelection: false });
-        return path ?? null;
+        if (!path) return null;
+        // 安装目录在更新时会被整体替换，项目落在里面等于每次更新丢文件。
+        const installRoot = resolve(PATHS.RESOURCES_FOLDER, process.platform === "darwin" ? "../../.." : "../..");
+        const selected = await realpath(path);
+        if (selected === installRoot || selected.startsWith(installRoot + sep)) {
+          throw Object.assign(new Error("不能把应用安装目录当工作目录，更新时会被整体替换，请换一个文件夹"), { status: 400 });
+        }
+        return path;
       },
       async ready(failed = false) {
         if (isClosing) return;
