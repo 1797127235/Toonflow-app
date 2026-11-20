@@ -2,7 +2,7 @@ import { setLocaleFallback, t, translateMessage } from "@toonflow/server/i18n";
 import { setRuntimeHost } from "@toonflow/server/platform";
 import { detectLocale, normalizeLocale } from "@toonflow/i18n";
 import { execFile } from "node:child_process";
-import { accessSync, constants, existsSync, mkdirSync, writeAtomicSync } from "@toonflow/file";
+import { accessSync, constants, cp, existsSync, mkdir, mkdirSync, writeAtomicSync } from "@toonflow/file";
 import { file } from "@toonflow/file/bun";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
@@ -99,9 +99,24 @@ async function start() {
   try {
     // Windows 的 data 与 app 同级；macOS 的 data 与 .app 同级。Linux 安装包只读，数据放在用户目录。
     const installDirectory = resolve(PATHS.RESOURCES_FOLDER, process.platform === "darwin" ? "../../.." : "../..");
-    const dataDirectory = process.env.TOONFLOW_DATA_DIR ?? (process.platform === "linux"
+    const installDataDirectory = resolve(installDirectory, "data");
+    let dataDirectory = process.env.TOONFLOW_DATA_DIR ?? (process.platform === "linux"
       ? join(process.env.XDG_DATA_HOME || join(homedir(), ".local", "share"), "toonflow")
-      : resolve(installDirectory, "data"));
+      : process.platform === "win32"
+        ? join(process.env.APPDATA || join(homedir(), "AppData", "Roaming"), "toonflow")
+        : installDataDirectory);
+    // Windows 的数据若留在安装目录，重装时会被安装器连同程序一起清掉；首次启动把它搬到用户目录。
+    if (process.platform === "win32" && dataDirectory !== installDataDirectory && !existsSync(dataDirectory)) {
+      if (existsSync(installDataDirectory)) {
+        try {
+          await cp(installDataDirectory, dataDirectory, { recursive: true });
+          console.log(`数据已迁移到 ${dataDirectory}`);
+        } catch (error) {
+          console.error("数据迁移失败，继续使用安装目录：", error);
+          dataDirectory = installDataDirectory;
+        }
+      } else await mkdir(dataDirectory, { recursive: true });
+    }
     if (process.platform === "linux") mkdirSync(dataDirectory, { recursive: true });
     let linuxPackage = process.platform === "linux" && (Boolean(process.env.APPIMAGE) || process.env.TOONFLOW_LINUX_PACKAGE === "1");
     if (process.platform === "linux" && !linuxPackage) {

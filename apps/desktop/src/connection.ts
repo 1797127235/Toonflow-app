@@ -1,13 +1,14 @@
 import express from "express";
 import { once } from "node:events";
 import { hostname } from "node:os";
-import { posix } from "node:path";
+import { posix, resolve } from "node:path";
 import type { AddressInfo, Socket } from "node:net";
 import type { Server } from "node:http";
 import { createRemoteConnection } from "@toonflow/server/remoteConnection";
 import { getMobileLinkConfig, getMobileLinkStatus, startMobileLinkRuntime, stopMobileLinkRuntime, suspendMobileLinkRuntime } from "@toonflow/server/mobileLink";
 import { initializeMcpRuntime, stopMcpRuntime } from "@toonflow/server/mcp";
 import { languageRequest, translateError, translateMessage } from "@toonflow/server/i18n";
+import { file } from "@toonflow/file/bun";
 
 export default async function createDesktopConnection(app: express.Express, directory: string, mcpEntry: string,
   onNavigate: (port: number, remote: boolean) => void, onError: (error: unknown) => void) {
@@ -96,10 +97,25 @@ export default async function createDesktopConnection(app: express.Express, dire
       if (res.headersSent) return next(error);
       res.status(500).json({ message: error instanceof Error ? translateError(error) : translateMessage("设备连接失败") });
     });
-    const server = gateway.listen(0, "127.0.0.1");
+    // 端口固定才能保住 WebView 的本地存储：WebKit 的 localStorage 按页面 origin 分区，
+    // 端口一变就是一个新 origin，前端的项目列表与偏好会被整体隔离掉。
+    const preferredPort = await file(resolve(directory, "desktopRuntime.json")).json()
+      .then((value: { port?: number }) => Number(value?.port) || 0).catch(() => 0);
+    async function listenOn(port: number) {
+      const instance = gateway.listen(port, "127.0.0.1");
+      try {
+        await once(instance, "listening");
+        return instance;
+      } catch (error) {
+        instance.close();
+        throw error;
+      }
+    }
+    let server: Server;
+    try { server = await listenOn(preferredPort); }
+    catch { server = await listenOn(0); }
     const sockets = new Set<Socket>();
     server.on("connection", socket => { sockets.add(socket); socket.once("close", () => sockets.delete(socket)); });
-    await once(server, "listening");
     const port = (server.address() as AddressInfo).port;
     origin = `http://127.0.0.1:${port}`;
     if (!connection.remote) await initializeMcpRuntime(app, origin, mcpEntry);
