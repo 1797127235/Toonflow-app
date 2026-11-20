@@ -13,6 +13,8 @@ import { isSafeSegment } from "@/utils/skills/files";
 import { isWithin, lockWorkspaceFiles, writeWorkspaceFile } from "@/utils/workspace/files";
 
 const maxBytes = 20 * 1024 * 1024;
+// 技能包是压缩包，解压后可能是二进制资源，单独给一个上限。
+const skillMaxBytes = 100 * 1024 * 1024;
 const require = createRequire(import.meta.url);
 
 function invalid(message: string, status = 400): never {
@@ -226,7 +228,7 @@ function skillEntryPaths(maxEntries = 2000) {
 }
 
 export function skillZip(bytes: Uint8Array, options: { maxBytes?: number; maxEntries?: number; fileModes?: Map<string, number> } = {}) {
-  const byteLimit = options.maxBytes ?? maxBytes;
+  const byteLimit = options.maxBytes ?? skillMaxBytes;
   const entryLimit = options.maxEntries ?? 2000;
   const data = Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   let end = data.length - 22;
@@ -300,13 +302,13 @@ async function skillArchive(bytes: Uint8Array) {
   let tar = bytes;
   if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
     try {
-      tar = await readBounded(new Blob([bytes.slice()]).stream().pipeThrough(new DecompressionStream("gzip")), maxBytes, "技能包解压后不能超过 20 MB");
+      tar = await readBounded(new Blob([bytes.slice()]).stream().pipeThrough(new DecompressionStream("gzip")), skillMaxBytes, "技能包解压后不能超过 100 MB");
     } catch (error) {
       if (error instanceof Error && "status" in error) throw error;
       invalid("技能压缩包损坏");
     }
   }
-  if (tar.length > maxBytes || tar.length % 512 !== 0) invalid("技能压缩包无效或解压后超过 20 MB");
+  if (tar.length > skillMaxBytes || tar.length % 512 !== 0) invalid("技能压缩包无效或解压后超过 100 MB");
   const entries = new Map<string, { size: number; directory: boolean }>();
   const entryPath = skillEntryPaths();
   function field(header: Uint8Array, start: number, length: number) {
@@ -352,7 +354,7 @@ export async function installSkill(fileName: string, bytes: Uint8Array, force = 
   if (!fileName || fileName.length > 128 || /[\\/]/.test(fileName) || !/\.(md|zip|tar|tar\.gz|tgz)$/i.test(fileName)) invalid("请选择 .zip、.md、.tar、.tar.gz 或 .tgz 技能文件");
   skillPath(fileName);
   if (!bytes.byteLength) invalid("技能文件不能为空");
-  if (bytes.byteLength > maxBytes) invalid("技能文件不能超过 20 MB", 413);
+  if (bytes.byteLength > skillMaxBytes) invalid("技能文件不能超过 100 MB", 413);
   const files = /\.md$/i.test(fileName) ? new Map([["SKILL.md", bytes]]) : /\.zip$/i.test(fileName) ? skillZip(bytes) : await skillArchive(bytes);
   const manifests = [...files.keys()].filter(path => path === "SKILL.md" || path.endsWith("/SKILL.md"));
   if (manifests.length !== 1) invalid("技能包必须包含且仅包含一个 SKILL.md");
@@ -439,7 +441,7 @@ export async function installRemotePlugin(type: PluginInstallType, url: string, 
   if (!fileName) invalid(t`下载地址缺少文件名，请使用指向文件的地址，例如 ${examples[type]}`);
   if (fileName.length > 128 || /[\\/]/.test(fileName)) invalid("插件文件名无效，不能包含目录路径或超过 128 字符");
   if (!patterns[type].test(fileName)) invalid(t`下载文件名“${fileName.slice(0, 128)}”不符合 ${type} 类型规范，文件名示例：${examples[type]}；改名后请重新生成下载链接`);
-  const bytes = await download(url, type === "provider" ? 2 * 1024 * 1024 : maxBytes, { node: "节点", ext: "文件扩展", tool: "工具", skill: "技能", provider: "供应商", agent: "团队" }[type]);
+  const bytes = await download(url, type === "provider" ? 2 * 1024 * 1024 : type === "skill" ? skillMaxBytes : maxBytes, { node: "节点", ext: "文件扩展", tool: "工具", skill: "技能", provider: "供应商", agent: "团队" }[type]);
   if (type === "agent") return (await import("@/utils/teams/install")).installTeam(fileName, bytes, force);
   if (type === "skill") return installSkill(fileName, bytes, force);
   const source = decodeText(bytes);

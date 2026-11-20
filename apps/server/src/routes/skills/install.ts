@@ -5,11 +5,11 @@ import { validateFields } from "@/lib/middleware";
 import { error, success } from "@/lib/responseFormat";
 
 const router = Router();
-const maxBytes = 20 * 1024 * 1024;
+const maxBytes = 100 * 1024 * 1024;
 
 export default router.post("/", validateFields({
   fileName: z.string().max(128).optional(),
-  base64: z.string().min(1).max(Math.ceil(maxBytes / 3) * 4).base64().optional(),
+  base64: z.string().min(1).max(Math.ceil(maxBytes / 3) * 4, "技能文件不能超过 100 MB").base64().optional(),
   url: z.string().url().max(4096).optional(),
   force: z.boolean().optional(),
 }), async (req, res) => {

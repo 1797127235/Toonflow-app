@@ -4,7 +4,7 @@ import { basename, dirname, relative, resolve, sep } from "node:path";
 import conf from "@/utils/conf";
 import { isWithin, writeWorkspaceFile } from "@/utils/workspace/files";
 
-export const maxBytes = 20 * 1024 * 1024;
+export const maxBytes = 100 * 1024 * 1024;
 // 记录附属文件的手动排序；不改动真实文件名，避免影响 SKILL.md 内部的相对链接。
 const orderFileName = ".toonflowOrder.json";
 
@@ -45,7 +45,7 @@ async function verifyChain(actualRoot: string, start: string, target: string, fi
     if (info.isSymbolicLink() || (expectDirectory ? !info.isDirectory() : !info.isFile()) || !isWithin(actualRoot, await realpath(path))) {
       throw Object.assign(new Error("技能路径不能包含符号链接、特殊文件或越界目录"), { status: 403 });
     }
-    if (isFinal && finalKind === "file" && info.size > maxBytes) throw Object.assign(new Error("技能文件不能超过 20 MB"), { status: 413 });
+    if (isFinal && finalKind === "file" && info.size > maxBytes) throw Object.assign(new Error("技能文件不能超过 100 MB"), { status: 413 });
   }
 }
 
