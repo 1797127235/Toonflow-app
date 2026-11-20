@@ -53,7 +53,7 @@
       <modelPopover v-if="showModel" v-model="activeModel" v-model:reasoningEffort="reasoningEffort" :active="active" :disabled="disabled || voiceActive" :externalChoices="engine === 'acp' ? piModelChoices : undefined"
         :placeholder="engine === 'acp' ? acpModelPlaceholder : undefined" />
       <input ref="attachmentInput" type="file" :accept="attachmentAccept" multiple hidden :disabled="locked" @change="selectAttachments" />
-      <el-button text circle :disabled="locked" aria-label="添加附件" title="添加附件" @click="attachmentInput?.click()"><icon-paperclip :size="16" /></el-button>
+      <el-button class="attachButton" text circle :disabled="locked" aria-label="添加附件" title="添加附件" @click="attachmentInput?.click()"><icon-paperclip :size="16" /></el-button>
       <mentionMenu ref="mentionMenuRef" :directory="directory" :active="active" :disabled="locked || !directory" :query="mentionQuery" :editor="senderElement" :currentCanvasId="createCanvasContext?.()?.id" @open="captureMentionPosition" @select="insertMentions" @dismiss="mentionQuery = undefined" />
       <skillMenu ref="skillMenuRef" :directory="directory" :active="active" :disabled="locked || !directory" :query="skillQuery" :editor="senderElement" @select="selectSkill" @dismiss="skillQuery = undefined" />
       <el-button class="voiceButton" :class="{ voiceActive }" text circle :disabled="!voiceSupported || (!voiceActive && locked)" :aria-label="voiceButtonLabel" :aria-pressed="voiceActive" :title="voiceButtonLabel" @click="voiceActive ? cancelVoiceInput() : startVoiceInput()"><icon-microphone :size="18" /></el-button>
@@ -615,6 +615,7 @@ defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restor
     --chat-text-placeholder: var(--el-text-color-placeholder);
     --chat-rect-padding: 12px;
     --chat-mention-text: var(--el-color-primary);
+    container-type: inline-size;
     position: relative;
     flex-shrink: 0;
     margin: 0 12px 8px;
@@ -790,6 +791,7 @@ defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restor
       justify-content: flex-end;
       align-items: center;
       gap: 12px;
+      min-width: 0;
       padding: 2px 8px 6px;
 
       > .el-button {
@@ -797,18 +799,24 @@ defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restor
       }
 
       .agentButton {
-        flex: none;
+        flex: 0 0 auto;
+        min-width: 0;
         height: 28px;
         padding: 0 8px;
         color: var(--el-text-color-regular);
 
         > span {
           margin-right: 4px;
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
 
       .modelPopover {
-        flex: 1;
+        flex: 1 1 0;
+        min-width: 0;
         margin-right: auto;
       }
 
@@ -822,6 +830,18 @@ defineExpose({ getDraft, clearDraft, fillPrompt, editMessage, cancelEdit, restor
         &.is-text {
           background-color: transparent;
         }
+      }
+
+      @container (max-width: 380px) {
+        gap: 6px;
+
+        > .el-dropdown { display: none; }
+      }
+
+      @container (max-width: 320px) {
+        gap: 4px;
+
+        .attachButton { display: none; }
       }
 
       .voiceButton {

@@ -14,7 +14,7 @@
           <modelIcon v-if="selectedModelChoice && !isExternal" :model="selectedModelChoice.modelId" :size="14" />
           <span class="modelName">{{ selectedModelChoice?.label ?? props.placeholder ?? "选择模型" }}</span>
           <template v-if="reasoningLevels.length">
-            ·
+            <span class="reasoningDivider">·</span>
             <span class="reasoningLabel">{{ reasoningLabel }}</span>
           </template>
           <component :is="visible ? IconChevronUp : IconChevronDown" :size="14" aria-hidden="true" />
@@ -106,6 +106,12 @@ watch(() => !props.active || props.disabled, close => { if (close) visible.value
       flex-shrink: 0;
     }
 
+    .reasoningDivider {
+      flex-shrink: 0;
+      color: var(--el-text-color-secondary);
+      font-size: 12px;
+    }
+
     .reasoningLabel {
       flex-shrink: 0;
       color: var(--el-text-color-secondary);
@@ -117,6 +123,12 @@ watch(() => !props.active || props.disabled, close => { if (close) visible.value
       text-overflow: ellipsis;
       white-space: nowrap;
       text-align: left;
+    }
+
+    // 输入框变窄时把「思考强度」让出去，把宽度留给模型名。
+    @container (max-width: 380px) {
+      .reasoningDivider,
+      .reasoningLabel { display: none; }
     }
   }
 }
