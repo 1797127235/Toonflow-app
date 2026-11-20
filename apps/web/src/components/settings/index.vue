@@ -46,6 +46,7 @@ import {
   IconUserCog,
   IconSubtitlesAi,
   IconDevices,
+  IconInfoCircle,
 } from "@tabler/icons-vue";
 
 const settingsPanels = [
@@ -76,6 +77,13 @@ const settingsPanels = [
     icon: IconUserCog,
     groupLabel: "其他",
     component: defineAsyncComponent(() => import("./panels/personalization.vue")),
+  },
+  {
+    id: "about",
+    label: "关于",
+    icon: IconInfoCircle,
+    groupLabel: "其他",
+    component: defineAsyncComponent(() => import("./panels/about.vue")),
   },
   { id: "developer", label: "开发者选项", icon: IconCode, component: defineAsyncComponent(() => import("./panels/developer/index.vue")) },
 ];

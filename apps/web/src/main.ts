@@ -56,8 +56,16 @@ async function notifyDesktopReady(failed = false) {
     await new Promise<void>((resolve) => window.addEventListener("load", () => resolve(), { once: true }));
   }
   await notifyDesktopReady();
-  // 桌面启动后只静默检查一次；失败留待用户手动重试，不阻塞启动或自动下载。
-  if (!isRemoteConnection) void checkDesktopUpdate(true).catch(() => {});
+  // 桌面启动后静默检查更新；失败按 1/2 分钟退避重试两次，不阻塞启动或自动下载。
+  async function checkUpdateWithRetry(attempt = 1): Promise<void> {
+    try {
+      await checkDesktopUpdate(true);
+    } catch {
+      if (attempt >= 3) return;
+      setTimeout(() => void checkUpdateWithRetry(attempt + 1), attempt * 60000);
+    }
+  }
+  if (!isRemoteConnection) void checkUpdateWithRetry();
 }).catch(async (error) => {
   console.error("页面初始化失败：", error);
   if (isMounted) app.unmount();
