@@ -5,7 +5,12 @@
         <template #content>
           <section class="welcomeMessage" aria-label="开始新对话">
             <div class="welcomeHeader">
-              <span class="welcomeIcon" aria-hidden="true"><span class="welcomeLogo" :style="{ maskImage: `url(${logoUrl})` }" /></span>
+              <span class="welcomeIcon" aria-hidden="true">
+                <svg class="welcomeLogo" viewBox="0 0 120 120" fill="currentColor" aria-hidden="true">
+                  <path d="M10 10L107 10L10 107Z" />
+                  <path d="M110 18L110 82L84 82L84 110L18 110Z" />
+                </svg>
+              </span>
               <div>
                 <p class="welcomeLabel">你好，我是 Laywork 助手</p>
                 <h3>从一个想法开始</h3>
@@ -84,7 +89,6 @@
 import { computed, nextTick, ref, watch, type ComponentPublicInstance } from "vue";
 import { defaultRangeExtractor, measureElement, observeElementRect, useVirtualizer } from "@tanstack/vue-virtual";
 import { IconArrowDown, IconArrowUpRight, IconAtom, IconChevronDown, IconChevronRight, IconCopy, IconGitBranch, IconMovie, IconPencil, IconPhoto, IconUsersGroup, IconVector, IconX } from "@tabler/icons-vue";
-import logoUrl from "@toonflow/assets/logo.svg";
 import browserPanel from "@toonflow/tool-browser/panel";
 import { isBrowserTool } from "@toonflow/tool-browser/client";
 import type { AgentToolCall } from "@toonflow/server/agent/types";
@@ -246,12 +250,9 @@ const welcomeSuggestions = [
           color: var(--el-color-primary);
 
           .welcomeLogo {
+            display: block;
             width: 28px;
             height: 28px;
-            background: currentColor;
-            mask-size: contain;
-            mask-position: center;
-            mask-repeat: no-repeat;
           }
         }
 
